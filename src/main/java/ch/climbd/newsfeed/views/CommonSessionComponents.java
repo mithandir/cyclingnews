@@ -2,6 +2,7 @@ package ch.climbd.newsfeed.views;
 
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.ComponentEventListener;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.contextmenu.MenuItem;
 import com.vaadin.flow.component.contextmenu.SubMenu;
 import com.vaadin.flow.component.menubar.MenuBar;
@@ -16,13 +17,17 @@ import java.util.Set;
 @Component
 @SessionScope
 public class CommonSessionComponents {
-    private final Set<String> selectedLanguages = new HashSet<String>();
+    private final Set<String> selectedLanguages = new HashSet<>();
 
     @Autowired
     CommonComponents commonComponents;
 
     @PostConstruct
     public void init() {
+        var locale = UI.getCurrent().getSession().getBrowser().getLocale();
+        selectedLanguages.add(locale.getLanguage());
+
+        // Add english anyway
         selectedLanguages.add("en");
     }
 

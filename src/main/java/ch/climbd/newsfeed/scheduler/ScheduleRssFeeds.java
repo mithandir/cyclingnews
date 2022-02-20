@@ -59,7 +59,6 @@ public class ScheduleRssFeeds {
         rssFeeds.put("https://www.radsport-rennrad.de/feed/", "de");
         rssFeeds.put("https://www.rennrad-news.de/news/feed/", "de");
         rssFeeds.put("https://www.sportivecyclist.com/feed/", "en");
-        rssFeeds.put("https://www.swiss-cycling.ch/de/feed/", "de");
         rssFeeds.put("https://www.trainerroad.com/blog/feed/", "en");
         rssFeeds.put("https://www.velomotion.de/magazin/feed", "de");
         rssFeeds.put("https://www.velonews.com/feed/", "en");
