@@ -27,17 +27,21 @@ public class ScheduleRssFeeds {
 
     @PostConstruct
     public void init() {
+        //rssFeeds.put("https://inrng.com/feed", "en"); Invalid parsing
         rssFeeds.put("http://feeds.feedburner.com/ilovecyclingde", "de");
         rssFeeds.put("http://feeds.feedburner.com/shutuplegsde", "de");
         rssFeeds.put("http://fetchrss.com/rss/6002dbb8135789796c3d9b526002dc80a9582662d205cdf2.xml", "en");
+        rssFeeds.put("http://www.uaeteamemirates.com/news-and-media/feed/", "en");
+        rssFeeds.put("https://bahraincyclingteam.com/news/feed/", "en");
         rssFeeds.put("https://bikerumor.com/feed/", "en");
         rssFeeds.put("https://bikesnobnyc.com/feed/", "en");
         rssFeeds.put("https://challenge-magazin.com/feed/", "de");
         rssFeeds.put("https://cycling.today/feed/", "en");
         rssFeeds.put("https://cyclingtips.com/blog-page/feed/", "en");
-        //rssFeeds.put("https://inrng.com/feed", "en");
         rssFeeds.put("https://joefrieltraining.com/feed/", "en");
+        rssFeeds.put("https://movistarteam.com/en/news/feed", "en");
         rssFeeds.put("https://pezcyclingnews.com/feed/", "en");
+        rssFeeds.put("https://procyclinguk.com/feed/", "en");
         rssFeeds.put("https://radamring.de/feed/", "de");
         rssFeeds.put("https://radsportverband-nrw.de/feed/", "de");
         rssFeeds.put("https://road.cc/rss", "en");
@@ -74,13 +78,8 @@ public class ScheduleRssFeeds {
     public void scheduleFeedProcessing() {
         if (env.getActiveProfiles() == null || env.getActiveProfiles().length == 0 || !env.getActiveProfiles()[0].contains("local")) {
             LOG.info("Running RSS scheduler");
-            rssFeeds.forEach((feed, language) -> {
-                try {
-                    processor.processRss(feed, language);
-                } catch (Exception e) {
-                    LOG.error("Could not process feed: " + feed);
-                }
-            });
+            rssFeeds.keySet().stream().parallel()
+                    .forEach(feedId -> processor.processRss(feedId, rssFeeds.get(feedId)));
         }
     }
 }
