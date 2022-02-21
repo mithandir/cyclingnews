@@ -10,6 +10,8 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -18,6 +20,7 @@ import javax.annotation.PostConstruct;
 @Route("login")
 @PageTitle("Climbd Cycling News - Login")
 public class LoginView extends VerticalLayout {
+    private static final Logger LOG = LoggerFactory.getLogger(LoginView.class);
 
     @Autowired
     private CommonComponents commonComponents;
@@ -70,8 +73,11 @@ public class LoginView extends VerticalLayout {
         if (!apiKey.getValue().isBlank()) {
             commonComponents.writeLocalStorage("API-KEY", apiKey.getValue());
             commonSessionComponents.checkIsAdmin();
+            LOG.info("Login successful");
 
             UI.getCurrent().navigate("latest");
+        } else {
+            LOG.warn("Login attempt failed!");
         }
     }
 }

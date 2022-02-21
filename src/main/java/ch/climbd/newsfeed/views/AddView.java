@@ -101,21 +101,30 @@ public class AddView extends VerticalLayout {
             link.clear();
             languageGroup.clear();
         }
+
         button.setEnabled(true);
     }
 
     private void setErrorMessages(TextField title, TextField link, CheckboxGroup<String> languageGroup) {
+        title.clear();
+        link.clear();
+        languageGroup.clear();
+
         if (title.getValue().isBlank()) {
             title.setHelperText("Field should not be empty");
+            title.setInvalid(true);
         }
         if (link.getValue().isBlank()) {
             link.setHelperText("Field should not be empty");
+            link.setInvalid(true);
         }
         if (languageGroup.getSelectedItems().size() == 0) {
             languageGroup.setHelperText("Please select a language");
+            languageGroup.setInvalid(true);
         }
         if (languageGroup.getSelectedItems().size() > 1) {
             languageGroup.setHelperText("Please select only 1 language");
+            languageGroup.setInvalid(true);
         }
     }
 
