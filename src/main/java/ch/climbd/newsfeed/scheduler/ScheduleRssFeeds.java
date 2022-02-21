@@ -33,10 +33,9 @@ public class ScheduleRssFeeds {
         rssFeeds.put("https://bikerumor.com/feed/", "en");
         rssFeeds.put("https://bikesnobnyc.com/feed/", "en");
         rssFeeds.put("https://challenge-magazin.com/feed/", "de");
-        rssFeeds.put("https://classic.rad-net.de/html/feed.xml", "de");
         rssFeeds.put("https://cycling.today/feed/", "en");
         rssFeeds.put("https://cyclingtips.com/blog-page/feed/", "en");
-        rssFeeds.put("https://inrng.com/feed", "en");
+        //rssFeeds.put("https://inrng.com/feed", "en");
         rssFeeds.put("https://joefrieltraining.com/feed/", "en");
         rssFeeds.put("https://pezcyclingnews.com/feed/", "en");
         rssFeeds.put("https://radamring.de/feed/", "de");
