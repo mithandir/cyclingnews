@@ -32,6 +32,7 @@ public class RssProcessor {
             SyndFeed feed = new SyndFeedInput().build(new XmlReader(new URL(url)));
             feed.getEntries().stream().map(this::map)
                     .filter(item -> item.getLink() != null && item.getTitle() != null)
+                    .filter(item -> !item.getLink().isBlank() && !item.getTitle().isBlank())
                     .filter(item -> !filter.isSpam(item.getTitle()))
                     .filter(item -> !mongo.exists(item))
                     .forEach(item -> {
