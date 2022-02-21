@@ -46,14 +46,14 @@ public class RssProcessor {
 
     private NewsEntry map(SyndEntry item) {
         NewsEntry result = new NewsEntry();
-        String title = item.getTitle();
+        String title = item.getTitle().strip();
         if (title == null) {
             result.setTitle(null);
         } else {
             result.setTitle(filter.replaceHtml(title));
         }
 
-        result.setLink(item.getLink());
+        result.setLink(item.getLink().strip());
 
         if (Date.from(Instant.now()).equals(item.getPublishedDate())) {
             result.setPublishedAt(ZonedDateTime.now());
