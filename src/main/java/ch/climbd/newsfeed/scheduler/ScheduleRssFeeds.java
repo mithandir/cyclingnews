@@ -59,15 +59,16 @@ public class ScheduleRssFeeds {
         rssFeeds.put("https://www.radsport-rennrad.de/feed/", "de");
         rssFeeds.put("https://www.rennrad-news.de/news/feed/", "de");
         rssFeeds.put("https://www.sportivecyclist.com/feed/", "en");
+        rssFeeds.put("https://www.swiss-cycling.ch/de/feed", "de");
         rssFeeds.put("https://www.trainerroad.com/blog/feed/", "en");
         rssFeeds.put("https://www.velomotion.de/magazin/feed", "de");
         rssFeeds.put("https://www.velonews.com/feed/", "en");
-        rssFeeds.put("https://zwiftinsider.com/feed/", "en");
-        rssFeeds.put("https://www.youtube.com/feeds/videos.xml?channel_id=UCuTaETsuCOkJ0H_GAztWt0Q", "en");
-        rssFeeds.put("https://www.youtube.com/feeds/videos.xml?channel_id=UCYuKCZ35_lrDmFj2gNuAwZw", "en");
-        rssFeeds.put("https://www.youtube.com/feeds/videos.xml?channel_id=UCIf1xvRN8pzyd_VfLgj_dow", "en");
         rssFeeds.put("https://www.youtube.com/feeds/videos.xml?channel_id=UC77UtoyivVHkpApL0wGfH5w", "en");
         rssFeeds.put("https://www.youtube.com/feeds/videos.xml?channel_id=UCH9263dSaOHFe25dkyGAu3Q", "en");
+        rssFeeds.put("https://www.youtube.com/feeds/videos.xml?channel_id=UCIf1xvRN8pzyd_VfLgj_dow", "en");
+        rssFeeds.put("https://www.youtube.com/feeds/videos.xml?channel_id=UCYuKCZ35_lrDmFj2gNuAwZw", "en");
+        rssFeeds.put("https://www.youtube.com/feeds/videos.xml?channel_id=UCuTaETsuCOkJ0H_GAztWt0Q", "en");
+        rssFeeds.put("https://zwiftinsider.com/feed/", "en");
     }
 
     @Scheduled(fixedDelay = 15, timeUnit = TimeUnit.MINUTES)

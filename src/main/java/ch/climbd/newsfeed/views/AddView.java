@@ -106,9 +106,12 @@ public class AddView extends VerticalLayout {
     }
 
     private void setErrorMessages(TextField title, TextField link, CheckboxGroup<String> languageGroup) {
-        title.clear();
-        link.clear();
-        languageGroup.clear();
+        title.setInvalid(false);
+        title.setHelperText(null);
+        link.setInvalid(false);
+        link.setHelperText(null);
+        languageGroup.setInvalid(false);
+        languageGroup.setHelperText(null);
 
         if (title.getValue().isBlank()) {
             title.setHelperText("Field should not be empty");
