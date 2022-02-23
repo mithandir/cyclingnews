@@ -51,7 +51,7 @@ public class CommonSessionComponents {
         var menu = new MenuBar();
         menu.setOpenOnHover(true);
 
-        createIconItem(menu, VaadinIcon.NEWSPAPER, "Newest", null).addClickListener(listenerNewest);
+        createIconItem(menu, VaadinIcon.NEWSPAPER, "Recent", null).addClickListener(listenerNewest);
         createIconItem(menu, VaadinIcon.THUMBS_UP, "Popular", null).addClickListener(listenerPopular);
         if (isAdmin) {
             createIconItem(menu, VaadinIcon.MEGAPHONE, "Report News", null).addClickListener(listenerAddNews);
