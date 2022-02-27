@@ -33,7 +33,6 @@ public class LoginView extends VerticalLayout {
 
     @PostConstruct
     public void init() {
-        commonSessionComponents.checkIsAdmin();
         var image = new Image(baseUrl + "/logo.svg", "Title");
         image.setWidth("8em");
         image.getStyle().set("margin-left", commonComponents.isMobile() ? "2%" : "10%");
@@ -61,9 +60,7 @@ public class LoginView extends VerticalLayout {
 
         Button button = new Button("Save");
         button.setDisableOnClick(true);
-        button.addClickListener(event -> {
-            clickSaveAction(apiKey);
-        });
+        button.addClickListener(event -> clickSaveAction(apiKey));
         button.getStyle().set("margin-left", commonComponents.isMobile() ? "2%" : "10%");
 
         return new VerticalLayout(apiKey, button);
@@ -72,7 +69,7 @@ public class LoginView extends VerticalLayout {
     private void clickSaveAction(TextField apiKey) {
         if (!apiKey.getValue().isBlank()) {
             commonComponents.writeLocalStorage("API-KEY", apiKey.getValue());
-            commonSessionComponents.checkIsAdmin();
+            commonSessionComponents.checkIsAdmin(false);
             LOG.info("Login successful");
 
             UI.getCurrent().navigate("latest");

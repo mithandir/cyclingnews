@@ -34,7 +34,7 @@ public class CommonSessionComponents {
 
     @PostConstruct
     public void init() {
-        checkIsAdmin();
+        checkIsAdmin(true);
 
         var locale = UI.getCurrent().getSession().getBrowser().getLocale();
         selectedLanguages.add(locale.getLanguage());
@@ -75,11 +75,14 @@ public class CommonSessionComponents {
         return isAdmin;
     }
 
-    public void checkIsAdmin() {
+    public void checkIsAdmin(boolean forceReload) {
         try {
             UI.getCurrent().getPage().executeJs("debugger; return window.localStorage.getItem($0);", "API-KEY").then(String.class, result -> {
                 if (apiKey.equals(result)) {
                     isAdmin = true;
+                    if (forceReload) {
+                        UI.getCurrent().getPage().reload();
+                    }
                 } else {
                     isAdmin = false;
                 }
