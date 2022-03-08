@@ -33,7 +33,8 @@ public class MongoController {
         query.addCriteria(Criteria.where("language").in(language));
 
         return template.find(query, NewsEntry.class)
-                .sort(Comparator.comparing(NewsEntry::getPublishedDateTime).reversed());
+                .sort(Comparator.comparing(NewsEntry::getPublishedDateTime).reversed())
+                .take(100);
     }
 
     public Flux<NewsEntry> findAllOrderedByVotes(Set<String> language) {
