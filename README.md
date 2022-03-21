@@ -1,5 +1,7 @@
 ﻿# Climbd cycling news
 
+![Docker Build](https://github.com/mithandir/cyclingnews/actions/workflows/docker-publish.yml/badge.svg)
+
 Running at: https://news.qfotografie.de
 
 <img src="img.png" width="500" >
