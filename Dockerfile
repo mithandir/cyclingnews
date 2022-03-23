@@ -10,7 +10,7 @@ COPY / /opt/src/newsfeed/
 WORKDIR /opt/src/newsfeed
 RUN mvn -q clean install -DskipTests=true -P production && cp target/*.jar /opt/app.jar
 
-FROM openjdk:17-alpine
+FROM openjdk:18-alpine
 
 LABEL NAME="climbd-newsfeed"
 LABEL VERSION=1.0.0
