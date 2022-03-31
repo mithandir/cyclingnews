@@ -102,7 +102,7 @@ public class CommonSessionComponents {
     private final ComponentEventListener<ClickEvent<MenuItem>> listenerLanguageEn = e -> {
         if (e.getSource().isChecked()) {
             selectedLanguages.add("en");
-        } else if (selectedLanguages.contains("en")) {
+        } else {
             selectedLanguages.remove("en");
         }
 
@@ -112,8 +112,7 @@ public class CommonSessionComponents {
     private final ComponentEventListener<ClickEvent<MenuItem>> listenerLanguageDe = e -> {
         if (e.getSource().isChecked()) {
             selectedLanguages.add("de");
-
-        } else if (selectedLanguages.contains("de")) {
+        } else {
             selectedLanguages.remove("de");
         }
 

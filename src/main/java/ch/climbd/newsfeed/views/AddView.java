@@ -74,9 +74,7 @@ public class AddView extends VerticalLayout {
 
         Button button = new Button("Save");
         button.setDisableOnClick(true);
-        button.addClickListener(event -> {
-            clickSaveAction(title, link, languageGroup, button);
-        });
+        button.addClickListener(event -> clickSaveAction(title, link, languageGroup, button));
         button.getStyle().set("margin-left", commonComponents.isMobile() ? "2%" : "10%");
 
         verticalLayout.add(button);
