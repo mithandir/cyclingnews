@@ -25,7 +25,7 @@ public class CommonComponents {
         UI.getCurrent().getPage().executeJs("debugger; window.localStorage.setItem($0, $1);", id, value);
     }
 
-    public void checkIcon(Icon icon, String id) {
+    public void checkIconStatus(Icon icon, String id) {
         try {
             UI.getCurrent().getPage().executeJs("debugger; return window.localStorage.getItem($0);", id).then(String.class, result -> {
                 if (result == null || result.equals("false")) {
@@ -52,11 +52,7 @@ public class CommonComponents {
         return browser.isAndroid() || browser.isIPhone() || browser.isWindowsPhone();
     }
 
-    private String findIcon(String pageUrl) {
-        if (env.getActiveProfiles() != null && env.getActiveProfiles().length > 0 && env.getActiveProfiles()[0].contains("local")) {
-            return null;
-        }
-
+    public String findIcon(String pageUrl) {
         if (iconCache.containsKey(pageUrl)) {
             return iconCache.get(pageUrl);
         }

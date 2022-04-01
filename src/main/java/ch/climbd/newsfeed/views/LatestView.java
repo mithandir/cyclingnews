@@ -91,7 +91,7 @@ public class LatestView extends VerticalLayout {
             Icon vote = VaadinIcon.THUMBS_UP.create();
             vote.setSize("15px");
             vote.addClickListener((ComponentEventListener<ClickEvent<Icon>>) iconClickEvent -> handleVotes(item, voteSum, vote));
-            commonComponents.checkIcon(vote, item.getLink());
+            commonComponents.checkIconStatus(vote, item.getLink());
 
             rowDateAndLinks.add(date, voteSum, vote);
 

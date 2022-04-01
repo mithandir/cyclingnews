@@ -1,5 +1,6 @@
 package ch.climbd.newsfeed.scheduler;
 
+import ch.climbd.newsfeed.views.CommonComponents;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,12 +14,15 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 @Component
-public class ScheduleRssFeeds {
+public class Scheduler {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ScheduleRssFeeds.class);
+    private static final Logger LOG = LoggerFactory.getLogger(Scheduler.class);
 
     @Autowired
     private RssProcessor processor;
+
+    @Autowired
+    private CommonComponents commonComponents;
 
     @Autowired
     Environment env;
@@ -27,7 +31,6 @@ public class ScheduleRssFeeds {
 
     @PostConstruct
     public void init() {
-        //rssFeeds.put("https://inrng.com/feed", "en"); Invalid parsing
         rssFeeds.put("http://feeds.feedburner.com/ilovecyclingde", "de");
         rssFeeds.put("http://feeds.feedburner.com/shutuplegsde", "de");
         rssFeeds.put("http://fetchrss.com/rss/6002dbb8135789796c3d9b526002dc80a9582662d205cdf2.xml", "en");
@@ -72,14 +75,30 @@ public class ScheduleRssFeeds {
         rssFeeds.put("https://www.youtube.com/feeds/videos.xml?channel_id=UCYuKCZ35_lrDmFj2gNuAwZw", "en");
         rssFeeds.put("https://www.youtube.com/feeds/videos.xml?channel_id=UCuTaETsuCOkJ0H_GAztWt0Q", "en");
         rssFeeds.put("https://zwiftinsider.com/feed/", "en");
+
+        initIconCache();
+    }
+
+    private void initIconCache() {
+        rssFeeds.keySet().stream().parallel().forEach(url -> {
+            if (url.length() > 0) {
+                var start = url.indexOf("://") + 3;
+
+                try {
+                    var end = url.indexOf("/", start);
+                    url = url.substring(0, end);
+                    commonComponents.findIcon(url);
+                } catch (IndexOutOfBoundsException e) {
+                    // DO NOTHING
+                }
+            }
+        });
     }
 
     @Scheduled(fixedDelay = 15, timeUnit = TimeUnit.MINUTES)
     public void scheduleFeedProcessing() {
-        if (env.getActiveProfiles() == null || env.getActiveProfiles().length == 0 || !env.getActiveProfiles()[0].contains("local")) {
-            LOG.info("Running RSS scheduler");
-            rssFeeds.keySet().stream().parallel()
-                    .forEach(feedId -> processor.processRss(feedId, rssFeeds.get(feedId)));
-        }
+        LOG.info("Running RSS scheduler");
+        rssFeeds.keySet().stream().parallel()
+                .forEach(feedId -> processor.processRss(feedId, rssFeeds.get(feedId)));
     }
 }
