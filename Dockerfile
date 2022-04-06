@@ -1,4 +1,4 @@
-FROM maven:3-openjdk-17-slim AS build-env
+FROM maven:3-openjdk-18-slim AS build-env
 
 LABEL NAME="newsfeed-build"
 LABEL VERSION=1.0.0
