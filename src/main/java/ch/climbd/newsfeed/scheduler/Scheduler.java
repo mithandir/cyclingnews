@@ -51,6 +51,7 @@ public class Scheduler {
         rssFeeds.put("https://roadcycling.de/feed", "de");
         rssFeeds.put("https://tdaglobalcycling.com/blog/all/feed/", "en");
         rssFeeds.put("https://turbocyclist.com/feed", "en");
+        rssFeeds.put("https://velomobil.blog/blog/", "de");
         rssFeeds.put("https://www.bikehugger.com/feed/", "en");
         rssFeeds.put("https://www.bikeradar.com/road/feed/", "en");
         rssFeeds.put("https://www.cycling-challenge.com/feed/", "en");
