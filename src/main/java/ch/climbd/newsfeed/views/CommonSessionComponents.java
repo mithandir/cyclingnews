@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.SessionScope;
+import org.vaadin.addon.browserstorage.LocalStorage;
 
 import javax.annotation.PostConstruct;
 import java.util.HashSet;
@@ -76,20 +77,18 @@ public class CommonSessionComponents {
     }
 
     public void checkIsAdmin(boolean forceReload) {
-        try {
-            UI.getCurrent().getPage().executeJs("debugger; return window.localStorage.getItem($0);", "API-KEY").then(String.class, result -> {
-                if (apiKey.equals(result)) {
-                    isAdmin = true;
-                    if (forceReload) {
-                        UI.getCurrent().getPage().reload();
-                    }
-                } else {
-                    isAdmin = false;
+        UI currentUI = UI.getCurrent();
+        LocalStorage localStorage = new LocalStorage(currentUI);
+        localStorage.getItem("API-KEY").thenAccept(result -> {
+            if (apiKey.equals(result)) {
+                isAdmin = true;
+                if (forceReload) {
+                    UI.getCurrent().getPage().reload();
                 }
-            });
-        } catch (Exception e) {
-            //NOTHING
-        }
+            } else {
+                isAdmin = false;
+            }
+        });
     }
 
     private final ComponentEventListener<ClickEvent<MenuItem>> listenerPopular = e -> e.getSource().getUI().ifPresent(ui ->

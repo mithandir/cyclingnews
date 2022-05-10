@@ -19,6 +19,7 @@
 		<detect.language.version>1.1.0</detect.language.version>
 		<maven.versions.plugin>2.9.0</maven.versions.plugin>
 		<rome.rss.version>1.18.0</rome.rss.version>
+		<browserstorage.version>1.0.0</browserstorage.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -52,6 +53,11 @@
 			<groupId>com.detectlanguage</groupId>
 			<artifactId>detectlanguage</artifactId>
 			<version>${detect.language.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.vaadin.componentfactory</groupId>
+			<artifactId>browserstorage</artifactId>
+			<version>${browserstorage.version}</version>
 		</dependency>
 	</dependencies>
 	<dependencyManagement>
@@ -150,6 +156,10 @@
 			<id>spring-release</id>
 			<name>Spring release</name>
 			<url>https://repo.spring.io/release</url>
+		</repository>
+		<repository>
+			<id>vaadin-addons</id>
+			<url>https://maven.vaadin.com/vaadin-addons</url>
 		</repository>
 	</repositories>
 

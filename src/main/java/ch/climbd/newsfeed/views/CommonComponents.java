@@ -10,6 +10,7 @@ import org.jsoup.nodes.Element;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
+import org.vaadin.addon.browserstorage.LocalStorage;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,22 +22,23 @@ public class CommonComponents {
     @Autowired
     Environment env;
 
+
     public void writeLocalStorage(String id, String value) {
-        UI.getCurrent().getPage().executeJs("debugger; window.localStorage.setItem($0, $1);", id, value);
+        UI currentUI = UI.getCurrent();
+        LocalStorage localStorage = new LocalStorage(currentUI);
+        localStorage.setItem(id, value);
     }
 
     public void checkIconStatus(Icon icon, String id) {
-        try {
-            UI.getCurrent().getPage().executeJs("debugger; return window.localStorage.getItem($0);", id).then(String.class, result -> {
-                if (result == null || result.equals("false")) {
-                    icon.setColor(null);
-                } else {
-                    icon.setColor("green");
-                }
-            });
-        } catch (Exception e) {
-            //NOTHING
-        }
+        UI currentUI = UI.getCurrent();
+        LocalStorage localStorage = new LocalStorage(currentUI);
+        localStorage.getItem(id).thenAccept(result -> {
+            if (result == null || result.equals("false")) {
+                icon.setColor(null);
+            } else {
+                icon.setColor("green");
+            }
+        });
     }
 
     public Avatar buildSiteIcon(String pageUrl, String domainOnly) {
