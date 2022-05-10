@@ -3,6 +3,7 @@ package ch.climbd.newsfeed.views;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.avatar.Avatar;
 import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -12,12 +13,18 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.vaadin.addon.browserstorage.LocalStorage;
 
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 
 @Component
 public class CommonComponents {
     private final Map<String, String> iconCache = new HashMap<>();
+    private static DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
+    private ZoneId zoneId = ZoneId.of("Europe/Berlin");
 
     @Autowired
     Environment env;
@@ -39,6 +46,27 @@ public class CommonComponents {
                 icon.setColor("green");
             }
         });
+    }
+
+    public void updateLastVisit() {
+        writeLocalStorage("LAST-VISIT", ZonedDateTime.ofInstant(Instant.now(), zoneId).format(formatter));
+    }
+
+    public void isItemUnRead(ZonedDateTime itemPublishDate, HorizontalLayout horizontalLayout) {
+        UI currentUI = UI.getCurrent();
+        LocalStorage localStorage = new LocalStorage(currentUI);
+        localStorage.getItem("LAST-VISIT").thenAccept(lastVisit -> {
+            if (lastVisit != null) {
+                ZonedDateTime lastVisitDate = ZonedDateTime.parse(lastVisit, formatter);
+                if (itemPublishDate.isAfter(lastVisitDate)) {
+                    horizontalLayout.getStyle().set("opacity", "100%");
+                } else {
+                    horizontalLayout.getStyle().set("opacity", "60%");
+                }
+            }
+        });
+
+        horizontalLayout.getStyle().set("opacity", "100%");
     }
 
     public Avatar buildSiteIcon(String pageUrl, String domainOnly) {

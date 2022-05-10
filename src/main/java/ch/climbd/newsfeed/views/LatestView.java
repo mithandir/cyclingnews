@@ -56,6 +56,8 @@ public class LatestView extends VerticalLayout {
         newsItems.setWidthFull();
         newsItems.getStyle().set("margin-left", commonComponents.isMobile() ? "2%" : "10%");
         add(newsItems);
+
+        commonComponents.updateLastVisit();
     }
 
     private VerticalLayout createNewsItem(List<NewsEntry> items) {
@@ -72,6 +74,8 @@ public class LatestView extends VerticalLayout {
             Avatar avatar = commonComponents.buildSiteIcon(item.getDomainWithProtocol(), item.getDomainOnly());
 
             HorizontalLayout rowTitle = new HorizontalLayout();
+            commonComponents.isItemUnRead(item.getPublishedDateTime(), rowTitle);
+
             Anchor title = new Anchor(item.getLink(), item.getTitle(), AnchorTarget.BLANK);
             if (commonComponents.isMobile()) {
                 rowTitle.add(title);
@@ -94,7 +98,6 @@ public class LatestView extends VerticalLayout {
             commonComponents.checkIconStatus(vote, item.getLink());
 
             rowDateAndLinks.add(date, voteSum, vote);
-
 
             VerticalLayout column = new VerticalLayout();
             column.add(rowTitle, rowDateAndLinks);

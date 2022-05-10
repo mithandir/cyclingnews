@@ -20,6 +20,7 @@ import java.util.Date;
 @Component
 public class RssProcessor {
     private static final Logger LOG = LoggerFactory.getLogger(RssProcessor.class);
+    private final ZoneId zoneId = ZoneId.of("Europe/Berlin");
 
     @Autowired
     private MongoController mongo;
@@ -57,9 +58,9 @@ public class RssProcessor {
         result.setLink(item.getLink().strip());
 
         if (Date.from(Instant.now()).equals(item.getPublishedDate())) {
-            result.setPublishedAt(ZonedDateTime.now());
+            result.setPublishedAt(ZonedDateTime.ofInstant(Instant.now(), zoneId));
         } else {
-            result.setPublishedAt(ZonedDateTime.ofInstant(item.getPublishedDate().toInstant(), ZoneId.systemDefault()));
+            result.setPublishedAt(ZonedDateTime.ofInstant(item.getPublishedDate().toInstant(), zoneId));
         }
 
         return result;
