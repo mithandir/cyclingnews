@@ -31,6 +31,7 @@ public class CommonSessionComponents {
     private CommonComponents commonComponents;
 
     private boolean isAdmin = false;
+    private boolean adminChecked = false;
     private final Set<String> selectedLanguages = new HashSet<>();
 
     @PostConstruct
@@ -80,6 +81,7 @@ public class CommonSessionComponents {
         UI currentUI = UI.getCurrent();
         LocalStorage localStorage = new LocalStorage(currentUI);
         localStorage.getItem("API-KEY").thenAccept(result -> {
+            adminChecked = true;
             if (apiKey.equals(result)) {
                 isAdmin = true;
                 if (forceReload) {
@@ -87,6 +89,7 @@ public class CommonSessionComponents {
                 }
             } else {
                 isAdmin = false;
+                commonComponents.updateLastVisit();
             }
         });
     }
@@ -143,5 +146,9 @@ public class CommonSessionComponents {
         }
 
         return item;
+    }
+
+    public boolean isAdminChecked() {
+        return adminChecked;
     }
 }

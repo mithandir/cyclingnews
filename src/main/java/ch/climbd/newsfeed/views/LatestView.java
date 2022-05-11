@@ -57,7 +57,9 @@ public class LatestView extends VerticalLayout {
         newsItems.getStyle().set("margin-left", commonComponents.isMobile() ? "2%" : "10%");
         add(newsItems);
 
-        commonComponents.updateLastVisit();
+        if (commonSessionComponents.isAdminChecked()) {
+            commonComponents.updateLastVisit();
+        }
     }
 
     private VerticalLayout createNewsItem(List<NewsEntry> items) {
