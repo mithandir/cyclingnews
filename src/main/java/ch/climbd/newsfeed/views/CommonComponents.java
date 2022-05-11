@@ -17,18 +17,18 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
 
 @Component
 public class CommonComponents {
     private final Map<String, String> iconCache = new HashMap<>();
-    private static DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
-    private ZoneId zoneId = ZoneId.of("Europe/Berlin");
+    private final static DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
+    private final ZoneId zoneId = ZoneId.of("Europe/Berlin");
 
     @Autowired
     Environment env;
-
 
     public void writeLocalStorage(String id, String value) {
         UI currentUI = UI.getCurrent();
@@ -49,19 +49,39 @@ public class CommonComponents {
     }
 
     public void updateLastVisit() {
-        writeLocalStorage("LAST-VISIT", ZonedDateTime.ofInstant(Instant.now(), zoneId).format(formatter));
-    }
-
-    public void isItemUnRead(ZonedDateTime itemPublishDate, HorizontalLayout horizontalLayout) {
         UI currentUI = UI.getCurrent();
         LocalStorage localStorage = new LocalStorage(currentUI);
         localStorage.getItem("LAST-VISIT").thenAccept(lastVisit -> {
             if (lastVisit != null) {
                 ZonedDateTime lastVisitDate = ZonedDateTime.parse(lastVisit, formatter);
-                if (itemPublishDate.isAfter(lastVisitDate)) {
+                if (lastVisitDate.plus(10, ChronoUnit.SECONDS).isAfter(ZonedDateTime.ofInstant(Instant.now(), zoneId))) {
+                    // Was already saved a few seconds ago (Redirect for Admin etc.)
+                }
+            }
+
+            writeLocalStorage("LAST-VISIT", ZonedDateTime.ofInstant(Instant.now(), zoneId).format(formatter));
+        });
+    }
+
+    public void isItemUnRead(ZonedDateTime itemPublishDate, HorizontalLayout horizontalLayout, Avatar avatar) {
+        final ZonedDateTime itemDate;
+        if (itemPublishDate.isAfter(ZonedDateTime.now())) {
+            itemDate = ZonedDateTime.now().minus(1, ChronoUnit.MINUTES);
+        } else {
+            itemDate = itemPublishDate;
+        }
+
+        UI currentUI = UI.getCurrent();
+        LocalStorage localStorage = new LocalStorage(currentUI);
+        localStorage.getItem("LAST-VISIT").thenAccept(lastVisit -> {
+            if (lastVisit != null) {
+                ZonedDateTime lastVisitDate = ZonedDateTime.parse(lastVisit, formatter);
+                if (itemDate.isAfter(lastVisitDate)) {
                     horizontalLayout.getStyle().set("opacity", "100%");
+                    avatar.getStyle().set("opacity", "100%");
                 } else {
-                    horizontalLayout.getStyle().set("opacity", "60%");
+                    horizontalLayout.getStyle().set("opacity", "50%");
+                    avatar.getStyle().set("opacity", "50%");
                 }
             }
         });

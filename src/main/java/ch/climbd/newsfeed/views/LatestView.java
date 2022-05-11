@@ -1,8 +1,8 @@
 package ch.climbd.newsfeed.views;
 
 import ch.climbd.newsfeed.controller.MongoController;
+import ch.climbd.newsfeed.controller.scheduler.Filter;
 import ch.climbd.newsfeed.data.NewsEntry;
-import ch.climbd.newsfeed.scheduler.Filter;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.avatar.Avatar;
@@ -74,7 +74,7 @@ public class LatestView extends VerticalLayout {
             Avatar avatar = commonComponents.buildSiteIcon(item.getDomainWithProtocol(), item.getDomainOnly());
 
             HorizontalLayout rowTitle = new HorizontalLayout();
-            commonComponents.isItemUnRead(item.getPublishedDateTime(), rowTitle);
+            commonComponents.isItemUnRead(item.getPublishedDateTime(), rowTitle, avatar);
 
             Anchor title = new Anchor(item.getLink(), item.getTitle(), AnchorTarget.BLANK);
             if (commonComponents.isMobile()) {

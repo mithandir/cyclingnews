@@ -48,7 +48,7 @@ public class ReactiveMongoConfig {
         @Override
         public ZonedDateTime convert(Date date) {
             return date.toInstant()
-                    .atZone(ZoneId.systemDefault())
+                    .atZone(ZoneId.of("Europe/Berlin"))
                     .truncatedTo(ChronoUnit.MILLIS);
         }
     }

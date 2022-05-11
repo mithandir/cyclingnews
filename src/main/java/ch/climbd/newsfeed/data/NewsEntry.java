@@ -3,7 +3,11 @@ package ch.climbd.newsfeed.data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.time.*;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 
 @Document
 public class NewsEntry {
@@ -43,17 +47,23 @@ public class NewsEntry {
 
     public ZonedDateTime getPublishedDateTime() {
         ZoneId zId = ZoneId.of("Europe/Berlin");
-        return ZonedDateTime.ofInstant(publishedAt.toInstant(ZoneOffset.UTC), zId);
-    }
 
-    public LocalDate getPublishedDate() {
-        ZoneId zId = ZoneId.of("Europe/Berlin");
-        return publishedAt.atZone(zId).toLocalDate();
+        if (publishedAt.isAfter(LocalDateTime.now())) {
+            return ZonedDateTime.now().minus(1, ChronoUnit.SECONDS);
+        }
+
+        return ZonedDateTime.ofInstant(publishedAt.toInstant(ZoneOffset.UTC), zId);
     }
 
     public void setPublishedAt(ZonedDateTime publishedAt) {
         ZoneId zId = ZoneId.of("Europe/Berlin");
-        this.publishedAt = LocalDateTime.ofInstant(publishedAt.toInstant(), zId);
+        LocalDateTime itemDateTime = LocalDateTime.ofInstant(publishedAt.toInstant(), zId);
+
+        if (itemDateTime.isAfter(LocalDateTime.now())) {
+            this.publishedAt = LocalDateTime.now().minus(10, ChronoUnit.SECONDS);
+        } else {
+            this.publishedAt = itemDateTime;
+        }
     }
 
     public Integer getVotes() {

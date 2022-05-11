@@ -1,4 +1,4 @@
-package ch.climbd.newsfeed.scheduler;
+package ch.climbd.newsfeed.controller.scheduler;
 
 import ch.climbd.newsfeed.views.CommonComponents;
 import org.slf4j.Logger;

@@ -1,4 +1,4 @@
-package ch.climbd.newsfeed.scheduler;
+package ch.climbd.newsfeed.controller.scheduler;
 
 import org.springframework.stereotype.Component;
 
