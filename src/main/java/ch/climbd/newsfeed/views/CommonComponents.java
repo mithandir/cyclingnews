@@ -24,7 +24,7 @@ import java.util.Map;
 @Component
 public class CommonComponents {
     private final Map<String, String> iconCache = new HashMap<>();
-    private final static DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
+    private final static DateTimeFormatter FORMATTER = DateTimeFormatter.ISO_DATE_TIME;
     private final ZoneId zoneId = ZoneId.of("Europe/Berlin");
 
     @Autowired
@@ -53,20 +53,20 @@ public class CommonComponents {
         LocalStorage localStorage = new LocalStorage(currentUI);
         localStorage.getItem("LAST-VISIT").thenAccept(lastVisit -> {
             if (lastVisit != null) {
-                ZonedDateTime lastVisitDate = ZonedDateTime.parse(lastVisit, formatter);
+                ZonedDateTime lastVisitDate = ZonedDateTime.parse(lastVisit, FORMATTER);
                 if (lastVisitDate.plus(10, ChronoUnit.SECONDS).isAfter(ZonedDateTime.ofInstant(Instant.now(), zoneId))) {
                     // Was already saved a few seconds ago (Redirect for Admin etc.)
                 }
             }
 
-            writeLocalStorage("LAST-VISIT", ZonedDateTime.ofInstant(Instant.now(), zoneId).format(formatter));
+            writeLocalStorage("LAST-VISIT", ZonedDateTime.ofInstant(Instant.now(), zoneId).format(FORMATTER));
         });
     }
 
     public void isItemUnRead(ZonedDateTime itemPublishDate, HorizontalLayout horizontalLayout, Avatar avatar) {
         final ZonedDateTime itemDate;
-        if (itemPublishDate.isAfter(ZonedDateTime.now())) {
-            itemDate = ZonedDateTime.now().minus(1, ChronoUnit.MINUTES);
+        if (itemPublishDate.isAfter(ZonedDateTime.ofInstant(Instant.now(), zoneId))) {
+            itemDate = ZonedDateTime.ofInstant(Instant.now().minus(1, ChronoUnit.MINUTES), zoneId);
         } else {
             itemDate = itemPublishDate;
         }
@@ -75,7 +75,7 @@ public class CommonComponents {
         LocalStorage localStorage = new LocalStorage(currentUI);
         localStorage.getItem("LAST-VISIT").thenAccept(lastVisit -> {
             if (lastVisit != null) {
-                ZonedDateTime lastVisitDate = ZonedDateTime.parse(lastVisit, formatter);
+                ZonedDateTime lastVisitDate = ZonedDateTime.parse(lastVisit, FORMATTER);
                 if (itemDate.isAfter(lastVisitDate)) {
                     horizontalLayout.getStyle().set("opacity", "100%");
                     avatar.getStyle().set("opacity", "100%");
