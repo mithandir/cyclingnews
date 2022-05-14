@@ -1,6 +1,11 @@
 baseurl: http://localhost:8080<
 api-key: <your-api-key>
 
+pushover:
+  enabled: false
+  api-key: <your pushover api key>
+  user-key: <your user key>
+
 spring:
   data.mongodb:
     host: <host>

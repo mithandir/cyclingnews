@@ -1,6 +1,7 @@
 package ch.climbd.newsfeed.controller.scheduler;
 
 import ch.climbd.newsfeed.controller.MongoController;
+import ch.climbd.newsfeed.controller.PushoverController;
 import ch.climbd.newsfeed.data.NewsEntry;
 import com.rometools.rome.feed.synd.SyndEntry;
 import com.rometools.rome.feed.synd.SyndFeed;
@@ -26,6 +27,9 @@ public class RssProcessor {
     private MongoController mongo;
 
     @Autowired
+    private PushoverController pushover;
+
+    @Autowired
     private Filter filter;
 
     public void processRss(String url, String language) {
@@ -39,6 +43,7 @@ public class RssProcessor {
                     .forEach(item -> {
                         item.setLanguage(language);
                         mongo.save(item);
+                        pushover.sendNotification(item);
                     });
 
         } catch (Exception e) {

@@ -56,10 +56,6 @@ public class PopularView extends VerticalLayout {
         newsItems.setWidthFull();
         newsItems.getStyle().set("margin-left", commonComponents.isMobile() ? "2%" : "10%");
         add(newsItems);
-
-        if (commonSessionComponents.isAdminChecked()) {
-            commonComponents.updateLastVisit();
-        }
     }
 
     private VerticalLayout createNewsItem(List<NewsEntry> items) {

@@ -20,6 +20,7 @@
 		<maven.versions.plugin>2.9.0</maven.versions.plugin>
 		<rome.rss.version>1.18.0</rome.rss.version>
 		<browserstorage.version>1.0.0</browserstorage.version>
+		<jpushover.version>7.0.1</jpushover.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -58,6 +59,11 @@
 			<groupId>org.vaadin.componentfactory</groupId>
 			<artifactId>browserstorage</artifactId>
 			<version>${browserstorage.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>de.svenkubiak</groupId>
+			<artifactId>jpushover</artifactId>
+			<version>${jpushover.version}</version>
 		</dependency>
 	</dependencies>
 	<dependencyManagement>
