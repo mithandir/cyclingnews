@@ -21,7 +21,6 @@
 		<rome.rss.version>1.18.0</rome.rss.version>
 		<browserstorage.version>1.0.0</browserstorage.version>
 		<jpushover.version>7.0.1</jpushover.version>
-		<cache2k-version>2.6.1.Final</cache2k-version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -65,22 +64,6 @@
 			<groupId>de.svenkubiak</groupId>
 			<artifactId>jpushover</artifactId>
 			<version>${jpushover.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.cache2k</groupId>
-			<artifactId>cache2k-api</artifactId>
-			<version>${cache2k-version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.cache2k</groupId>
-			<artifactId>cache2k-core</artifactId>
-			<version>${cache2k-version}</version>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.cache2k</groupId>
-			<artifactId>cache2k-spring</artifactId>
-			<version>${cache2k-version}</version>
 		</dependency>
 	</dependencies>
 	<dependencyManagement>
