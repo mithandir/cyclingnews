@@ -12,7 +12,7 @@ server:
 
 management:
   endpoints:
-    web.exposure.include: health,info,prometheus
+    web.exposure.include: health
 
 spring:
   data.mongodb:
