@@ -10,6 +10,10 @@ server:
   http2.enabled: true
   compression.enabled: true
 
+management:
+  endpoints:
+    web.exposure.include: health,info,prometheus
+
 spring:
   data.mongodb:
     host: <host>
