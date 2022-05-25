@@ -6,6 +6,10 @@ pushover:
   api-key: <your pushover api key>
   user-key: <your user key>
 
+server:
+  http2.enabled: true
+  compression.enabled: true
+
 spring:
   data.mongodb:
     host: <host>
