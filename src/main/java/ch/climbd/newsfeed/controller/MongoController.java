@@ -88,4 +88,10 @@ public class MongoController {
                 error -> LOG.error("Error: " + error)
         );
     }
+
+    public Flux<NewsEntry> searchEntries(String searchString) {
+        Criteria regex = Criteria.where("title").regex(".*" + searchString + ".*", "i");
+        return template.find(new Query().addCriteria(regex), NewsEntry.class)
+                .sort(Comparator.comparing(NewsEntry::getPublishedDateTime).reversed());
+    }
 }

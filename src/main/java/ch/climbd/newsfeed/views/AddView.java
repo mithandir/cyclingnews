@@ -2,6 +2,8 @@ package ch.climbd.newsfeed.views;
 
 import ch.climbd.newsfeed.controller.MongoController;
 import ch.climbd.newsfeed.data.NewsEntry;
+import ch.climbd.newsfeed.views.components.CommonComponents;
+import ch.climbd.newsfeed.views.components.CommonSessionComponents;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.CheckboxGroup;
 import com.vaadin.flow.component.formlayout.FormLayout;

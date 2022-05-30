@@ -1,4 +1,4 @@
-package ch.climbd.newsfeed.views;
+package ch.climbd.newsfeed.views.components;
 
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.ComponentEventListener;

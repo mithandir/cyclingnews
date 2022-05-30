@@ -1,5 +1,7 @@
 package ch.climbd.newsfeed.views;
 
+import ch.climbd.newsfeed.views.components.CommonComponents;
+import ch.climbd.newsfeed.views.components.CommonSessionComponents;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.H1;

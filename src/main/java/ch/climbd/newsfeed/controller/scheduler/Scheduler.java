@@ -1,6 +1,6 @@
 package ch.climbd.newsfeed.controller.scheduler;
 
-import ch.climbd.newsfeed.views.CommonComponents;
+import ch.climbd.newsfeed.views.components.CommonComponents;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
