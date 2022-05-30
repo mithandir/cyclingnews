@@ -65,6 +65,9 @@ public class Scheduler {
         rssFeeds.put("https://www.radsport-news.com/rss.xml", "de");
         rssFeeds.put("https://www.radsport-rennrad.de/feed/", "de");
         rssFeeds.put("https://www.rennrad-news.de/news/feed/", "de");
+        rssFeeds.put("https://www.rouleur.cc/blogs/desire-journal.atom", "en");
+        rssFeeds.put("https://www.rouleur.cc/blogs/rouleur-performance.atom", "en");
+        rssFeeds.put("https://www.rouleur.cc/blogs/the-rouleur-journal.atom", "en");
         rssFeeds.put("https://www.sportivecyclist.com/feed/", "en");
         rssFeeds.put("https://www.stickybottle.com/feed/", "en");
         rssFeeds.put("https://www.swiss-cycling.ch/de/feed", "de");
