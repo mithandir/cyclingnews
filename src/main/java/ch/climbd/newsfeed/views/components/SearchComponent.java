@@ -29,8 +29,9 @@ public class SearchComponent {
         var searchButton = new Button("Search");
 
         searchButton.addClickListener(event -> {
-            if (!textField.getValue().isEmpty()) {
-                Flux<NewsEntry> newsEntries = mongoController.searchEntries(textField.getValue());
+            var searchValue = textField.getValue().strip();
+            if (searchValue.length() >= 4 && searchValue.matches("\\p{Alnum}*")) {
+                Flux<NewsEntry> newsEntries = mongoController.searchEntries(searchValue);
                 newsItems.getUI().get().access(() -> {
                     newsItems.removeAll();
                     newsItems.add(newsItemComponent.createNewsItem(newsEntries.collectList().block()));
