@@ -3,7 +3,6 @@ package ch.climbd.newsfeed.controller;
 import ch.climbd.newsfeed.data.NewsEntry;
 import de.svenkubiak.jpushover.JPushover;
 import de.svenkubiak.jpushover.enums.Priority;
-import de.svenkubiak.jpushover.enums.Sound;
 import de.svenkubiak.jpushover.exceptions.JPushoverException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,8 +31,7 @@ public class PushoverController {
                         .withUser(userKey)
                         .withTitle("Climbd: " + newsEntry.getTitle())
                         .withMessage(newsEntry.getLink())
-                        .withSound(Sound.NONE)
-                        .withPriority(Priority.LOWEST)
+                        .withPriority(Priority.LOW)
                         .push();
             } catch (JPushoverException e) {
                 LOG.error("Error sending PushOver notification", e);
