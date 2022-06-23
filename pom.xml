@@ -5,18 +5,17 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.7.0</version>
+		<version>2.7.1</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>ch.climbd</groupId>
 	<artifactId>newsfeed</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>newsfeed</name>
-	<description>Hackenews clone for cycling news</description>
+	<description>Hackernews clone for cycling news</description>
 	<properties>
 		<java.version>18</java.version>
 		<vaadin.version>23.1.1</vaadin.version>
-		<detect.language.version>1.1.0</detect.language.version>
 		<maven.versions.plugin>2.9.0</maven.versions.plugin>
 		<rome.rss.version>1.18.0</rome.rss.version>
 		<browserstorage.version>1.0.0</browserstorage.version>
@@ -49,11 +48,6 @@
 			<groupId>com.rometools</groupId>
 			<artifactId>rome</artifactId>
 			<version>${rome.rss.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.detectlanguage</groupId>
-			<artifactId>detectlanguage</artifactId>
-			<version>${detect.language.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.vaadin.componentfactory</groupId>
