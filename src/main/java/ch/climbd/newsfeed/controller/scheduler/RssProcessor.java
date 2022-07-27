@@ -3,6 +3,7 @@ package ch.climbd.newsfeed.controller.scheduler;
 import ch.climbd.newsfeed.controller.MongoController;
 import ch.climbd.newsfeed.controller.PushoverController;
 import ch.climbd.newsfeed.data.NewsEntry;
+import ch.climbd.newsfeed.views.components.Broadcaster;
 import com.rometools.rome.feed.synd.SyndEntry;
 import com.rometools.rome.feed.synd.SyndFeed;
 import com.rometools.rome.io.SyndFeedInput;
@@ -43,6 +44,7 @@ public class RssProcessor {
                     .forEach(item -> {
                         item.setLanguage(language);
                         mongo.save(item);
+                        Broadcaster.broadcast(item);
                         pushover.sendNotification(item);
                     });
 

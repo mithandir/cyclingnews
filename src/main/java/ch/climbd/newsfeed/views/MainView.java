@@ -8,7 +8,7 @@ import com.vaadin.flow.router.Route;
 
 @Route
 @PageTitle("Climbd Cycling News - Latest News")
-public class MainView extends Div implements BeforeEnterObserver  {
+public class MainView extends Div implements BeforeEnterObserver {
 
     public MainView() {
         add("Nothing here");

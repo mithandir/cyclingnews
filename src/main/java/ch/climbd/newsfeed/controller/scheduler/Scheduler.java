@@ -100,6 +100,17 @@ public class Scheduler {
         });
     }
 
+    // Test code for notification feature
+//    @Scheduled(fixedDelay = 10, timeUnit = TimeUnit.SECONDS)
+//    public void testNoti() {
+//        NewsEntry entry = new NewsEntry();
+//        entry.setTitle("Broadcast");
+//        entry.setLink("http://www.qfotografie.de");
+//        entry.setLanguage("en");
+//        entry.setPublishedAt(ZonedDateTime.now());
+//        Broadcaster.broadcast(entry);
+//    }
+
     @Scheduled(fixedDelay = 15, timeUnit = TimeUnit.MINUTES)
     public void scheduleFeedProcessing() {
         LOG.info("Running RSS scheduler");
