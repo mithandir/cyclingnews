@@ -48,7 +48,6 @@ public class Scheduler {
         rssFeeds.put("https://radamring.de/feed/", "de");
         rssFeeds.put("https://radsportverband-nrw.de/feed/", "de");
         rssFeeds.put("https://road.cc/rss", "en");
-        rssFeeds.put("https://roadcycling.de/feed", "de");
         rssFeeds.put("https://tdaglobalcycling.com/blog/all/feed/", "en");
         rssFeeds.put("https://torstenfrank.wordpress.com/feed/", "de");
         rssFeeds.put("https://turbocyclist.com/feed", "en");
@@ -59,6 +58,7 @@ public class Scheduler {
         rssFeeds.put("https://www.cyclingapps.net/feed/", "en");
         rssFeeds.put("https://www.cyclist.co.uk/feeds/all", "en");
         rssFeeds.put("https://www.cyclistshub.com/feed/", "en");
+        rssFeeds.put("https://www.dirtracingseries.com/feed/", "en");
         rssFeeds.put("https://www.fasttalklabs.com/feed/", "en");
         rssFeeds.put("https://www.podiumcafe.com/rss/current.xml", "en");
         rssFeeds.put("https://www.radsport-events.de/rss", "de");
