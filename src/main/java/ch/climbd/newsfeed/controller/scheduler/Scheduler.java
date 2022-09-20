@@ -80,6 +80,13 @@ public class Scheduler {
         rssFeeds.put("https://www.youtube.com/feeds/videos.xml?channel_id=UCYuKCZ35_lrDmFj2gNuAwZw", "en");
         rssFeeds.put("https://www.youtube.com/feeds/videos.xml?channel_id=UCuTaETsuCOkJ0H_GAztWt0Q", "en");
         rssFeeds.put("https://zwiftinsider.com/feed/", "en");
+        rssFeeds.put("https://cyclingtips.libsyn.com/rss", "en");
+        rssFeeds.put("https://feeds.sbs.com.au/cycling-central", "en");
+        rssFeeds.put("https://feeds.megaphone.fm/POM4128821615", "en");
+        rssFeeds.put("https://trainerroad.libsyn.com/rss", "en");
+        rssFeeds.put("https://audioboom.com/channels/1405050.rss", "en");
+        rssFeeds.put("https://feeds.buzzsprout.com/1843881.rss", "en");
+
 
         initIconCache();
     }
