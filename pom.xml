@@ -14,7 +14,7 @@
 	<name>newsfeed</name>
 	<description>Hackernews clone for cycling news</description>
 	<properties>
-		<java.version>18</java.version>
+		<java.version>19</java.version>
 		<vaadin.version>23.2.0</vaadin.version>
 		<maven.versions.plugin>2.12.0</maven.versions.plugin>
 		<rome.rss.version>1.18.0</rome.rss.version>
@@ -76,9 +76,26 @@
 	<build>
 		<plugins>
 			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<release>${java.version}</release>
+					<compilerArgs>
+						--enable-preview
+					</compilerArgs>
+				</configuration>
+			</plugin>
+			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>versions-maven-plugin</artifactId>
 				<version>${maven.versions.plugin}</version>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>18</source>
+					<target>18</target>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
@@ -100,7 +117,8 @@
 						<artifactId>spring-boot-maven-plugin</artifactId>
 						<configuration>
 							<jvmArguments>
-								-Dspring.profiles.active=local -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
+								-Dspring.profiles.active=local
+								-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005 --enable-preview
 							</jvmArguments>
 						</configuration>
 					</plugin>
@@ -114,6 +132,11 @@
 					<plugin>
 						<groupId>org.springframework.boot</groupId>
 						<artifactId>spring-boot-maven-plugin</artifactId>
+						<configuration>
+							<jvmArguments>
+								--enable-preview
+							</jvmArguments>
+						</configuration>
 					</plugin>
 					<plugin>
 						<groupId>com.vaadin</groupId>

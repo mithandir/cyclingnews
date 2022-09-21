@@ -35,12 +35,17 @@ public class Scheduler {
         rssFeeds.put("http://feeds.feedburner.com/shutuplegsde", "de");
         rssFeeds.put("http://fetchrss.com/rss/6002dbb8135789796c3d9b526002dc80a9582662d205cdf2.xml", "en");
         rssFeeds.put("http://www.uaeteamemirates.com/news-and-media/feed/", "en");
+        rssFeeds.put("https://audioboom.com/channels/1405050.rss", "en");
         rssFeeds.put("https://bahraincyclingteam.com/news/feed/", "en");
         rssFeeds.put("https://bikerumor.com/feed/", "en");
         rssFeeds.put("https://bikesnobnyc.com/feed/", "en");
         rssFeeds.put("https://challenge-magazin.com/feed/", "de");
         rssFeeds.put("https://cycling.today/feed/", "en");
         rssFeeds.put("https://cyclingtips.com/blog-page/feed/", "en");
+        rssFeeds.put("https://cyclingtips.libsyn.com/rss", "en");
+        rssFeeds.put("https://feeds.buzzsprout.com/1843881.rss", "en");
+        rssFeeds.put("https://feeds.megaphone.fm/POM4128821615", "en");
+        rssFeeds.put("https://feeds.sbs.com.au/cycling-central", "en");
         rssFeeds.put("https://joefrieltraining.com/feed/", "en");
         rssFeeds.put("https://movistarteam.com/en/news/feed", "en");
         rssFeeds.put("https://pezcyclingnews.com/feed/", "en");
@@ -50,6 +55,7 @@ public class Scheduler {
         rssFeeds.put("https://road.cc/rss", "en");
         rssFeeds.put("https://tdaglobalcycling.com/blog/all/feed/", "en");
         rssFeeds.put("https://torstenfrank.wordpress.com/feed/", "de");
+        rssFeeds.put("https://trainerroad.libsyn.com/rss", "en");
         rssFeeds.put("https://turbocyclist.com/feed", "en");
         rssFeeds.put("https://velomobil.blog/feed/", "de");
         rssFeeds.put("https://www.bikehugger.com/feed/", "en");
@@ -80,48 +86,32 @@ public class Scheduler {
         rssFeeds.put("https://www.youtube.com/feeds/videos.xml?channel_id=UCYuKCZ35_lrDmFj2gNuAwZw", "en");
         rssFeeds.put("https://www.youtube.com/feeds/videos.xml?channel_id=UCuTaETsuCOkJ0H_GAztWt0Q", "en");
         rssFeeds.put("https://zwiftinsider.com/feed/", "en");
-        rssFeeds.put("https://cyclingtips.libsyn.com/rss", "en");
-        rssFeeds.put("https://feeds.sbs.com.au/cycling-central", "en");
-        rssFeeds.put("https://feeds.megaphone.fm/POM4128821615", "en");
-        rssFeeds.put("https://trainerroad.libsyn.com/rss", "en");
-        rssFeeds.put("https://audioboom.com/channels/1405050.rss", "en");
-        rssFeeds.put("https://feeds.buzzsprout.com/1843881.rss", "en");
-
 
         initIconCache();
     }
 
     private void initIconCache() {
-        rssFeeds.keySet().stream().parallel().forEach(url -> {
+        rssFeeds.keySet().forEach(url -> Thread.startVirtualThread(() -> {
             if (url.length() > 0) {
                 var start = url.indexOf("://") + 3;
 
                 try {
                     var end = url.indexOf("/", start);
-                    url = url.substring(0, end);
-                    commonComponents.findIcon(url);
+                    String subUrl = url.substring(0, end);
+                    commonComponents.findIcon(subUrl);
                 } catch (IndexOutOfBoundsException e) {
                     // DO NOTHING
                 }
             }
-        });
+        }));
     }
-
-    // Test code for notification feature
-//    @Scheduled(fixedDelay = 10, timeUnit = TimeUnit.SECONDS)
-//    public void testNoti() {
-//        NewsEntry entry = new NewsEntry();
-//        entry.setTitle("Broadcast");
-//        entry.setLink("http://www.qfotografie.de");
-//        entry.setLanguage("en");
-//        entry.setPublishedAt(ZonedDateTime.now());
-//        Broadcaster.broadcast(entry);
-//    }
 
     @Scheduled(fixedDelay = 15, timeUnit = TimeUnit.MINUTES)
     public void scheduleFeedProcessing() {
         LOG.info("Running RSS scheduler");
-        rssFeeds.keySet().stream().parallel()
-                .forEach(feedId -> processor.processRss(feedId, rssFeeds.get(feedId)));
+
+        rssFeeds.keySet().forEach(feedId -> Thread.startVirtualThread(() -> {
+            processor.processRss(feedId, rssFeeds.get(feedId));
+        }));
     }
 }
