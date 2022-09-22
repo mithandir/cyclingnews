@@ -62,7 +62,6 @@ public class Scheduler {
         rssFeeds.put("https://www.cyclist.co.uk/feeds/all", "en");
         rssFeeds.put("https://www.cyclistshub.com/feed/", "en");
         rssFeeds.put("https://www.dirtracingseries.com/feed/", "en");
-        rssFeeds.put("https://www.fasttalklabs.com/feed/", "en");
         rssFeeds.put("https://www.podiumcafe.com/rss/current.xml", "en");
         rssFeeds.put("https://www.radsport-events.de/rss", "de");
         rssFeeds.put("https://www.radsport-news.com/rss.xml", "de");

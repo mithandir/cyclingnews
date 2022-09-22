@@ -35,3 +35,5 @@ build/
 
 ### Manually added ###
 /frontend/generated/
+/vite.generated.ts
+/package-lock.json
