@@ -106,8 +106,9 @@ public class Scheduler {
     public void scheduleFeedProcessing() {
         LOG.info("Running RSS scheduler");
 
-        rssFeeds.keySet().forEach(feedId -> Thread.startVirtualThread(() -> {
-            processor.processRss(feedId, rssFeeds.get(feedId));
-        }));
+        rssFeeds.keySet()
+                .forEach(feedId -> Thread.startVirtualThread(
+                        () -> processor.processRss(feedId, rssFeeds.get(feedId)))
+                );
     }
 }

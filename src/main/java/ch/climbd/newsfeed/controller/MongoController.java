@@ -12,6 +12,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
 import java.util.Set;
 
@@ -38,17 +39,24 @@ public class MongoController {
     }
 
     public Flux<NewsEntry> findAllOrderedByVotes(Set<String> language) {
-        Comparator<NewsEntry> compareByVote = Comparator
-                .comparingInt(NewsEntry::getVotes).reversed()
-                .thenComparing((o1, o2) -> o2.getPublishedDateTime().compareTo(o1.getPublishedDateTime()));
+        Comparator<NewsEntry> compareByVote = (NewsEntry o1, NewsEntry o2) -> {
+            // Cut down to just plain day without hours, minutes and seconds.
+            // Then add the amount of votes as seconds to have sorting inside a day.
+            var obj1 = o1.getPublishedDateTime()
+                    .truncatedTo(ChronoUnit.DAYS)
+                    .plusSeconds(o1.getVotes());
+            var obj2 = o2.getPublishedDateTime()
+                    .truncatedTo(ChronoUnit.DAYS)
+                    .plusSeconds(o2.getVotes());
+
+            return obj2.compareTo(obj1);
+        };
 
         Query query = new Query();
         query.addCriteria(Criteria.where("language").in(language));
         query.addCriteria(Criteria.where("votes").gte(1));
 
-        return template.find(query, NewsEntry.class)
-                .sort(compareByVote)
-                .take(50);
+        return template.find(query, NewsEntry.class).sort(compareByVote).take(100);
     }
 
     public boolean exists(NewsEntry newsEntry) {
@@ -56,42 +64,29 @@ public class MongoController {
     }
 
     public void save(NewsEntry newsEntry) {
-        template.save(Mono.just(newsEntry)).subscribe(
-                success -> LOG.info("SavedEntry: " + success.toString()),
-                error -> LOG.error("Could not save entry: " + error)
-        );
+        template.save(Mono.just(newsEntry)).subscribe(success -> LOG.info("SavedEntry: " + success.toString()), error -> LOG.error("Could not save entry: " + error));
     }
 
     public void update(NewsEntry newsEntry) {
-        template.save(Mono.just(newsEntry)).subscribe(
-                success -> LOG.info("Updated entry: " + success.toString()),
-                error -> LOG.error("Could not update entry: " + error)
-        );
+        template.save(Mono.just(newsEntry)).subscribe(success -> LOG.info("Updated entry: " + success.toString()), error -> LOG.error("Could not update entry: " + error));
     }
 
     public void increaseVote(NewsEntry newsEntry) {
-        template.findById(newsEntry.getLink(), NewsEntry.class).subscribe(
-                success -> {
-                    success.setVotes(success.getVotes() + 1);
-                    update(success);
-                },
-                error -> LOG.error("Error: " + error)
-        );
+        template.findById(newsEntry.getLink(), NewsEntry.class).subscribe(success -> {
+            success.setVotes(success.getVotes() + 1);
+            update(success);
+        }, error -> LOG.error("Error: " + error));
     }
 
     public void decreaseVote(NewsEntry newsEntry) {
-        template.findById(newsEntry.getLink(), NewsEntry.class).subscribe(
-                success -> {
-                    success.setVotes(success.getVotes() - 1);
-                    update(success);
-                },
-                error -> LOG.error("Error: " + error)
-        );
+        template.findById(newsEntry.getLink(), NewsEntry.class).subscribe(success -> {
+            success.setVotes(success.getVotes() - 1);
+            update(success);
+        }, error -> LOG.error("Error: " + error));
     }
 
     public Flux<NewsEntry> searchEntries(String searchString) {
         Criteria regex = Criteria.where("title").regex(".*" + searchString + ".*", "i");
-        return template.find(new Query().addCriteria(regex), NewsEntry.class)
-                .sort(Comparator.comparing(NewsEntry::getPublishedDateTime).reversed());
+        return template.find(new Query().addCriteria(regex), NewsEntry.class).sort(Comparator.comparing(NewsEntry::getPublishedDateTime).reversed());
     }
 }
