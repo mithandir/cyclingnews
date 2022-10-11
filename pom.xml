@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.7.4</version>
+        <version>3.0.0-M5</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>ch.climbd</groupId>
@@ -15,11 +15,12 @@
     <description>Hackernews clone for cycling news</description>
     <properties>
         <java.version>19</java.version>
-        <vaadin.version>23.2.1</vaadin.version>
+        <vaadin.version>23.2.4</vaadin.version>
         <maven.versions.plugin>2.12.0</maven.versions.plugin>
         <rome.rss.version>1.18.0</rome.rss.version>
         <browserstorage.version>1.0.0</browserstorage.version>
         <jpushover.version>7.0.2</jpushover.version>
+        <javax.servlet-api.version>3.1.0</javax.servlet-api.version>
     </properties>
     <dependencies>
         <dependency>
@@ -58,6 +59,12 @@
             <groupId>de.svenkubiak</groupId>
             <artifactId>jpushover</artifactId>
             <version>${jpushover.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>${javax.servlet-api.version}</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
     <dependencyManagement>
@@ -179,7 +186,7 @@
         <repository>
             <id>spring-release</id>
             <name>Spring release</name>
-            <url>https://repo.spring.io/release</url>
+            <url>https://repo.spring.io/milestone</url>
         </repository>
         <repository>
             <id>vaadin-addons</id>
@@ -191,7 +198,7 @@
         <pluginRepository>
             <id>spring-release</id>
             <name>Spring release</name>
-            <url>https://repo.spring.io/release</url>
+            <url>https://repo.spring.io/milestone</url>
         </pluginRepository>
     </pluginRepositories>
 
