@@ -9,9 +9,9 @@ import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 
 public class Broadcaster {
-    static Executor executor = Executors.newSingleThreadExecutor();
+    static final Executor executor = Executors.newSingleThreadExecutor();
 
-    static LinkedList<Consumer<NewsEntry>> listeners = new LinkedList<>();
+    static final LinkedList<Consumer<NewsEntry>> listeners = new LinkedList<>();
 
     public static synchronized Registration register(Consumer<NewsEntry> listener) {
         listeners.add(listener);
