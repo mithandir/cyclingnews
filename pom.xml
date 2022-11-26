@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.7.5</version>
+        <version>3.0.0</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>ch.climbd</groupId>
@@ -15,7 +15,8 @@
     <description>Hackernews clone for cycling news</description>
     <properties>
         <java.version>19</java.version>
-        <vaadin.version>23.2.6</vaadin.version>
+        <vaadin.version>24.0-SNAPSHOT</vaadin.version>
+        <vaadin.plugin.version>23.2.6</vaadin.plugin.version>
         <maven.versions.plugin>2.13.0</maven.versions.plugin>
         <rome.rss.version>1.18.0</rome.rss.version>
         <browserstorage.version>1.0.0</browserstorage.version>
@@ -71,7 +72,6 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-
 
     <build>
         <plugins>
@@ -133,7 +133,7 @@
                     <plugin>
                         <groupId>com.vaadin</groupId>
                         <artifactId>vaadin-maven-plugin</artifactId>
-                        <version>${vaadin.version}</version>
+                        <version>${vaadin.plugin.version}</version>
                         <executions>
                             <execution>
                                 <id>frontend</id>
@@ -145,6 +145,26 @@
                                 <configuration>
                                     <productionMode>true</productionMode>
                                 </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>native</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.graalvm.buildtools</groupId>
+                        <artifactId>native-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>build-native</id>
+                                <goals>
+                                    <goal>compile-no-fork</goal>
+                                </goals>
+                                <phase>package</phase>
                             </execution>
                         </executions>
                     </plugin>
@@ -173,8 +193,18 @@
             <url>https://repo.spring.io/release</url>
         </repository>
         <repository>
+            <id>vaadin-prereleases</id>
+            <url>https://maven.vaadin.com/vaadin-prereleases/</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+        <repository>
             <id>vaadin-addons</id>
             <url>https://maven.vaadin.com/vaadin-addons</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
         </repository>
     </repositories>
 

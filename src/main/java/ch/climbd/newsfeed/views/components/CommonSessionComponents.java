@@ -10,13 +10,13 @@ import com.vaadin.flow.component.contextmenu.SubMenu;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.menubar.MenuBar;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.SessionScope;
 import org.vaadin.addon.browserstorage.LocalStorage;
 
-import javax.annotation.PostConstruct;
 import java.util.HashSet;
 import java.util.Set;
 
