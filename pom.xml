@@ -16,7 +16,7 @@
     <properties>
         <java.version>19</java.version>
         <vaadin.version>24.0-SNAPSHOT</vaadin.version>
-        <vaadin.plugin.version>23.2.6</vaadin.plugin.version>
+        <vaadin.plugin.version>23.2.10</vaadin.plugin.version>
         <maven.versions.plugin>2.13.0</maven.versions.plugin>
         <rome.rss.version>1.18.0</rome.rss.version>
         <browserstorage.version>1.0.0</browserstorage.version>
