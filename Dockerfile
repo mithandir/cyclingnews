@@ -1,4 +1,4 @@
-FROM maven:3-eclipse-temurin-19-alpine AS build-env
+FROM maven:3-eclipse-temurin-19 AS build-env
 
 LABEL NAME="newsfeed-build"
 LABEL VERSION=1.0.0
