@@ -8,7 +8,7 @@ RUN mkdir /opt/src
 COPY / /opt/src/newsfeed/
 
 WORKDIR /opt/src/newsfeed
-RUN mvn clean install -DskipTests=true -P production && cp target/*.jar /opt/app.jar
+RUN mvn -q clean install -DskipTests=true -P production && cp target/*.jar /opt/app.jar
 
 FROM openjdk:19-jdk-slim
 
