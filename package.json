@@ -24,7 +24,6 @@
     "@vaadin/email-field": "24.0.0-alpha6",
     "@vaadin/field-base": "24.0.0-alpha6",
     "@vaadin/field-highlighter": "24.0.0-alpha6",
-    "@vaadin/flow-frontend": "./target/flow-frontend",
     "@vaadin/form-layout": "24.0.0-alpha6",
     "@vaadin/grid": "24.0.0-alpha6",
     "@vaadin/horizontal-layout": "24.0.0-alpha6",
@@ -67,7 +66,7 @@
     "@vaadin/virtual-list": "24.0.0-alpha6",
     "construct-style-sheets-polyfill": "3.1.0",
     "date-fns": "2.29.3",
-    "lit": "2.3.0"
+    "lit": "2.4.1"
   },
   "devDependencies": {
     "@rollup/plugin-replace": "3.1.0",
@@ -76,10 +75,11 @@
     "glob": "7.2.3",
     "mkdirp": "1.0.4",
     "rollup-plugin-brotli": "3.1.0",
+    "strip-css-comments": "5.0.0",
     "transform-ast": "2.4.4",
-    "typescript": "4.7.4",
-    "vite": "v3.1.0",
-    "vite-plugin-checker": "0.4.9",
+    "typescript": "4.9.3",
+    "vite": "v3.2.4",
+    "vite-plugin-checker": "0.5.1",
     "workbox-build": "6.5.0",
     "workbox-core": "6.5.0",
     "workbox-precaching": "6.5.0"
@@ -150,7 +150,7 @@
       "@vaadin/virtual-list": "24.0.0-alpha6",
       "construct-style-sheets-polyfill": "3.1.0",
       "date-fns": "2.29.3",
-      "lit": "2.3.0"
+      "lit": "2.4.1"
     },
     "devDependencies": {
       "@rollup/plugin-replace": "3.1.0",
@@ -159,15 +159,16 @@
       "glob": "7.2.3",
       "mkdirp": "1.0.4",
       "rollup-plugin-brotli": "3.1.0",
+      "strip-css-comments": "5.0.0",
       "transform-ast": "2.4.4",
-      "typescript": "4.7.4",
-      "vite": "v3.1.0",
-      "vite-plugin-checker": "0.4.9",
+      "typescript": "4.9.3",
+      "vite": "v3.2.4",
+      "vite-plugin-checker": "0.5.1",
       "workbox-build": "6.5.0",
       "workbox-core": "6.5.0",
       "workbox-precaching": "6.5.0"
     },
-    "hash": "13f2c947ea0c9c74966b9ab2d7725ba758755c9e7fe18213a04654669240abe9"
+    "hash": "5548d27c589d9cb2d8280d99881cf15d951406a7f543931bf8047372014c0eb3"
   },
   "overrides": {
     "@vaadin/bundles": "$@vaadin/bundles",
