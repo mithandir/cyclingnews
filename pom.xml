@@ -15,8 +15,8 @@
     <description>Hackernews clone for cycling news</description>
     <properties>
         <java.version>19</java.version>
-        <vaadin.version>24.0.0.alpha6</vaadin.version>
-        <vaadin.plugin.version>23.3.1</vaadin.plugin.version>
+        <vaadin.version>24.0.0.alpha7</vaadin.version>
+        <vaadin.plugin.version>24.0.0.alpha7</vaadin.plugin.version>
         <maven.versions.plugin>2.14.2</maven.versions.plugin>
         <rome.rss.version>1.18.0</rome.rss.version>
         <browserstorage.version>1.0.0</browserstorage.version>
@@ -79,6 +79,9 @@
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>versions-maven-plugin</artifactId>
                 <version>${maven.versions.plugin}</version>
+                <configuration>
+                    <includeParent>false</includeParent>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -213,6 +216,13 @@
             <id>spring-release</id>
             <name>Spring release</name>
             <url>https://repo.spring.io/release</url>
+        </pluginRepository>
+        <pluginRepository>
+            <id>vaadin-prereleases</id>
+            <url>https://maven.vaadin.com/vaadin-prereleases/</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
         </pluginRepository>
     </pluginRepositories>
 
