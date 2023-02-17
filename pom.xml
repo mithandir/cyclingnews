@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.0.1</version>
+        <version>3.0.2</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>ch.climbd</groupId>
@@ -15,10 +15,10 @@
     <description>Hackernews clone for cycling news</description>
     <properties>
         <java.version>19</java.version>
-        <vaadin.version>24.0.0.beta1</vaadin.version>
-        <vaadin.plugin.version>24.0.0.beta1</vaadin.plugin.version>
+        <vaadin.version>24.0.0.beta2</vaadin.version>
+        <vaadin.plugin.version>24.0.0.beta2</vaadin.plugin.version>
         <maven.versions.plugin>2.14.2</maven.versions.plugin>
-        <rome.rss.version>1.18.0</rome.rss.version>
+        <rome.rss.version>1.19.0</rome.rss.version>
         <browserstorage.version>1.0.0</browserstorage.version>
         <jpushover.version>7.0.2</jpushover.version>
     </properties>
