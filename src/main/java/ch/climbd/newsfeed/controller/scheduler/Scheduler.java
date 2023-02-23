@@ -43,6 +43,8 @@ public class Scheduler {
         rssFeeds.put("https://cycling.today/feed/", "en");
         rssFeeds.put("https://cyclingtips.com/blog-page/feed/", "en");
         rssFeeds.put("https://feeds.sbs.com.au/cycling-central", "en");
+        rssFeeds.put("https://granfondo-cycling.com/feed/", "en");
+        rssFeeds.put("https://granfondo-cycling.com/feed/", "en");
         rssFeeds.put("https://joefrieltraining.com/feed/", "en");
         rssFeeds.put("https://pezcyclingnews.com/feed/", "en");
         rssFeeds.put("https://procyclinguk.com/feed/", "en");
@@ -54,10 +56,12 @@ public class Scheduler {
         rssFeeds.put("https://trainerroad.libsyn.com/rss", "en");
         rssFeeds.put("https://turbocyclist.com/feed", "en");
         rssFeeds.put("https://velomobil.blog/feed/", "de");
+        rssFeeds.put("https://www.bike-x.de/rss/rennrad/", "de");
         rssFeeds.put("https://www.bikehugger.com/feed/", "en");
         rssFeeds.put("https://www.bikeradar.com/road/feed/", "en");
         rssFeeds.put("https://www.cycling-challenge.com/feed/", "en");
         rssFeeds.put("https://www.cyclingapps.net/feed/", "en");
+        rssFeeds.put("https://www.cyclingmagazine.de/feed/", "de");
         rssFeeds.put("https://www.cyclist.co.uk/feeds/all", "en");
         rssFeeds.put("https://www.cyclistshub.com/feed/", "en");
         rssFeeds.put("https://www.dirtracingseries.com/feed/", "en");
