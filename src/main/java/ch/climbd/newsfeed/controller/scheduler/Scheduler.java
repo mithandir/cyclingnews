@@ -44,7 +44,6 @@ public class Scheduler {
         rssFeeds.put("https://cyclingtips.com/blog-page/feed/", "en");
         rssFeeds.put("https://feeds.sbs.com.au/cycling-central", "en");
         rssFeeds.put("https://granfondo-cycling.com/feed/", "en");
-        rssFeeds.put("https://granfondo-cycling.com/feed/", "en");
         rssFeeds.put("https://joefrieltraining.com/feed/", "en");
         rssFeeds.put("https://pezcyclingnews.com/feed/", "en");
         rssFeeds.put("https://procyclinguk.com/feed/", "en");

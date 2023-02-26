@@ -15,10 +15,9 @@
     <description>Hackernews clone for cycling news</description>
     <properties>
         <java.version>19</java.version>
-        <vaadin.version>24.0.0.beta2</vaadin.version>
-        <vaadin.plugin.version>24.0.0.beta2</vaadin.plugin.version>
+        <vaadin.version>24.0.0.beta5</vaadin.version>
         <maven.versions.plugin>2.14.2</maven.versions.plugin>
-        <rome.rss.version>1.19.0</rome.rss.version>
+        <rome.rss.version>2.0.0</rome.rss.version>
         <browserstorage.version>1.0.0</browserstorage.version>
         <jpushover.version>7.0.2</jpushover.version>
     </properties>
@@ -136,7 +135,7 @@
                     <plugin>
                         <groupId>com.vaadin</groupId>
                         <artifactId>vaadin-maven-plugin</artifactId>
-                        <version>${vaadin.plugin.version}</version>
+                        <version>${vaadin.version}</version>
                         <executions>
                             <execution>
                                 <id>frontend</id>
