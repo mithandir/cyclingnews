@@ -17,7 +17,7 @@
         <java.version>19</java.version>
         <vaadin.version>24.0.0.beta5</vaadin.version>
         <maven.versions.plugin>2.14.2</maven.versions.plugin>
-        <rome.rss.version>2.0.0</rome.rss.version>
+        <rome.rss.version>2.1.0</rome.rss.version>
         <browserstorage.version>1.0.0</browserstorage.version>
         <jpushover.version>7.0.2</jpushover.version>
     </properties>
