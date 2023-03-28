@@ -10,7 +10,7 @@ COPY / /opt/src/newsfeed/
 WORKDIR /opt/src/newsfeed
 RUN mvn -q clean install -DskipTests=true -P production && cp target/*.jar /opt/app.jar
 
-FROM eclipse-temurin:19-jre
+FROM eclipse-temurin:20-jre
 
 LABEL NAME="climbd-newsfeed"
 LABEL VERSION=1.0.0
