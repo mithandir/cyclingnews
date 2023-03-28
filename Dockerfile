@@ -18,4 +18,6 @@ LABEL MAINTAINER=mithandir@gmail.com
 
 COPY --from=build-env /opt/app.jar /opt/app.jar
 
+RUN apt-get update && apt-get -y upgrade
+
 CMD ["java","--enable-preview","-jar","/opt/app.jar"]
