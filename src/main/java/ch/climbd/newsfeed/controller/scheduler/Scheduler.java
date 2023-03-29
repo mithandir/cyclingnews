@@ -41,7 +41,7 @@ public class Scheduler {
         rssFeeds.put("https://bikesnobnyc.com/feed/", "en");
         rssFeeds.put("https://challenge-magazin.com/feed/", "de");
         rssFeeds.put("https://cycling.today/feed/", "en");
-        rssFeeds.put("https://cyclingtips.com/blog-page/feed/", "en");
+        rssFeeds.put("https://www.cyclingtips.com/category/news/feed/", "en");
         rssFeeds.put("https://feeds.sbs.com.au/cycling-central", "en");
         rssFeeds.put("https://granfondo-cycling.com/feed/", "en");
         rssFeeds.put("https://joefrieltraining.com/feed/", "en");
