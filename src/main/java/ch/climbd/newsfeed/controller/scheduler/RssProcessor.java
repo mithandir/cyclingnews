@@ -8,6 +8,7 @@ import com.rometools.rome.feed.synd.SyndEntry;
 import com.rometools.rome.feed.synd.SyndFeed;
 import com.rometools.rome.io.SyndFeedInput;
 import com.rometools.rome.io.XmlReader;
+import org.jsoup.Jsoup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,6 +61,14 @@ public class RssProcessor {
             result.setTitle(null);
         } else {
             result.setTitle(filter.replaceHtml(title));
+        }
+
+        StringBuilder content = new StringBuilder();
+        if (item.getContents() != null) {
+            for (var itemContent : item.getContents()) {
+                content.append(itemContent.getValue());
+            }
+            result.setContent(Jsoup.parse(content.toString()).text());
         }
 
         result.setLink(item.getLink().strip());

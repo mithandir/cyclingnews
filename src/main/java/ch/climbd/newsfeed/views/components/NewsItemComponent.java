@@ -5,7 +5,10 @@ import ch.climbd.newsfeed.controller.scheduler.Filter;
 import ch.climbd.newsfeed.data.NewsEntry;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.ComponentEventListener;
+import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.avatar.Avatar;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.AnchorTarget;
 import com.vaadin.flow.component.html.Span;
@@ -57,12 +60,24 @@ public class NewsItemComponent {
         HorizontalLayout rowTitle = new HorizontalLayout();
         commonComponents.isItemUnRead(item.getPublishedDateTime(), rowTitle, avatar);
 
+        // build dialog
+        Dialog dialog = new Dialog();
+        dialog.setHeaderTitle(item.getTitle());
+
+        VerticalLayout dialogLayout = new VerticalLayout();
+        Text dialogLabel = new Text(item.getContent());
+        dialogLayout.add(dialogLabel);
+        dialog.add(dialogLayout);
+
+        Button closeButton = new Button("Close", e -> dialog.close());
+        dialog.getFooter().add(closeButton);
+
         Anchor title = new Anchor(item.getLink(), item.getTitle(), AnchorTarget.BLANK);
         if (commonComponents.isMobile()) {
-            rowTitle.add(title);
+            rowTitle.add(title, dialog);
         } else {
             Span source = new Span("(" + item.getDomainOnly() + ")");
-            rowTitle.add(title, source);
+            rowTitle.add(title, source, dialog);
         }
 
         HorizontalLayout rowDateAndLinks = new HorizontalLayout();
@@ -76,9 +91,18 @@ public class NewsItemComponent {
         Icon vote = VaadinIcon.THUMBS_UP.create();
         vote.setSize("15px");
         vote.addClickListener((ComponentEventListener<ClickEvent<Icon>>) iconClickEvent -> handleVotes(item, voteSum, vote));
+
+        Icon viewContent = VaadinIcon.SEARCH.create();
+        viewContent.setSize("15px");
+        viewContent.addClickListener(e -> dialog.open());
+
         commonComponents.checkIconStatus(vote, item.getLink());
 
-        rowDateAndLinks.add(date, voteSum, vote);
+        if (item.getContent() != null && !item.getContent().isBlank()) {
+            rowDateAndLinks.add(date, voteSum, viewContent, vote);
+        } else {
+            rowDateAndLinks.add(date, voteSum, vote);
+        }
 
         VerticalLayout column = new VerticalLayout();
         column.add(rowTitle, rowDateAndLinks);
