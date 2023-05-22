@@ -14,7 +14,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.net.ssl.*;
 import java.net.URL;
+import java.security.cert.X509Certificate;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -36,6 +38,7 @@ public class RssProcessor {
 
     public void processRss(String url, String language) {
         try {
+            HttpsURLConnection.setDefaultHostnameVerifier(initTrustAll());
             SyndFeed feed = new SyndFeedInput().build(new XmlReader(new URL(url)));
             feed.getEntries().stream().map(this::map)
                     .filter(item -> item.getLink() != null && item.getTitle() != null)
@@ -73,12 +76,44 @@ public class RssProcessor {
 
         result.setLink(item.getLink().strip());
 
-        if (Date.from(Instant.now()).equals(item.getPublishedDate())) {
+        if (item.getPublishedDate() == null || Date.from(Instant.now()).equals(item.getPublishedDate())) {
             result.setPublishedAt(ZonedDateTime.ofInstant(Instant.now(), zoneId));
         } else {
             result.setPublishedAt(ZonedDateTime.ofInstant(item.getPublishedDate().toInstant(), zoneId));
         }
 
         return result;
+    }
+
+    private HostnameVerifier initTrustAll() {
+        // Create a trust manager that does not validate certificate chains
+        TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager() {
+            public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+                return null;
+            }
+
+            public void checkClientTrusted(X509Certificate[] certs, String authType) {
+            }
+
+            public void checkServerTrusted(X509Certificate[] certs, String authType) {
+            }
+        }};
+        // Install the all-trusting trust manager
+        try {
+            final SSLContext sc = SSLContext.getInstance("SSL");
+            sc.init(null, trustAllCerts, new java.security.SecureRandom());
+            HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+            // Create all-trusting host name verifier
+            HostnameVerifier allHostsValid = new HostnameVerifier() {
+                public boolean verify(String hostname, SSLSession session) {
+                    return true;
+                }
+            };
+
+            return allHostsValid;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
     }
 }
