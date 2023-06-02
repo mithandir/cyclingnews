@@ -41,8 +41,8 @@ public class Scheduler {
         rssFeeds.put("https://bikesnobnyc.com/feed/", "en");
         rssFeeds.put("https://challenge-magazin.com/feed/", "de");
         rssFeeds.put("https://cycling.today/feed/", "en");
-        rssFeeds.put("https://www.cyclingtips.com/category/news/feed/", "en");
         rssFeeds.put("https://feeds.sbs.com.au/cycling-central", "en");
+        rssFeeds.put("https://forum.intervals.icu/latest.rss", "en");
         rssFeeds.put("https://granfondo-cycling.com/feed/", "en");
         rssFeeds.put("https://joefrieltraining.com/feed/", "en");
         rssFeeds.put("https://pezcyclingnews.com/feed/", "en");
@@ -61,6 +61,7 @@ public class Scheduler {
         rssFeeds.put("https://www.cycling-challenge.com/feed/", "en");
         rssFeeds.put("https://www.cyclingapps.net/feed/", "en");
         rssFeeds.put("https://www.cyclingmagazine.de/feed/", "de");
+        rssFeeds.put("https://www.cyclingtips.com/category/news/feed/", "en");
         rssFeeds.put("https://www.cyclist.co.uk/feeds/all", "en");
         rssFeeds.put("https://www.cyclistshub.com/feed/", "en");
         rssFeeds.put("https://www.dirtracingseries.com/feed/", "en");
@@ -76,6 +77,7 @@ public class Scheduler {
         rssFeeds.put("https://www.stickybottle.com/feed/", "en");
         rssFeeds.put("https://www.swiss-cycling.ch/de/feed", "de");
         rssFeeds.put("https://www.trainerroad.com/blog/feed/", "en");
+        rssFeeds.put("https://www.trainerroad.com/forum/latest.rss", "en");
         rssFeeds.put("https://www.velomotion.de/magazin/feed", "de");
         rssFeeds.put("https://www.velonews.com/feed/", "en");
         rssFeeds.put("https://www.youtube.com/feeds/videos.xml?channel_id=UC77UtoyivVHkpApL0wGfH5w", "en");
