@@ -20,4 +20,4 @@ COPY --from=build-env /opt/app.jar /opt/app.jar
 
 RUN apt-get update && apt-get -y upgrade
 
-CMD ["java","--enable-preview","-jar","/opt/app.jar"]
+CMD ["java","--enable-preview","-XX:+UseZGC","-XX:+UseDynamicNumberOfGCThreads","-jar","/opt/app.jar"]
