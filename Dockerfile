@@ -9,7 +9,7 @@ RUN mkdir /opt/src
 COPY / /opt/src/newsfeed/
 
 WORKDIR /opt/src/newsfeed
-RUN --mount=type=cache,target=/root/.m2 mvn install -DskipTests=true -P production
+RUN --mount=type=cache,target=/root/.m2 mvn -q install -DskipTests=true -P production
 RUN mkdir -p target/dependency && (cd target/dependency; jar -xf ../*.jar)
 
 
