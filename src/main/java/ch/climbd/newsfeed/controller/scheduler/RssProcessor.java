@@ -104,13 +104,7 @@ public class RssProcessor {
             sc.init(null, trustAllCerts, new java.security.SecureRandom());
             HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
             // Create all-trusting host name verifier
-            HostnameVerifier allHostsValid = new HostnameVerifier() {
-                public boolean verify(String hostname, SSLSession session) {
-                    return true;
-                }
-            };
-
-            return allHostsValid;
+            return (hostname, session) -> true;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

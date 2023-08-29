@@ -121,7 +121,7 @@ public class AddView extends VerticalLayout {
             link.setHelperText("Field should not be empty");
             link.setInvalid(true);
         }
-        if (languageGroup.getSelectedItems().size() == 0) {
+        if (languageGroup.getSelectedItems().isEmpty()) {
             languageGroup.setHelperText("Please select a language");
             languageGroup.setInvalid(true);
         }

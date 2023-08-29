@@ -7,7 +7,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
-import java.time.temporal.ChronoUnit;
 
 @Document
 public class NewsEntry {
@@ -58,7 +57,7 @@ public class NewsEntry {
         ZoneId zId = ZoneId.of("Europe/Berlin");
 
         if (publishedAt.isAfter(LocalDateTime.now())) {
-            return ZonedDateTime.now().minus(1, ChronoUnit.SECONDS);
+            return ZonedDateTime.now().minusSeconds(1);
         }
 
         return ZonedDateTime.ofInstant(publishedAt.toInstant(ZoneOffset.UTC), zId);
@@ -69,7 +68,7 @@ public class NewsEntry {
         LocalDateTime itemDateTime = LocalDateTime.ofInstant(publishedAt.toInstant(), zId);
 
         if (itemDateTime.isAfter(LocalDateTime.now())) {
-            this.publishedAt = LocalDateTime.now().minus(10, ChronoUnit.SECONDS);
+            this.publishedAt = LocalDateTime.now().minusSeconds(10);
         } else {
             this.publishedAt = itemDateTime;
         }
@@ -92,7 +91,7 @@ public class NewsEntry {
     }
 
     public String getDomainWithProtocol() {
-        if (link.length() > 0) {
+        if (!link.isEmpty()) {
             var start = link.indexOf("://") + 3;
 
             try {
@@ -107,7 +106,7 @@ public class NewsEntry {
     }
 
     public String getDomainOnly() {
-        if (link.length() > 0) {
+        if (!link.isEmpty()) {
             var start = link.indexOf("://") + 3;
 
             try {

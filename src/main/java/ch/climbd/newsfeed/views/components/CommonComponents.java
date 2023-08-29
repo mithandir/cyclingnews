@@ -54,7 +54,7 @@ public class CommonComponents {
         localStorage.getItem("LAST-VISIT").thenAccept(lastVisit -> {
             if (lastVisit != null) {
                 ZonedDateTime lastVisitDate = ZonedDateTime.parse(lastVisit, FORMATTER);
-                if (lastVisitDate.plus(10, ChronoUnit.SECONDS).isAfter(ZonedDateTime.ofInstant(Instant.now(), zoneId))) {
+                if (lastVisitDate.plusSeconds(10).isAfter(ZonedDateTime.ofInstant(Instant.now(), zoneId))) {
                     // Was already saved a few seconds ago (Redirect for Admin etc.)
                 }
             }

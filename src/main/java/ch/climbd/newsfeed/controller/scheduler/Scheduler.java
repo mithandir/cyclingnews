@@ -95,7 +95,7 @@ public class Scheduler {
 
     private void initIconCache() {
         rssFeeds.keySet().forEach(url -> Thread.startVirtualThread(() -> {
-            if (url.length() > 0) {
+            if (!url.isEmpty()) {
                 var start = url.indexOf("://") + 3;
 
                 try {
