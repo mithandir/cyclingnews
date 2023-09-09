@@ -112,6 +112,7 @@
                         <configuration>
                             <jvmArguments>
                                 -Dspring.profiles.active=local
+                                -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
                                 --enable-preview
                             </jvmArguments>
                         </configuration>
@@ -164,26 +165,6 @@
                     </exclusions>
                 </dependency>
             </dependencies>
-        </profile>
-        <profile>
-            <id>native</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.graalvm.buildtools</groupId>
-                        <artifactId>native-maven-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>build-native</id>
-                                <goals>
-                                    <goal>compile-no-fork</goal>
-                                </goals>
-                                <phase>package</phase>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
         </profile>
     </profiles>
 

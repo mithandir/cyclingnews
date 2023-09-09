@@ -24,8 +24,19 @@ public class MongoController {
     @Autowired
     private MongoTemplate template;
 
-    public NewsEntry findByLink(String link) {
-        return template.findById(link, NewsEntry.class);
+    public boolean exists(String link) {
+        if (link != null && link.startsWith("http")) {
+            Query query = new Query();
+            query.addCriteria(Criteria.where("link").in(link));
+            return template.exists(query, NewsEntry.class);
+        }
+
+        LOG.warn("Not a link: " + link);
+        return false;
+    }
+
+    public boolean exists(NewsEntry newsEntry) {
+        return exists(newsEntry.getLink());
     }
 
     public List<NewsEntry> findAllOrderedByDate(Set<String> language) {
@@ -61,11 +72,6 @@ public class MongoController {
         var result = template.find(query, NewsEntry.class);
         result.sort(compareByVotePerDay);
         return result;
-    }
-
-    public boolean exists(NewsEntry newsEntry) {
-        var result = findByLink(newsEntry.getLink());
-        return (result != null && result.getTitle() != null);
     }
 
     public void save(NewsEntry newsEntry) {

@@ -44,12 +44,13 @@ public class RssProcessor {
                     .filter(item -> item.getLink() != null && item.getTitle() != null)
                     .filter(item -> !item.getLink().isBlank() && !item.getTitle().isBlank())
                     .filter(item -> !filter.isSpam(item.getTitle()))
-                    .filter(item -> !mongo.exists(item))
                     .forEach(item -> Thread.startVirtualThread(() -> {
-                        item.setLanguage(language);
-                        mongo.save(item);
-                        Broadcaster.broadcast(item);
-                        pushover.sendNotification(item);
+                        if (!mongo.exists(item)) {
+                            item.setLanguage(language);
+                            mongo.save(item);
+                            Broadcaster.broadcast(item);
+                            pushover.sendNotification(item);
+                        }
                     }));
 
         } catch (Exception e) {
