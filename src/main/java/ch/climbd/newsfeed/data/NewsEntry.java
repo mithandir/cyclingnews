@@ -18,6 +18,8 @@ public class NewsEntry {
     private String content = "No content";
     private LocalDateTime publishedAt;
     private Integer votes = 0;
+
+    private Integer views = 0;
     private String language = "undefined";
 
     public NewsEntry() {
@@ -80,6 +82,14 @@ public class NewsEntry {
 
     public void setVotes(Integer votes) {
         this.votes = votes;
+    }
+
+    public Integer getViews() {
+        return views;
+    }
+
+    public void setViews(Integer views) {
+        this.views = views;
     }
 
     public String getLanguage() {

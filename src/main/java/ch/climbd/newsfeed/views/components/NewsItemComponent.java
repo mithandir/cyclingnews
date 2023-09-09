@@ -72,7 +72,7 @@ public class NewsItemComponent {
         Button closeButton = new Button("Close", e -> dialog.close());
         dialog.getFooter().add(closeButton);
 
-        Anchor title = new Anchor(item.getLink(), item.getTitle(), AnchorTarget.BLANK);
+        Anchor title = new Anchor(commonComponents.createLinkWithStats(item.getLink()), item.getTitle(), AnchorTarget.BLANK);
         if (commonComponents.isMobile()) {
             rowTitle.add(title, dialog);
         } else {

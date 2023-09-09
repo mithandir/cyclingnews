@@ -98,6 +98,20 @@ public class MongoController {
         }
     }
 
+    public void increaseViews(String url) {
+        var result = template.findById(url, NewsEntry.class);
+        if (result != null) {
+            if (result.getViews() != null) {
+                result.setViews(result.getViews() + 1);
+                update(result);
+                LOG.info(result.getViews() + " views for: " + url);
+            } else {
+                result.setViews(1);
+                update(result);
+            }
+        }
+    }
+
     public List<NewsEntry> searchEntries(String searchString) {
         Criteria regex = Criteria.where("title").regex(".*" + searchString + ".*", "i");
 

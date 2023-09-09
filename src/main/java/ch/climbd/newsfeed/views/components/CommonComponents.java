@@ -11,6 +11,7 @@ import org.jsoup.nodes.Element;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
+import org.springframework.web.util.UriUtils;
 import org.vaadin.addon.browserstorage.LocalStorage;
 
 import java.time.Instant;
@@ -100,6 +101,18 @@ public class CommonComponents {
     public boolean isMobile() {
         var browser = UI.getCurrent().getSession().getBrowser();
         return browser.isAndroid() || browser.isIPhone() || browser.isWindowsPhone();
+    }
+
+    public String createLinkWithStats(String url) {
+        var base = env.getProperty("baseurl");
+
+        String encUrl = UriUtils.encodePath(url, "UTF-8");
+
+        if (base != null && !base.isBlank()) {
+            return base + "/" + "redirect?url=" + encUrl;
+        }
+
+        return url;
     }
 
     public String findIcon(String pageUrl) {
