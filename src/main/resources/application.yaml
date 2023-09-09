@@ -1,0 +1,17 @@
+server:
+  http2.enabled: true
+  compression.enabled: true
+
+management:
+  endpoints:
+    web.exposure.include: health
+
+spring:
+  main:
+    lazy-initialization: true
+  jmx.enabled: false
+
+logging:
+  level:
+    org.springframework:
+      data.mongodb.core.MongoTemplate: DEBUG

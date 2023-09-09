@@ -51,7 +51,7 @@ public class PopularView extends VerticalLayout {
 
         add(commonSessionComponents.createMenu());
 
-        VerticalLayout newsItems = newsItemComponent.createNewsItem(mongo.findAllOrderedByVotes(commonSessionComponents.getSelectedLanguages()).collectList().block());
+        VerticalLayout newsItems = newsItemComponent.createNewsItem(mongo.findAllOrderedByVotes(commonSessionComponents.getSelectedLanguages()));
         newsItems.setWidthFull();
         newsItems.getStyle().set("margin-left", commonComponents.isMobile() ? "2%" : "10%");
 

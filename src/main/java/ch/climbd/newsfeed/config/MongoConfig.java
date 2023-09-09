@@ -1,6 +1,6 @@
 package ch.climbd.newsfeed.config;
 
-import com.mongodb.reactivestreams.client.MongoClient;
+import com.mongodb.client.MongoClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.convert.ReadingConverter;
 import org.springframework.data.convert.WritingConverter;
-import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.convert.MongoCustomConversions;
 
 import java.time.ZoneId;
@@ -19,7 +19,7 @@ import java.util.Date;
 import java.util.List;
 
 @Configuration
-public class ReactiveMongoConfig {
+public class MongoConfig {
 
     @Autowired
     private MongoClient mongoClient;
@@ -28,8 +28,8 @@ public class ReactiveMongoConfig {
     String db;
 
     @Bean
-    public ReactiveMongoTemplate reactiveMongoTemplate() {
-        return new ReactiveMongoTemplate(mongoClient, db);
+    public MongoTemplate mongoTemplate() {
+        return new MongoTemplate(mongoClient, db);
     }
 
     @Bean

@@ -59,7 +59,7 @@ public class LatestView extends VerticalLayout {
 
         add(commonSessionComponents.createMenu());
 
-        sourceData = new LinkedList<>(mongo.findAllOrderedByDate(commonSessionComponents.getSelectedLanguages()).collectList().block());
+        sourceData = new LinkedList<>(mongo.findAllOrderedByDate(commonSessionComponents.getSelectedLanguages()));
         newsItems = newsItemComponent.createNewsItem(sourceData);
         newsItems.setWidthFull();
         newsItems.getStyle().set("margin-left", commonComponents.isMobile() ? "2%" : "10%");

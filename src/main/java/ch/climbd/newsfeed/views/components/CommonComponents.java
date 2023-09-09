@@ -133,8 +133,11 @@ public class CommonComponents {
 
             Element e2 = doc.head().select("meta[itemprop=image]").first();
             if (e2 != null && !e2.attr("itemprop").isBlank()) {
-                String url = e1.attr("itemprop");
-                if (!url.startsWith("http")) {
+                String url = null;
+                if (e1 != null) {
+                    url = e1.attr("itemprop");
+                }
+                if (url != null && !url.startsWith("http")) {
                     url = pageUrl + url;
                 }
                 iconCache.put(pageUrl, url);

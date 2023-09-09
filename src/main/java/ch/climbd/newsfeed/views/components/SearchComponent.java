@@ -9,7 +9,8 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import reactor.core.publisher.Flux;
+
+import java.util.List;
 
 @Component
 public class SearchComponent {
@@ -31,10 +32,10 @@ public class SearchComponent {
         searchButton.addClickListener(event -> {
             var searchValue = textField.getValue().strip();
             if (searchValue.length() >= 4 && searchValue.matches("\\p{Alnum}*")) {
-                Flux<NewsEntry> newsEntries = mongoController.searchEntries(searchValue);
+                List<NewsEntry> newsEntries = mongoController.searchEntries(searchValue);
                 newsItems.getUI().get().access(() -> {
                     newsItems.removeAll();
-                    newsItems.add(newsItemComponent.createNewsItem(newsEntries.collectList().block()));
+                    newsItems.add(newsItemComponent.createNewsItem(newsEntries));
                 });
             }
         });

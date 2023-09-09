@@ -28,16 +28,16 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-mongodb-reactive</artifactId>
+            <artifactId>spring-boot-starter-data-mongodb</artifactId>
         </dependency>
         <dependency>
             <groupId>com.vaadin</groupId>
             <artifactId>vaadin-spring-boot-starter</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context-indexer</artifactId>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>io.projectreactor</groupId>
@@ -112,7 +112,7 @@
                         <configuration>
                             <jvmArguments>
                                 -Dspring.profiles.active=local
-                                -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005 --enable-preview
+                                --enable-preview
                             </jvmArguments>
                         </configuration>
                     </plugin>

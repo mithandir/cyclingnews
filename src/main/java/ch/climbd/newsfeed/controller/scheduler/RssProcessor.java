@@ -60,11 +60,7 @@ public class RssProcessor {
     private NewsEntry map(SyndEntry item) {
         NewsEntry result = new NewsEntry();
         String title = item.getTitle().strip();
-        if (title == null) {
-            result.setTitle(null);
-        } else {
-            result.setTitle(filter.replaceHtml(title));
-        }
+        result.setTitle(filter.replaceHtml(title));
 
         StringBuilder content = new StringBuilder();
         if (item.getContents() != null) {

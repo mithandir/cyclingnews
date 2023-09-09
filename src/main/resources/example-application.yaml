@@ -6,14 +6,6 @@ pushover:
   api-key: <your pushover api key>
   user-key: <your user key>
 
-server:
-  http2.enabled: true
-  compression.enabled: true
-
-management:
-  endpoints:
-    web.exposure.include: health
-
 spring:
   data.mongodb:
     host: <host>
