@@ -40,9 +40,11 @@ public class PopularView extends VerticalLayout {
 
     @PostConstruct
     public void init() {
+        super.setWidth(commonComponents.isMobile() ? "100%" : "90%");
+
         var image = new Image(baseUrl + "/logo.svg", "Title");
         image.setWidth("8em");
-        image.getStyle().set("margin-left", commonComponents.isMobile() ? "2%" : "10%");
+        image.getStyle().set("margin-left", commonComponents.isMobile() ? "0" : "10%");
         var heading = new H1("cycling news");
         var header = new HorizontalLayout(image, heading);
         header.setWidthFull();
@@ -53,10 +55,10 @@ public class PopularView extends VerticalLayout {
 
         VerticalLayout newsItems = newsItemComponent.createNewsItem(mongo.findAllOrderedByVotes(commonSessionComponents.getSelectedLanguages()));
         newsItems.setWidthFull();
-        newsItems.getStyle().set("margin-left", commonComponents.isMobile() ? "2%" : "10%");
+        newsItems.getStyle().set("margin-left", commonComponents.isMobile() ? "0" : "10%");
 
         var searchBar = searchComponent.createSearchBar(newsItems);
-        searchBar.getStyle().set("margin-left", commonComponents.isMobile() ? "2%" : "10%");
+        searchBar.getStyle().set("margin-left", commonComponents.isMobile() ? "0" : "10%");
         add(searchBar);
         add(newsItems);
     }

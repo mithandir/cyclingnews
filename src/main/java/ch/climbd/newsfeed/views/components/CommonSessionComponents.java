@@ -51,6 +51,7 @@ public class CommonSessionComponents {
 
     public MenuBar createMenu() {
         var menu = new MenuBar();
+        menu.setWidthFull();
         menu.setOpenOnHover(true);
 
         createIconItem(menu, VaadinIcon.NEWSPAPER, "Recent", null).addClickListener(listenerNewest);
@@ -68,7 +69,7 @@ public class CommonSessionComponents {
         german.setCheckable(true);
         german.setChecked(selectedLanguages.contains("de"));
 
-        menu.getStyle().set("margin-left", commonComponents.isMobile() ? "2%" : "10%");
+        menu.getStyle().set("margin-left", commonComponents.isMobile() ? "0" : "10%");
 
         return menu;
     }
