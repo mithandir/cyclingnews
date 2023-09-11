@@ -5,7 +5,6 @@ import ch.climbd.newsfeed.controller.scheduler.Filter;
 import ch.climbd.newsfeed.data.NewsEntry;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.ComponentEventListener;
-import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.avatar.Avatar;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
@@ -64,11 +63,6 @@ public class NewsItemComponent {
         Dialog dialog = new Dialog();
         dialog.setHeaderTitle(item.getTitle());
 
-        VerticalLayout dialogLayout = new VerticalLayout();
-        Text dialogLabel = new Text(item.getContent());
-        dialogLayout.add(dialogLabel);
-        dialog.add(dialogLayout);
-
         Button closeButton = new Button("Close", e -> dialog.close());
         dialog.getFooter().add(closeButton);
 
@@ -98,11 +92,7 @@ public class NewsItemComponent {
 
         commonComponents.checkIconStatus(vote, item.getLink());
 
-        if (item.getContent() != null && !item.getContent().isBlank()) {
-            rowDateAndLinks.add(date, voteSum, viewContent, vote);
-        } else {
-            rowDateAndLinks.add(date, voteSum, vote);
-        }
+        rowDateAndLinks.add(date, voteSum, vote);
 
         VerticalLayout column = new VerticalLayout();
         column.add(rowTitle, rowDateAndLinks);

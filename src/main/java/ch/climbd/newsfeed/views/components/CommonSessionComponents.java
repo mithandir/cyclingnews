@@ -69,8 +69,6 @@ public class CommonSessionComponents {
         german.setCheckable(true);
         german.setChecked(selectedLanguages.contains("de"));
 
-        menu.getStyle().set("margin-left", commonComponents.isMobile() ? "0" : "10%");
-
         return menu;
     }
 
