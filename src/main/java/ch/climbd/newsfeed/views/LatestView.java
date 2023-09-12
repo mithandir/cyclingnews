@@ -5,10 +5,14 @@ import ch.climbd.newsfeed.data.NewsEntry;
 import ch.climbd.newsfeed.views.components.*;
 import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.DetachEvent;
+import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.UI;
-import com.vaadin.flow.component.html.H1;
-import com.vaadin.flow.component.html.Image;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.html.*;
+import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
@@ -84,9 +88,24 @@ public class LatestView extends VerticalLayout {
             for (int i = 0; i < 100; i++) {
                 newsItems.add(newsItemComponent.buildNewsItem(i + 1, sourceData.get(i)));
             }
-            var notification = Notification.show(newsEntry.getTitle());
-            notification.setDuration(15000);
+
+            var notification = new Notification();
+
+            var div = new Div(new Text("New story: "), new Anchor(newsEntry.getLink(), newsEntry.getTitle(), AnchorTarget.BLANK));
+
+            Button closeButton = new Button(new Icon("lumo", "cross"));
+            closeButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY_INLINE);
+            closeButton.setAriaLabel("Close");
+            closeButton.addClickListener(event -> notification.close());
+
+            HorizontalLayout layout = new HorizontalLayout(div, closeButton);
+            layout.setAlignItems(Alignment.CENTER);
+
+            notification.add(layout);
+            notification.addThemeVariants(NotificationVariant.LUMO_PRIMARY);
+            notification.setDuration(30000);
             notification.setPosition(Notification.Position.TOP_END);
+            notification.open();
         }));
     }
 

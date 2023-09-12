@@ -7,6 +7,4 @@ management:
     web.exposure.include: health
 
 spring:
-  main:
-    lazy-initialization: true
   jmx.enabled: false
