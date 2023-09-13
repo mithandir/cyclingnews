@@ -28,4 +28,4 @@ COPY --from=build-env ${DEPENDENCY}/BOOT-INF/lib /app/lib
 COPY --from=build-env ${DEPENDENCY}/META-INF /app/META-INF
 COPY --from=build-env ${DEPENDENCY}/BOOT-INF/classes /app
 
-ENTRYPOINT ["java","--enable-preview","-XX:+UseZGC","-XX:+UseDynamicNumberOfGCThreads","-cp","app:app/lib/*","ch.climbd.newsfeed.NewsfeedApplication"]
+ENTRYPOINT ["java","--enable-preview","-cp","app:app/lib/*","ch.climbd.newsfeed.NewsfeedApplication"]
