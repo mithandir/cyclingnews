@@ -32,6 +32,9 @@ public class NewsItemComponent {
     private CommonComponents commonComponents;
 
     @Autowired
+    private CommonSessionComponents commonSessionComponents;
+
+    @Autowired
     private MongoController mongo;
 
     public VerticalLayout createNewsItem(List<NewsEntry> items) {
@@ -79,11 +82,20 @@ public class NewsItemComponent {
         Span date = new Span(item.getPublishedDateTime().format(DateTimeFormatter.ISO_LOCAL_DATE));
         date.getStyle().set("font-size", "small");
 
-        Span voteSum = new Span(String.valueOf(item.getVotes()));
+
+        var voteSum = new Span(String.valueOf(item.getVotes()));
         voteSum.getStyle().set("font-size", "small");
+
+        var viewSum = new Span(String.valueOf(item.getViews()));
+        viewSum.getStyle().set("font-size", "small");
+
+        var viewIcon = VaadinIcon.BAR_CHART.create();
+        viewIcon.setSize("15px");
+        viewIcon.setTooltipText("Views");
 
         Icon vote = VaadinIcon.THUMBS_UP.create();
         vote.setSize("15px");
+        vote.setTooltipText("Likes");
         vote.addClickListener((ComponentEventListener<ClickEvent<Icon>>) iconClickEvent -> handleVotes(item, voteSum, vote));
 
         Icon viewContent = VaadinIcon.SEARCH.create();
@@ -92,7 +104,11 @@ public class NewsItemComponent {
 
         commonComponents.checkIconStatus(vote, item.getLink());
 
-        rowDateAndLinks.add(date, voteSum, vote);
+        if (commonSessionComponents.isAdmin()) {
+            rowDateAndLinks.add(date, viewSum, viewIcon, voteSum, vote);
+        } else {
+            rowDateAndLinks.add(date, voteSum, vote);
+        }
 
         VerticalLayout column = new VerticalLayout();
         column.add(rowTitle, rowDateAndLinks);
