@@ -16,9 +16,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
 
-@Route("popular")
-@PageTitle("Climbd Cycling News - Popular News")
-public class PopularView extends VerticalLayout {
+@Route("liked")
+@PageTitle("Climbd Cycling News - Most Liked News")
+public class MostLikedView extends VerticalLayout {
 
     @Autowired
     private MongoController mongo;

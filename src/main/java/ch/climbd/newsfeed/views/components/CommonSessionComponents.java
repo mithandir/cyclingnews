@@ -55,7 +55,9 @@ public class CommonSessionComponents {
         menu.setOpenOnHover(true);
 
         createIconItem(menu, VaadinIcon.NEWSPAPER, "Recent", null).addClickListener(listenerNewest);
-        createIconItem(menu, VaadinIcon.THUMBS_UP, "Popular", null).addClickListener(listenerPopular);
+        createIconItem(menu, VaadinIcon.BAR_CHART, "Most views", null).addClickListener(listenerViews);
+        createIconItem(menu, VaadinIcon.THUMBS_UP, "Most liked", null).addClickListener(listenerLiked);
+
         if (isAdmin) {
             createIconItem(menu, VaadinIcon.MEGAPHONE, "Report News", null).addClickListener(listenerAddNews);
         }
@@ -93,8 +95,10 @@ public class CommonSessionComponents {
         });
     }
 
-    private final ComponentEventListener<ClickEvent<MenuItem>> listenerPopular = e -> e.getSource().getUI().ifPresent(ui ->
-            ui.navigate("popular"));
+    private final ComponentEventListener<ClickEvent<MenuItem>> listenerLiked = e -> e.getSource().getUI().ifPresent(ui ->
+            ui.navigate("liked"));
+    private final ComponentEventListener<ClickEvent<MenuItem>> listenerViews = e -> e.getSource().getUI().ifPresent(ui ->
+            ui.navigate("views"));
     private final ComponentEventListener<ClickEvent<MenuItem>> listenerNewest = e -> e.getSource().getUI().ifPresent(ui ->
             ui.navigate("latest"));
     private final ComponentEventListener<ClickEvent<MenuItem>> listenerAddNews = e -> e.getSource().getUI().ifPresent(ui ->

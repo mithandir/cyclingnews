@@ -75,6 +75,31 @@ public class MongoController {
         return result;
     }
 
+    public List<NewsEntry> findAllOrderedByViews(Set<String> language) {
+        Comparator<NewsEntry> compareByViewPerDay = (NewsEntry o1, NewsEntry o2) -> {
+            // Cut down to just plain day without hours, minutes and seconds.
+            // Then add the amount of votes as seconds to have sorting inside a day.
+            var obj1 = o1.getPublishedDateTime()
+                    .truncatedTo(ChronoUnit.DAYS)
+                    .plusSeconds(o1.getVotes());
+            var obj2 = o2.getPublishedDateTime()
+                    .truncatedTo(ChronoUnit.DAYS)
+                    .plusSeconds(o2.getVotes());
+
+            return obj2.compareTo(obj1);
+        };
+
+        Query query = new Query();
+        query.addCriteria(Criteria.where("language").in(language));
+        query.addCriteria(Criteria.where("views").gte(1));
+        query.with(Sort.by(Sort.Direction.DESC, "views"));
+        query.limit(100);
+
+        var result = template.find(query, NewsEntry.class);
+        result.sort(compareByViewPerDay);
+        return result;
+    }
+
     public void save(NewsEntry newsEntry) {
         template.save(newsEntry);
     }

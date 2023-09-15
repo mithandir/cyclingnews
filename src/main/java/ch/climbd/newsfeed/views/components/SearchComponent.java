@@ -60,11 +60,15 @@ public class SearchComponent {
                 ui.access(() -> {
                     newsItems.removeAll();
                     List<NewsEntry> newsEntries;
-                    if ("latest".equals(page)) {
-                        newsEntries = mongoController.findAllOrderedByDate(commonSessionComponents.getSelectedLanguages());
-                    } else {
+
+                    if ("views".equals(page)) {
+                        newsEntries = mongoController.findAllOrderedByViews(commonSessionComponents.getSelectedLanguages());
+                    } else if ("liked".equals(page)) {
                         newsEntries = mongoController.findAllOrderedByVotes(commonSessionComponents.getSelectedLanguages());
+                    } else {
+                        newsEntries = mongoController.findAllOrderedByDate(commonSessionComponents.getSelectedLanguages());
                     }
+
                     newsItems.add(newsItemComponent.createNewsItem(newsEntries));
                 });
             });
