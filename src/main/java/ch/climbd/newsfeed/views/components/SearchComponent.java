@@ -21,6 +21,9 @@ public class SearchComponent {
     @Autowired
     private NewsItemComponent newsItemComponent;
 
+    @Autowired
+    private CommonSessionComponents commonSessionComponents;
+
     public VerticalLayout createSearchBar(VerticalLayout newsItems) {
         TextField textField = new TextField();
         textField.setPlaceholder("Search");
@@ -28,19 +31,48 @@ public class SearchComponent {
         textField.setClearButtonVisible(true);
 
         var searchButton = new Button("Search");
+        var clearButton = new Button("Clear");
+        clearButton.setVisible(false);
+
 
         searchButton.addClickListener(event -> {
             var searchValue = textField.getValue().strip();
-            if (searchValue.length() >= 4 && searchValue.matches("\\p{Alnum}*")) {
+            if (searchValue.length() >= 3) {
                 List<NewsEntry> newsEntries = mongoController.searchEntries(searchValue);
                 newsItems.getUI().get().access(() -> {
                     newsItems.removeAll();
                     newsItems.add(newsItemComponent.createNewsItem(newsEntries));
+                    clearButton.setVisible(true);
                 });
             }
         });
 
-        var searchbar = new HorizontalLayout(textField, searchButton);
+        clearButton.addClickListener(event -> {
+            textField.setValue("");
+            clearButton.setVisible(false);
+
+            var ui = newsItems.getUI().get();
+
+            ui.getPage().fetchCurrentURL(currentUrl -> {
+                var path = currentUrl.getPath().split("/");
+                var page = path[path.length - 1];
+
+                ui.access(() -> {
+                    newsItems.removeAll();
+                    List<NewsEntry> newsEntries;
+                    if ("latest".equals(page)) {
+                        newsEntries = mongoController.findAllOrderedByDate(commonSessionComponents.getSelectedLanguages());
+                    } else {
+                        newsEntries = mongoController.findAllOrderedByVotes(commonSessionComponents.getSelectedLanguages());
+                    }
+                    newsItems.add(newsItemComponent.createNewsItem(newsEntries));
+                });
+            });
+
+
+        });
+
+        var searchbar = new HorizontalLayout(textField, searchButton, clearButton);
         return new VerticalLayout(searchbar);
     }
 }

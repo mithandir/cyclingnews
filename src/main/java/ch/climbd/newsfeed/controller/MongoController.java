@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
@@ -113,7 +114,12 @@ public class MongoController {
     }
 
     public List<NewsEntry> searchEntries(String searchString) {
-        Criteria regex = Criteria.where("title").regex(".*" + searchString + ".*", "i");
+        var splitted = searchString.strip().split(" ");
+
+        StringBuilder searchQuery = new StringBuilder();
+        Arrays.stream(splitted).map(e -> "(?=.*" + e + ")").forEach(e -> searchQuery.append(e));
+
+        Criteria regex = Criteria.where("title").regex(searchQuery.toString(), "i");
 
         var query = new Query()
                 .addCriteria(regex)
