@@ -81,10 +81,10 @@ public class MongoController {
             // Then add the amount of votes as seconds to have sorting inside a day.
             var obj1 = o1.getPublishedDateTime()
                     .truncatedTo(ChronoUnit.DAYS)
-                    .plusSeconds(o1.getVotes());
+                    .plusSeconds(o1.getViews());
             var obj2 = o2.getPublishedDateTime()
                     .truncatedTo(ChronoUnit.DAYS)
-                    .plusSeconds(o2.getVotes());
+                    .plusSeconds(o2.getViews());
 
             return obj2.compareTo(obj1);
         };
