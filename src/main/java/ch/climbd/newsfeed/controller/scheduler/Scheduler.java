@@ -89,6 +89,11 @@ public class Scheduler {
         rssFeeds.put("https://www.youtube.com/feeds/videos.xml?channel_id=UCYuKCZ35_lrDmFj2gNuAwZw", "en");
         rssFeeds.put("https://www.youtube.com/feeds/videos.xml?channel_id=UCuTaETsuCOkJ0H_GAztWt0Q", "en");
         rssFeeds.put("https://zwiftinsider.com/feed/", "en");
+        rssFeeds.put("https://trainerroad.libsyn.com/rss", "en");
+        rssFeeds.put("https://anchor.fm/s/1311c8b8/podcast/rss", "en");
+        rssFeeds.put("https://stages.libsyn.com/rss", "en");
+        rssFeeds.put("https://marginalgainspodcast.libsyn.com/rss", "en");
+        rssFeeds.put("https://podcastd69f1e.podigee.io/feed/mp3", "de");
 
         initIconCache();
     }

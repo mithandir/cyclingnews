@@ -49,6 +49,7 @@ public class RssProcessor {
                             mongo.save(item);
                             Broadcaster.broadcast(item);
                             pushover.sendNotification(item);
+                            LOG.debug("New entry: " + item.getTitle());
                         }
                     }));
 
