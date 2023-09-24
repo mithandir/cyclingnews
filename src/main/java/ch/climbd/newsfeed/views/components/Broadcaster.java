@@ -9,7 +9,7 @@ import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 
 public class Broadcaster {
-    static final Executor executor = Executors.newVirtualThreadPerTaskExecutor();
+    static final Executor executor = Executors.newSingleThreadExecutor();
 
     static final LinkedList<Consumer<NewsEntry>> listeners = new LinkedList<>();
 
