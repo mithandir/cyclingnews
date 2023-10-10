@@ -15,7 +15,7 @@
     <description>Hackernews clone for cycling news</description>
     <properties>
         <java.version>20</java.version>
-        <vaadin.version>24.1.10</vaadin.version>
+        <vaadin.version>24.1.12</vaadin.version>
         <maven.versions.plugin>2.16.1</maven.versions.plugin>
         <rome.rss.version>2.1.0</rome.rss.version>
         <browserstorage.version>1.0.0</browserstorage.version>
@@ -80,6 +80,7 @@
                 <version>${maven.versions.plugin}</version>
                 <configuration>
                     <includeParent>false</includeParent>
+                    <ignoredVersions>.+(alpha|beta|rc).*</ignoredVersions>
                 </configuration>
             </plugin>
             <plugin>
