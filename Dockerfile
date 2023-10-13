@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:experimental
-FROM maven:3-amazoncorretto-21 AS build-env
+FROM maven:3-sapmachine-21 AS build-env
 
 LABEL NAME="newsfeed-build"
 LABEL VERSION=1.0.0
