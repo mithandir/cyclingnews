@@ -35,8 +35,10 @@ public class Scheduler {
         rssFeeds.put("http://feeds.feedburner.com/shutuplegsde", "de");
         rssFeeds.put("http://fetchrss.com/rss/6002dbb8135789796c3d9b526002dc80a9582662d205cdf2.xml", "en");
         rssFeeds.put("http://www.uaeteamemirates.com/news-and-media/feed/", "en");
+        rssFeeds.put("https://anchor.fm/s/1311c8b8/podcast/rss", "en");
         rssFeeds.put("https://audioboom.com/channels/1405050.rss", "en");
         rssFeeds.put("https://bahraincyclingteam.com/news/feed/", "en");
+        rssFeeds.put("https://bike.bikegremlin.com/feed", "en");
         rssFeeds.put("https://bikerumor.com/feed/", "en");
         rssFeeds.put("https://bikesnobnyc.com/feed/", "en");
         rssFeeds.put("https://challenge-magazin.com/feed/", "de");
@@ -47,11 +49,14 @@ public class Scheduler {
         rssFeeds.put("https://granfondo-cycling.com/feed/", "en");
         rssFeeds.put("https://intheknowcycling.com/feed/", "en");
         rssFeeds.put("https://joefrieltraining.com/feed/", "en");
+        rssFeeds.put("https://marginalgainspodcast.libsyn.com/rss", "en");
         rssFeeds.put("https://pezcyclingnews.com/feed/", "en");
+        rssFeeds.put("https://podcastd69f1e.podigee.io/feed/mp3", "de");
         rssFeeds.put("https://procyclinguk.com/feed/", "en");
         rssFeeds.put("https://radamring.de/feed/", "de");
         rssFeeds.put("https://radsportverband-nrw.de/feed/", "de");
         rssFeeds.put("https://road.cc/rss", "en");
+        rssFeeds.put("https://stages.libsyn.com/rss", "en");
         rssFeeds.put("https://tdaglobalcycling.com/blog/all/feed/", "en");
         rssFeeds.put("https://torstenfrank.wordpress.com/feed/", "de");
         rssFeeds.put("https://trainerroad.libsyn.com/rss", "en");
@@ -89,11 +94,6 @@ public class Scheduler {
         rssFeeds.put("https://www.youtube.com/feeds/videos.xml?channel_id=UCYuKCZ35_lrDmFj2gNuAwZw", "en");
         rssFeeds.put("https://www.youtube.com/feeds/videos.xml?channel_id=UCuTaETsuCOkJ0H_GAztWt0Q", "en");
         rssFeeds.put("https://zwiftinsider.com/feed/", "en");
-        rssFeeds.put("https://trainerroad.libsyn.com/rss", "en");
-        rssFeeds.put("https://anchor.fm/s/1311c8b8/podcast/rss", "en");
-        rssFeeds.put("https://stages.libsyn.com/rss", "en");
-        rssFeeds.put("https://marginalgainspodcast.libsyn.com/rss", "en");
-        rssFeeds.put("https://podcastd69f1e.podigee.io/feed/mp3", "de");
 
         initIconCache();
     }

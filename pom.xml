@@ -20,6 +20,8 @@
         <rome.rss.version>2.1.0</rome.rss.version>
         <browserstorage.version>1.0.0</browserstorage.version>
         <jpushover.version>7.0.9</jpushover.version>
+        <snakeyaml.version>2.2</snakeyaml.version> <!-- Fix vulnerability -->
+
     </properties>
     <dependencies>
         <dependency>
