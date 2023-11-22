@@ -15,8 +15,8 @@
     <description>Hackernews clone for cycling news</description>
     <properties>
         <java.version>21</java.version>
-        <vaadin.version>24.2.2</vaadin.version>
-        <maven.versions.plugin>2.16.1</maven.versions.plugin>
+        <vaadin.version>24.2.4</vaadin.version>
+        <maven.versions.plugin>2.16.2</maven.versions.plugin>
         <rome.rss.version>2.1.0</rome.rss.version>
         <browserstorage.version>1.0.0</browserstorage.version>
         <jpushover.version>7.1.1</jpushover.version>
