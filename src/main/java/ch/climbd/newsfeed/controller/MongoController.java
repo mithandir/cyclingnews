@@ -142,7 +142,7 @@ public class MongoController {
         var splitted = searchString.strip().split(" ");
 
         StringBuilder searchQuery = new StringBuilder();
-        Arrays.stream(splitted).map(e -> "(?=.*" + e + ")").forEach(e -> searchQuery.append(e));
+        Arrays.stream(splitted).map(e -> "(?=.*" + e + ")").forEach(searchQuery::append);
 
         Criteria regex = Criteria.where("title").regex(searchQuery.toString(), "i");
 
