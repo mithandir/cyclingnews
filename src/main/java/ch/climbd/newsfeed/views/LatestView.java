@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.util.LinkedList;
+import java.util.concurrent.Executors;
 
 @Route("latest")
 @PageTitle("Climbd Cycling News - Latest News")
@@ -82,15 +83,7 @@ public class LatestView extends VerticalLayout {
     protected void onAttach(AttachEvent attachEvent) {
         UI ui = attachEvent.getUI();
         broadcasterRegistration = Broadcaster.register(newsEntry -> ui.access(() -> {
-            sourceData.add(0, newsEntry);
-            newsItems.removeAll();
-
-            for (int i = 0; i < 100; i++) {
-                newsItems.add(newsItemComponent.buildNewsItem(i + 1, sourceData.get(i)));
-            }
-
             var notification = new Notification();
-
             var div = new Div(new Text("New story: "), new Anchor(newsEntry.getLink(), newsEntry.getTitle(), AnchorTarget.BLANK));
 
             Button closeButton = new Button(new Icon("lumo", "cross"));
@@ -106,6 +99,15 @@ public class LatestView extends VerticalLayout {
             notification.setDuration(30000);
             notification.setPosition(Notification.Position.TOP_END);
             notification.open();
+
+            Executors.newVirtualThreadPerTaskExecutor().execute(() -> {
+                try {
+                    Thread.sleep(10000);
+                    ui.getPage().reload();
+                } catch (Exception e) {
+                    // DO NOTHING
+                }
+            });
         }));
     }
 
