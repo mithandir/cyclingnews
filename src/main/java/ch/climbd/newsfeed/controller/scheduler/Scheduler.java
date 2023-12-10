@@ -55,7 +55,7 @@ public class Scheduler {
         rssFeeds.put("https://procyclinguk.com/feed/", "en");
         rssFeeds.put("https://radamring.de/feed/", "de");
         rssFeeds.put("https://radsportverband-nrw.de/feed/", "de");
-        rssFeeds.put("https://road.cc/rss", "en");
+//        rssFeeds.put("https://road.cc/rss", "en"); Mostly AD articles
         rssFeeds.put("https://stages.libsyn.com/rss", "en");
         rssFeeds.put("https://tdaglobalcycling.com/blog/all/feed/", "en");
         rssFeeds.put("https://torstenfrank.wordpress.com/feed/", "de");
