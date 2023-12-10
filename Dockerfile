@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:experimental
-FROM maven:3-sapmachine-21 AS build-env
+FROM maven:3-eclipse-temurin-21 as builder
 
 LABEL NAME="newsfeed-build"
 LABEL VERSION=1.0.0
@@ -9,9 +9,9 @@ RUN mkdir /opt/src
 COPY / /opt/src/newsfeed/
 
 WORKDIR /opt/src/newsfeed
-RUN --mount=type=cache,target=/root/.m2 mvn -q install -DskipTests=true -P production
-RUN mkdir -p target/dependency && (cd target/dependency; jar -xf ../*.jar)
-
+#RUN --mount=type=cache,target=/root/.m2 mvn -q install -DskipTests=true -P production
+RUN mvn -q install -DskipTests=true -P production
+RUN java -Djarmode=layertools -jar /opt/src/newsfeed/target/newsfeed-0.0.1-SNAPSHOT.jar extract
 
 FROM eclipse-temurin:21-jre-alpine
 VOLUME /tmp
@@ -19,13 +19,14 @@ LABEL NAME="climbd-newsfeed"
 LABEL VERSION=1.0.0
 LABEL MAINTAINER=mithandir@gmail.com
 
-ARG DEPENDENCY=/opt/src/newsfeed/target/dependency
-
 RUN addgroup -S newsfeed && adduser -S newsfeed -G newsfeed
 USER newsfeed
 
-COPY --from=build-env ${DEPENDENCY}/BOOT-INF/lib /app/lib
-COPY --from=build-env ${DEPENDENCY}/META-INF /app/META-INF
-COPY --from=build-env ${DEPENDENCY}/BOOT-INF/classes /app
+ARG DEPENDENCY=/opt/src/newsfeed
 
-ENTRYPOINT ["java","--enable-preview","-cp","app:app/lib/*","ch.climbd.newsfeed.NewsfeedApplication"]
+COPY --from=builder ${DEPENDENCY}/dependencies/ ./
+COPY --from=builder ${DEPENDENCY}/spring-boot-loader/ ./
+COPY --from=builder ${DEPENDENCY}/snapshot-dependencies/ ./
+COPY --from=builder ${DEPENDENCY}/application/ ./
+
+ENTRYPOINT ["java","--enable-preview", "org.springframework.boot.loader.launch.JarLauncher"]
