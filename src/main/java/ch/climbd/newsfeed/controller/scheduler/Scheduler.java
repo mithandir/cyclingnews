@@ -42,7 +42,6 @@ public class Scheduler {
         rssFeeds.put("https://bikerumor.com/feed/", "en");
         rssFeeds.put("https://bikesnobnyc.com/feed/", "en");
         rssFeeds.put("https://challenge-magazin.com/feed/", "de");
-        rssFeeds.put("https://cycling.today/feed/", "en");
         rssFeeds.put("https://escapecollective.com/feed/", "en");
         rssFeeds.put("https://feeds.sbs.com.au/cycling-central", "en");
         rssFeeds.put("https://forum.intervals.icu/latest.rss", "en");
@@ -55,21 +54,19 @@ public class Scheduler {
         rssFeeds.put("https://procyclinguk.com/feed/", "en");
         rssFeeds.put("https://radamring.de/feed/", "de");
         rssFeeds.put("https://radsportverband-nrw.de/feed/", "de");
-//        rssFeeds.put("https://road.cc/rss", "en"); Mostly AD articles
         rssFeeds.put("https://stages.libsyn.com/rss", "en");
         rssFeeds.put("https://tdaglobalcycling.com/blog/all/feed/", "en");
         rssFeeds.put("https://torstenfrank.wordpress.com/feed/", "de");
         rssFeeds.put("https://trainerroad.libsyn.com/rss", "en");
-        rssFeeds.put("https://turbocyclist.com/feed", "en");
         rssFeeds.put("https://velomobil.blog/feed/", "de");
         rssFeeds.put("https://www.bike-x.de/rss/rennrad/", "de");
         rssFeeds.put("https://www.bikehugger.com/feed/", "en");
-        rssFeeds.put("https://www.bikeradar.com/road/feed/", "en");
         rssFeeds.put("https://www.cycling-challenge.com/feed/", "en");
         rssFeeds.put("https://www.cyclingapps.net/feed/", "en");
         rssFeeds.put("https://www.cyclingmagazine.de/feed/", "de");
         rssFeeds.put("https://www.cyclingtips.com/category/news/feed/", "en");
         rssFeeds.put("https://www.cyclist.co.uk/feeds/all", "en");
+        rssFeeds.put("https://www.cyclist.co.uk/type/news/feed", "en");
         rssFeeds.put("https://www.cyclistshub.com/feed/", "en");
         rssFeeds.put("https://www.dcrainmaker.com/feed/", "en");
         rssFeeds.put("https://www.dirtracingseries.com/feed/", "en");
@@ -94,6 +91,7 @@ public class Scheduler {
         rssFeeds.put("https://www.youtube.com/feeds/videos.xml?channel_id=UCYuKCZ35_lrDmFj2gNuAwZw", "en");
         rssFeeds.put("https://www.youtube.com/feeds/videos.xml?channel_id=UCuTaETsuCOkJ0H_GAztWt0Q", "en");
         rssFeeds.put("https://zwiftinsider.com/feed/", "en");
+//        rssFeeds.put("https://road.cc/rss", "en"); Mostly AD articles
 
         initIconCache();
     }
