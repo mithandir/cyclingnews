@@ -4,18 +4,18 @@ import ch.climbd.newsfeed.data.NewsEntry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class MongoController {
@@ -139,6 +139,7 @@ public class MongoController {
     }
 
     public List<NewsEntry> searchEntries(String searchString) {
+        var startTime = LocalDateTime.now();
         var splitted = searchString.strip().split(" ");
 
         StringBuilder searchQuery = new StringBuilder();
@@ -146,11 +147,24 @@ public class MongoController {
 
         Criteria regex = Criteria.where("title").regex(searchQuery.toString(), "i");
 
-        var query = new Query()
-                .addCriteria(regex)
-                .with(Sort.by(Sort.Direction.DESC, "publishedAt"))
-                .limit(100);
+        int currentPage = 0;
+        List<NewsEntry> newsEntries = new ArrayList<>();
 
-        return template.find(query, NewsEntry.class);
+        while (newsEntries.isEmpty()
+                || (newsEntries.size() == currentPage * 10
+                && newsEntries.size() <= 90
+                && Duration.between(startTime, LocalDateTime.now()).toSeconds() < 1)) {
+
+            var paging = PageRequest.of(currentPage, 10);
+            var query = new Query()
+                    .addCriteria(regex)
+                    .with(Sort.by(Sort.Direction.DESC, "publishedAt"))
+                    .with(paging);
+
+            newsEntries.addAll(template.find(query, NewsEntry.class));
+            currentPage++;
+        }
+
+        return newsEntries;
     }
 }
