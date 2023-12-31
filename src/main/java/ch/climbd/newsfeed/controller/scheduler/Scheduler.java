@@ -32,6 +32,7 @@ public class Scheduler {
     @PostConstruct
     public void init() {
         rssFeeds.put("http://feeds.feedburner.com/ilovecyclingde", "de");
+        rssFeeds.put("http://feeds.feedburner.com/inrng/inrng0", "en");
         rssFeeds.put("http://feeds.feedburner.com/shutuplegsde", "de");
         rssFeeds.put("http://fetchrss.com/rss/6002dbb8135789796c3d9b526002dc80a9582662d205cdf2.xml", "en");
         rssFeeds.put("http://www.uaeteamemirates.com/news-and-media/feed/", "en");
@@ -42,6 +43,8 @@ public class Scheduler {
         rssFeeds.put("https://bikerumor.com/feed/", "en");
         rssFeeds.put("https://bikesnobnyc.com/feed/", "en");
         rssFeeds.put("https://challenge-magazin.com/feed/", "de");
+        rssFeeds.put("https://classic.rad-net.de/html/feed.xml", "de");
+        rssFeeds.put("https://cycling.today/feed/", "en");
         rssFeeds.put("https://escapecollective.com/feed/", "en");
         rssFeeds.put("https://feeds.sbs.com.au/cycling-central", "en");
         rssFeeds.put("https://forum.intervals.icu/latest.rss", "en");
@@ -92,6 +95,8 @@ public class Scheduler {
         rssFeeds.put("https://www.youtube.com/feeds/videos.xml?channel_id=UCYuKCZ35_lrDmFj2gNuAwZw", "en");
         rssFeeds.put("https://www.youtube.com/feeds/videos.xml?channel_id=UCuTaETsuCOkJ0H_GAztWt0Q", "en");
         rssFeeds.put("https://zwiftinsider.com/feed/", "en");
+        rssFeeds.put("https://roadcycling.de/feed", "de");
+        rssFeeds.put("https://www.roadbike-holidays.com/magazin/feed", "de");
 //        rssFeeds.put("https://road.cc/rss", "en"); Mostly AD articles
 
         initIconCache();
