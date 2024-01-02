@@ -83,7 +83,7 @@ public class SearchComponent {
     private void searchEventHandler(VerticalLayout newsItems, TextField textField, Button clearButton) {
         var searchValue = textField.getValue().strip();
         if (searchValue.length() >= 3) {
-            List<NewsEntry> newsEntries = mongoController.searchEntries(searchValue);
+            List<NewsEntry> newsEntries = mongoController.searchEntries(searchValue, commonSessionComponents.getSelectedLanguages());
             newsItems.getUI().get().access(() -> {
                 newsItems.removeAll();
                 newsItems.add(newsItemComponent.createNewsItem(newsEntries));

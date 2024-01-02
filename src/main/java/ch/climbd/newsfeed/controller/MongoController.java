@@ -138,7 +138,7 @@ public class MongoController {
         }
     }
 
-    public List<NewsEntry> searchEntries(String searchString) {
+    public List<NewsEntry> searchEntries(String searchString, Set<String> language) {
         var startTime = LocalDateTime.now();
         var splitted = searchString.strip().split(" ");
 
@@ -158,6 +158,7 @@ public class MongoController {
             var paging = PageRequest.of(currentPage, 10);
             var query = new Query()
                     .addCriteria(regex)
+                    .addCriteria(Criteria.where("language").in(language))
                     .with(Sort.by(Sort.Direction.DESC, "publishedAt"))
                     .with(paging);
 
