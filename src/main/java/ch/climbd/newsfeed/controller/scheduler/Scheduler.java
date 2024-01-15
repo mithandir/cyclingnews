@@ -48,6 +48,7 @@ public class Scheduler {
         rssFeeds.put("https://escapecollective.com/feed/", "en");
         rssFeeds.put("https://feeds.sbs.com.au/cycling-central", "en");
         rssFeeds.put("https://forum.intervals.icu/latest.rss", "en");
+        rssFeeds.put("https://forum.xertonline.com/latest.rss", "en");
         rssFeeds.put("https://granfondo-cycling.com/feed/", "en");
         rssFeeds.put("https://gruppetto-magazin.ch/api/rss-feed", "de");
         rssFeeds.put("https://intheknowcycling.com/feed/", "en");
@@ -58,6 +59,7 @@ public class Scheduler {
         rssFeeds.put("https://procyclinguk.com/feed/", "en");
         rssFeeds.put("https://radamring.de/feed/", "de");
         rssFeeds.put("https://radsportverband-nrw.de/feed/", "de");
+        rssFeeds.put("https://roadcycling.de/feed", "de");
         rssFeeds.put("https://stages.libsyn.com/rss", "en");
         rssFeeds.put("https://tdaglobalcycling.com/blog/all/feed/", "en");
         rssFeeds.put("https://torstenfrank.wordpress.com/feed/", "de");
@@ -79,6 +81,7 @@ public class Scheduler {
         rssFeeds.put("https://www.radsport-news.com/rss.xml", "de");
         rssFeeds.put("https://www.radsport-rennrad.de/feed/", "de");
         rssFeeds.put("https://www.rennrad-news.de/news/feed/", "de");
+        rssFeeds.put("https://www.roadbike-holidays.com/magazin/feed", "de");
         rssFeeds.put("https://www.rouleur.cc/blogs/desire-journal.atom", "en");
         rssFeeds.put("https://www.rouleur.cc/blogs/rouleur-performance.atom", "en");
         rssFeeds.put("https://www.rouleur.cc/blogs/the-rouleur-journal.atom", "en");
@@ -95,8 +98,6 @@ public class Scheduler {
         rssFeeds.put("https://www.youtube.com/feeds/videos.xml?channel_id=UCYuKCZ35_lrDmFj2gNuAwZw", "en");
         rssFeeds.put("https://www.youtube.com/feeds/videos.xml?channel_id=UCuTaETsuCOkJ0H_GAztWt0Q", "en");
         rssFeeds.put("https://zwiftinsider.com/feed/", "en");
-        rssFeeds.put("https://roadcycling.de/feed", "de");
-        rssFeeds.put("https://www.roadbike-holidays.com/magazin/feed", "de");
 //        rssFeeds.put("https://road.cc/rss", "en"); Mostly AD articles
 
         initIconCache();
