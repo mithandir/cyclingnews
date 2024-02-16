@@ -119,7 +119,7 @@ public class Scheduler {
         }));
     }
 
-    @Scheduled(fixedDelay = 15, timeUnit = TimeUnit.MINUTES)
+    @Scheduled(fixedDelay = 15, initialDelay = 1, timeUnit = TimeUnit.MINUTES)
     public void scheduleFeedProcessing() {
         LOG.info("Running RSS scheduler");
 
