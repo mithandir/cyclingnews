@@ -48,7 +48,7 @@ public class MongoController {
         while (newsEntries.isEmpty()
                 || (newsEntries.size() == currentPage * 10
                 && newsEntries.size() <= 90
-                && Duration.between(startTime, LocalDateTime.now()).toSeconds() < 1)) {
+                && Duration.between(startTime, LocalDateTime.now()).toSeconds() < 0.5)) {
 
             var paging = PageRequest.of(currentPage, 10);
             var query = new Query()
@@ -85,7 +85,7 @@ public class MongoController {
         while (newsEntries.isEmpty()
                 || (newsEntries.size() == currentPage * 10
                 && newsEntries.size() <= 90
-                && Duration.between(startTime, LocalDateTime.now()).toSeconds() < 1)) {
+                && Duration.between(startTime, LocalDateTime.now()).toSeconds() < 0.5)) {
 
             var paging = PageRequest.of(currentPage, 10);
             var query = new Query()
@@ -123,7 +123,7 @@ public class MongoController {
         while (newsEntries.isEmpty()
                 || (newsEntries.size() == currentPage * 10
                 && newsEntries.size() <= 90
-                && Duration.between(startTime, LocalDateTime.now()).toSeconds() < 1)) {
+                && Duration.between(startTime, LocalDateTime.now()).toSeconds() < 0.5)) {
 
             var paging = PageRequest.of(currentPage, 10);
 
