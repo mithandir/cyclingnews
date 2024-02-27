@@ -41,27 +41,14 @@ public class MongoController {
     }
 
     public List<NewsEntry> findAllOrderedByDate(Set<String> language) {
-        var startTime = LocalDateTime.now();
-        int currentPage = 0;
-        List<NewsEntry> newsEntries = new ArrayList<>();
+        Query query = new Query();
+        query.addCriteria(Criteria.where("publishedAt").gte(ZonedDateTime.now().minusDays(2).toInstant()));
+        query.addCriteria(Criteria.where("language").in(language));
+        query.with(Sort.by(Sort.Direction.DESC, "publishedAt"));
+        query.limit(100);
+        query.maxTimeMsec(500);
 
-        while (newsEntries.isEmpty()
-                || (newsEntries.size() == currentPage * 10
-                && newsEntries.size() <= 90
-                && Duration.between(startTime, LocalDateTime.now()).toSeconds() < 0.5)) {
-
-            var paging = PageRequest.of(currentPage, 10);
-            var query = new Query()
-                    .addCriteria(Criteria.where("publishedAt").gte(ZonedDateTime.now().minusDays(2).toInstant()))
-                    .addCriteria(Criteria.where("language").in(language))
-                    .with(Sort.by(Sort.Direction.DESC, "publishedAt"))
-                    .with(paging);
-
-            newsEntries.addAll(template.find(query, NewsEntry.class));
-            currentPage++;
-        }
-
-        return newsEntries;
+        return template.find(query, NewsEntry.class);
     }
 
     public List<NewsEntry> findAllOrderedByVotes(Set<String> language) {
@@ -78,28 +65,16 @@ public class MongoController {
             return obj2.compareTo(obj1);
         };
 
-        var startTime = LocalDateTime.now();
-        int currentPage = 0;
-        List<NewsEntry> newsEntries = new ArrayList<>();
+        Query query = new Query();
+        query.addCriteria(Criteria.where("language").in(language));
+        query.addCriteria(Criteria.where("votes").gte(1));
+        query.with(Sort.by(Sort.Direction.DESC, "publishedAt"));
+        query.limit(100);
+        query.maxTimeMsec(500);
 
-        while (newsEntries.isEmpty()
-                || (newsEntries.size() == currentPage * 10
-                && newsEntries.size() <= 90
-                && Duration.between(startTime, LocalDateTime.now()).toSeconds() < 0.5)) {
-
-            var paging = PageRequest.of(currentPage, 10);
-            var query = new Query()
-                    .addCriteria(Criteria.where("language").in(language))
-                    .addCriteria(Criteria.where("votes").gte(1))
-                    .with(Sort.by(Sort.Direction.DESC, "votes"))
-                    .with(paging);
-
-            newsEntries.addAll(template.find(query, NewsEntry.class));
-            currentPage++;
-        }
-
-        newsEntries.sort(compareByVotePerDay);
-        return newsEntries;
+        var result = template.find(query, NewsEntry.class);
+        result.sort(compareByVotePerDay);
+        return result;
     }
 
     public List<NewsEntry> findAllOrderedByViews(Set<String> language) {
@@ -116,31 +91,16 @@ public class MongoController {
             return obj2.compareTo(obj1);
         };
 
-        var startTime = LocalDateTime.now();
-        int currentPage = 0;
-        List<NewsEntry> newsEntries = new ArrayList<>();
+        Query query = new Query();
+        query.addCriteria(Criteria.where("language").in(language));
+        query.addCriteria(Criteria.where("views").gte(1));
+        query.with(Sort.by(Sort.Direction.DESC, "views"));
+        query.limit(100);
+        query.maxTimeMsec(500);
 
-        while (newsEntries.isEmpty()
-                || (newsEntries.size() == currentPage * 10
-                && newsEntries.size() <= 90
-                && Duration.between(startTime, LocalDateTime.now()).toSeconds() < 0.5)) {
-
-            var paging = PageRequest.of(currentPage, 10);
-
-
-            var query = new Query()
-                    .addCriteria(Criteria.where("language").in(language))
-                    .addCriteria(Criteria.where("views").gte(1))
-                    .with(Sort.by(Sort.Direction.DESC, "views"))
-                    .with(paging);
-
-
-            newsEntries.addAll(template.find(query, NewsEntry.class));
-            currentPage++;
-        }
-
-        newsEntries.sort(compareByViewPerDay);
-        return newsEntries;
+        var result = template.find(query, NewsEntry.class);
+        result.sort(compareByViewPerDay);
+        return result;
     }
 
     public void save(NewsEntry newsEntry) {
