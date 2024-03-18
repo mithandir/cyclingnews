@@ -19,7 +19,7 @@
         <maven.versions.plugin>2.16.2</maven.versions.plugin>
         <rome.rss.version>2.1.0</rome.rss.version>
         <browserstorage.version>1.0.0</browserstorage.version>
-        <jpushover.version>7.1.1</jpushover.version>
+        <jpushover.version>7.2.0</jpushover.version>
     </properties>
     <dependencies>
         <dependency>
