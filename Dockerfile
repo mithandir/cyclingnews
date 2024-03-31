@@ -12,7 +12,7 @@ WORKDIR /opt/src/newsfeed
 RUN --mount=type=cache,target=/root/.m2 mvn -q install -DskipTests=true -P production
 RUN java -Djarmode=layertools -jar /opt/src/newsfeed/target/newsfeed-0.0.1-SNAPSHOT.jar extract
 
-FROM eclipse-temurin:21-jre-alpine
+FROM eclipse-temurin:22-jre-alpine
 VOLUME /tmp
 LABEL NAME="climbd-newsfeed"
 LABEL VERSION=1.0.0
