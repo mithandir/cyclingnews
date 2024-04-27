@@ -49,12 +49,12 @@ public class RssProcessor {
                             mongo.save(item);
                             Broadcaster.broadcast(item);
                             pushover.sendNotification(item);
-                            LOG.debug("New entry: " + item.getTitle());
+                            LOG.debug("New entry: {}", item.getTitle());
                         }
                     }));
 
         } catch (Exception e) {
-            LOG.error("Error reading RSS feed: " + url);
+            LOG.error("Error reading RSS feed: {}", url);
         }
     }
 

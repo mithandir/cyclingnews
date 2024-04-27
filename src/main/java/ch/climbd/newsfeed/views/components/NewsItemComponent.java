@@ -5,11 +5,13 @@ import ch.climbd.newsfeed.controller.scheduler.Filter;
 import ch.climbd.newsfeed.data.NewsEntry;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.ComponentEventListener;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.avatar.Avatar;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.AnchorTarget;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -42,7 +44,7 @@ public class NewsItemComponent {
         var index = 0;
         for (var item : items) {
             index++;
-            HorizontalLayout row = buildNewsItem(index, item);
+            HorizontalLayout row = buildNewsItem(index, item, verticalLayout);
             if (row == null) continue;
             verticalLayout.add(row);
         }
@@ -50,14 +52,21 @@ public class NewsItemComponent {
         return verticalLayout;
     }
 
-    public HorizontalLayout buildNewsItem(int index, NewsEntry item) {
+    public HorizontalLayout buildNewsItem(int index, NewsEntry item, VerticalLayout sourceLayout) {
         if (filter.isSpam(item.getTitle())) {
             return null;
         }
         HorizontalLayout row = new HorizontalLayout();
         row.setAlignItems(FlexComponent.Alignment.CENTER);
 
+        Div avatarDiv = new Div();
         Avatar avatar = commonComponents.buildSiteIcon(item.getDomainWithProtocol(), item.getDomainOnly());
+        avatarDiv.add(avatar);
+        avatarDiv.addClickListener(e -> UI.getCurrent().access(() -> {
+            sourceLayout.removeAll();
+            List<NewsEntry> newsEntries = mongo.findAllFilterdBySite(item.getDomainWithProtocol());
+            sourceLayout.add(createNewsItem(newsEntries));
+        }));
 
         HorizontalLayout rowTitle = new HorizontalLayout();
         commonComponents.isItemUnRead(item.getPublishedDateTime(), rowTitle, avatar);
@@ -81,7 +90,6 @@ public class NewsItemComponent {
         rowDateAndLinks.setAlignItems(FlexComponent.Alignment.CENTER);
         Span date = new Span(item.getPublishedDateTime().format(DateTimeFormatter.ISO_LOCAL_DATE));
         date.getStyle().set("font-size", "small");
-
 
         var voteSum = new Span(String.valueOf(item.getVotes()));
         voteSum.getStyle().set("font-size", "small");
@@ -114,7 +122,7 @@ public class NewsItemComponent {
         column.add(rowTitle, rowDateAndLinks);
         column.setSpacing(false);
 
-        row.add(new Span(String.valueOf(index)), avatar, column);
+        row.add(new Span(String.valueOf(index)), avatarDiv, column);
         return row;
     }
 

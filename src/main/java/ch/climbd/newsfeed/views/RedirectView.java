@@ -28,7 +28,7 @@ public class RedirectView extends Div
         QueryParameters queryParameters = location.getQueryParameters();
 
         Map<String, List<String>> parametersMap = queryParameters.getParameters();
-        var url = parametersMap.get("url").get(0);
+        var url = parametersMap.get("url").getFirst();
 
         mongoController.increaseViews(url);
 

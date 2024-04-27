@@ -32,7 +32,7 @@ public class MongoController {
             return template.exists(query, NewsEntry.class);
         }
 
-        LOG.warn("Not a link: " + link);
+        LOG.warn("Not a link: {}", link);
         return false;
     }
 
@@ -103,6 +103,16 @@ public class MongoController {
         return result;
     }
 
+    public List<NewsEntry> findAllFilterdBySite(String host) {
+        Query query = new Query();
+        query.addCriteria(Criteria.where("link").regex("^" + host));
+        query.with(Sort.by(Sort.Direction.DESC, "publishedAt"));
+        query.limit(100);
+        query.maxTimeMsec(500);
+
+        return template.find(query, NewsEntry.class);
+    }
+
     public void save(NewsEntry newsEntry) {
         template.save(newsEntry);
     }
@@ -133,7 +143,7 @@ public class MongoController {
             if (result.getViews() != null) {
                 result.setViews(result.getViews() + 1);
                 update(result);
-                LOG.info(result.getViews() + " views for: " + url);
+                LOG.info("{} views for: {}", result.getViews(), url);
             } else {
                 result.setViews(1);
                 update(result);
