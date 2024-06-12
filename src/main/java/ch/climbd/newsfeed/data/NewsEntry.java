@@ -15,7 +15,7 @@ public class NewsEntry {
     private String link;
 
     private String title;
-    private String content = "No content";
+    private String content = "";
     private LocalDateTime publishedAt;
     private Integer votes = 0;
 
