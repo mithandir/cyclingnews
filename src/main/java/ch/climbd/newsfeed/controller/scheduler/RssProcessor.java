@@ -57,9 +57,9 @@ public class RssProcessor {
                         if (item.getContent() != null && !item.getContent().isBlank()) {
                             try {
                                 item.setSummary(mlController.summarize(item.getContent()));
-                                LOG.info("Summarized: {}", item.getSummary());
+                                LOG.debug("Summarized: {}", item.getSummary());
                                 mongo.update(item);
-                                LOG.info("Updated: {}", item.getTitle());
+                                LOG.debug("Updated: {}", item.getTitle());
                             } catch (Exception e) {
                                 LOG.error("Error summarizing: {}", item.getTitle());
                             }
@@ -82,6 +82,10 @@ public class RssProcessor {
                 content.append(itemContent.getValue());
             }
             result.setContent(content.toString());
+        }
+        if ((result.getContent() == null || result.getContent().isBlank())
+                && item.getDescription() != null) {
+            result.setContent(item.getDescription().getValue());
         }
 
         result.setLink(item.getLink().strip());
