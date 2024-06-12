@@ -181,6 +181,10 @@ public class NewsItemComponent {
             }
         }
 
+        // Try to handle multiple line breaks
+        str = str.replaceAll("<br><br><br><br>", "<br><br>");
+        str = str.replaceAll("<br><br><br>", "<br><br>");
+
         if (excerpt) {
             str = str.replaceAll("<br>", " ");
             str = str.substring(0, Math.min(str.length(), commonComponents.isMobile() ? 25 : 100)) + "...";

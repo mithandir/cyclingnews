@@ -46,7 +46,7 @@ public class MongoController {
         query.addCriteria(Criteria.where("language").in(language));
         query.with(Sort.by(Sort.Direction.DESC, "publishedAt"));
         query.limit(100);
-        query.maxTimeMsec(500);
+        query.maxTimeMsec(1000);
 
         return template.find(query, NewsEntry.class);
     }
@@ -70,7 +70,7 @@ public class MongoController {
         query.addCriteria(Criteria.where("votes").gte(1));
         query.with(Sort.by(Sort.Direction.DESC, "publishedAt"));
         query.limit(100);
-        query.maxTimeMsec(500);
+        query.maxTimeMsec(1000);
 
         var result = template.find(query, NewsEntry.class);
         result.sort(compareByVotePerDay);
@@ -96,7 +96,7 @@ public class MongoController {
         query.addCriteria(Criteria.where("views").gte(1));
         query.with(Sort.by(Sort.Direction.DESC, "views"));
         query.limit(100);
-        query.maxTimeMsec(500);
+        query.maxTimeMsec(1000);
 
         var result = template.find(query, NewsEntry.class);
         result.sort(compareByViewPerDay);
@@ -108,7 +108,7 @@ public class MongoController {
         query.addCriteria(Criteria.where("link").regex("^" + host));
         query.with(Sort.by(Sort.Direction.DESC, "publishedAt"));
         query.limit(100);
-        query.maxTimeMsec(500);
+        query.maxTimeMsec(1000);
 
         return template.find(query, NewsEntry.class);
     }
