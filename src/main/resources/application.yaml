@@ -7,5 +7,8 @@ management:
     web.exposure.include: health
 
 spring:
+  ai.openai.chat.options:
+    model: gpt-4o
+    temperature: 0.7
   threads.virtual.enabled: true
   jmx.enabled: false

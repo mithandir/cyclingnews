@@ -1,5 +1,6 @@
 package ch.climbd.newsfeed.controller.scheduler;
 
+import ch.climbd.newsfeed.controller.MlController;
 import ch.climbd.newsfeed.controller.MongoController;
 import ch.climbd.newsfeed.controller.PushoverController;
 import ch.climbd.newsfeed.data.NewsEntry;
@@ -34,6 +35,9 @@ public class RssProcessor {
     @Autowired
     private Filter filter;
 
+    @Autowired
+    MlController mlController;
+
     public void processRss(String url, String language) {
         try {
             HttpsURLConnection.setDefaultHostnameVerifier(initTrustAll());
@@ -41,13 +45,24 @@ public class RssProcessor {
             feed.getEntries().stream().map(this::map)
                     .filter(item -> item.getLink() != null && item.getTitle() != null)
                     .filter(item -> !item.getLink().isBlank() && !item.getTitle().isBlank())
+                    .filter(item -> item.getLink().startsWith("http"))
                     .filter(item -> !filter.isSpam(item.getTitle()))
+                    .filter(item -> !mongo.exists(item))
                     .forEach(item -> Thread.startVirtualThread(() -> {
-                        if (!mongo.exists(item)) {
-                            item.setLanguage(language);
-                            mongo.save(item);
-                            pushover.sendNotification(item);
-                            LOG.debug("New entry: {}", item.getTitle());
+                        item.setLanguage(language);
+                        mongo.save(item);
+                        pushover.sendNotification(item);
+                        LOG.debug("New entry: {}", item.getTitle());
+
+                        if (item.getContent() != null && !item.getContent().isBlank()) {
+                            try {
+                                item.setSummary(mlController.summarize(item.getContent()));
+                                LOG.info("Summarized: {}", item.getSummary());
+                                mongo.update(item);
+                                LOG.info("Updated: {}", item.getTitle());
+                            } catch (Exception e) {
+                                LOG.error("Error summarizing: {}", item.getTitle());
+                            }
                         }
                     }));
 

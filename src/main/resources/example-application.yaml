@@ -1,12 +1,27 @@
 baseurl: http://localhost:8080<
 api-key: <your-api-key>
 
+server:
+  http2.enabled: true
+  compression.enabled: true
+
+management:
+  endpoints:
+    web.exposure.include: health
+
 pushover:
   enabled: false
   api-key: <your pushover api key>
   user-key: <your user key>
 
 spring:
+  ai:
+    openai:
+      base-url: <url>
+      api-key: <api-key>
+      chat.options:
+        model: gpt-4o
+        temperature: 0.7
   data.mongodb:
     host: <host>
     port: <port>

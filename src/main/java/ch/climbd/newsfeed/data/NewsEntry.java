@@ -16,6 +16,7 @@ public class NewsEntry {
 
     private String title;
     private String content = "";
+    private String summary = "";
     private LocalDateTime publishedAt;
     private Integer votes = 0;
 
@@ -45,6 +46,14 @@ public class NewsEntry {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public String getSummary() {
+        return summary;
+    }
+
+    public void setSummary(String summary) {
+        this.summary = summary;
     }
 
     public String getLink() {
@@ -136,6 +145,4 @@ public class NewsEntry {
                 "NewsEntry[link=%s, title='%s', votes='%s']",
                 link, title, votes);
     }
-
-
 }

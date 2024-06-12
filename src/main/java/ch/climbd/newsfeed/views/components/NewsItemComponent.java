@@ -194,7 +194,8 @@ public class NewsItemComponent {
         }
 
         String width = commonComponents.isMobile() ? "90%" : "50%";
-        var html = new Html("<div style=\"width: " + width + ";margin-left: 10px;\">" + str + "</div>");
+        var text = !item.getSummary().isBlank() ? item.getSummary() : str;
+        var html = new Html("<div style=\"width: " + width + ";margin-left: 10px;\">" + text + "</div>");
         html.getStyle().set("font-size", "small");
         return html;
     }
