@@ -5,9 +5,12 @@ import ch.climbd.newsfeed.controller.scheduler.Filter;
 import ch.climbd.newsfeed.data.NewsEntry;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.ComponentEventListener;
+import com.vaadin.flow.component.Html;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.avatar.Avatar;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.details.Details;
+import com.vaadin.flow.component.details.DetailsVariant;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.AnchorTarget;
@@ -18,6 +21,11 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.safety.Safelist;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -26,6 +34,8 @@ import java.util.List;
 
 @Component
 public class NewsItemComponent {
+
+    private static final Logger LOG = LoggerFactory.getLogger(NewsItemComponent.class);
 
     @Autowired
     private Filter filter;
@@ -47,6 +57,15 @@ public class NewsItemComponent {
             HorizontalLayout row = buildNewsItem(index, item, verticalLayout);
             if (row == null) continue;
             verticalLayout.add(row);
+
+            if (item.getContent() != null && !item.getContent().isBlank()) {
+                Details details = new Details(formatHtml(item, true), formatHtml(item, false));
+                details.setOpened(false);
+                details.addThemeVariants(DetailsVariant.SMALL);
+                details.getStyle().set("margin-left", "20px");
+
+                verticalLayout.add(details);
+            }
         }
 
         return verticalLayout;
@@ -123,6 +142,7 @@ public class NewsItemComponent {
         column.setSpacing(false);
 
         row.add(new Span(String.valueOf(index)), avatarDiv, column);
+
         return row;
     }
 
@@ -139,5 +159,39 @@ public class NewsItemComponent {
             commonComponents.writeLocalStorage(item.getLink(), "false");
         }
         voteSum.setText(String.valueOf(item.getVotes()));
+    }
+
+    private Html formatHtml(NewsEntry item, boolean excerpt) {
+        Document jsoupDoc = Jsoup.parse(item.getContent());
+        Document.OutputSettings outputSettings = new Document.OutputSettings();
+        outputSettings.prettyPrint(false);
+        jsoupDoc.outputSettings(outputSettings);
+        jsoupDoc.select("br").before("\\br");
+        jsoupDoc.select("p").before("\\p");
+        String strWithNewLines = Jsoup.clean(jsoupDoc.html(), "", Safelist.none(), outputSettings);
+        String str = strWithNewLines.replaceAll("\\\\br", "<br>")
+                .replaceAll("\\\\p", "<br><br>")
+                .replaceAll("\n", "");
+
+        for (int i = 0; i < 5; i++) {
+            if (str.startsWith("<br>")) {
+                str = str.substring(4);
+            } else if (str.startsWith("<br><br>")) {
+                str = str.substring(8);
+            }
+        }
+
+        if (excerpt) {
+            str = str.replaceAll("<br>", " ");
+            str = str.substring(0, Math.min(str.length(), commonComponents.isMobile() ? 25 : 100)) + "...";
+            var html = new Html("<div>" + str + "</div>");
+            html.getStyle().set("font-size", "small");
+            return html;
+        }
+
+        String width = commonComponents.isMobile() ? "90%" : "50%";
+        var html = new Html("<div style=\"width: " + width + ";margin-left: 10px;\">" + str + "</div>");
+        html.getStyle().set("font-size", "small");
+        return html;
     }
 }

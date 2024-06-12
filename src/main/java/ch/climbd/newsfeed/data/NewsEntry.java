@@ -15,6 +15,7 @@ public class NewsEntry {
     private String link;
 
     private String title;
+    private String content = "No content";
     private LocalDateTime publishedAt;
     private Integer votes = 0;
 
@@ -36,6 +37,14 @@ public class NewsEntry {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
     }
 
     public String getLink() {

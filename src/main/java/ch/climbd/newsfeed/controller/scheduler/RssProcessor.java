@@ -61,6 +61,14 @@ public class RssProcessor {
         String title = item.getTitle().strip();
         result.setTitle(filter.replaceHtml(title));
 
+        StringBuilder content = new StringBuilder();
+        if (item.getContents() != null) {
+            for (var itemContent : item.getContents()) {
+                content.append(itemContent.getValue());
+            }
+            result.setContent(content.toString());
+        }
+
         result.setLink(item.getLink().strip());
 
         if (item.getPublishedDate() == null || Date.from(Instant.now()).equals(item.getPublishedDate())) {
