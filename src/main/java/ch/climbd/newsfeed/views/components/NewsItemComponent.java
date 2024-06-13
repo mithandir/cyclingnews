@@ -62,7 +62,9 @@ public class NewsItemComponent {
                 Details details = new Details(formatHtml(item, true), formatHtml(item, false));
                 details.setOpened(false);
                 details.addThemeVariants(DetailsVariant.SMALL);
-                details.getStyle().set("margin-left", "20px");
+                details.getStyle().set("position", "relative");
+                details.getStyle().set("margin-left", "5.5em");
+                details.getStyle().set("margin-top", "-2em");
 
                 verticalLayout.add(details);
             }
@@ -193,10 +195,13 @@ public class NewsItemComponent {
             return html;
         }
 
-        String width = commonComponents.isMobile() ? "90%" : "50%";
+        String width = commonComponents.isMobile() ? "90%" : "40%";
         var text = !item.getSummary().isBlank() ? item.getSummary() : str;
-        var html = new Html("<div style=\"width: " + width + ";margin-left: 10px;\">" + text + "</div>");
+        var html = new Html("<div>" + text + "</div>");
+        html.getStyle().set("text-align", "justify");
         html.getStyle().set("font-size", "small");
+        html.getStyle().set("margin-left", "10px");
+        html.getStyle().set("width", width);
         return html;
     }
 }
