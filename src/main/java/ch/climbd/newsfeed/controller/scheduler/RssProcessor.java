@@ -54,12 +54,12 @@ public class RssProcessor {
                         pushover.sendNotification(item);
                         LOG.debug("New entry: {}", item.getTitle());
 
-                        if (item.getContent() != null && item.getContent().length() > 850) {
+                        if (item.getContent() != null && item.getContent().length() > 1000) {
                             try {
                                 item.setSummary(mlController.summarize(item.getContent()));
-                                LOG.debug("Summarized: {}", item.getSummary());
+                                LOG.debug("Summary: {}", item.getSummary());
                                 mongo.update(item);
-                                LOG.debug("Updated: {}", item.getTitle());
+                                LOG.info("Summarized the article: {}", item.getTitle());
                             } catch (Exception e) {
                                 LOG.error("Error summarizing: {}", item.getTitle());
                             }
