@@ -54,7 +54,7 @@ public class RssProcessor {
                         pushover.sendNotification(item);
                         LOG.debug("New entry: {}", item.getTitle());
 
-                        if (item.getContent() != null && !item.getContent().isBlank()) {
+                        if (item.getContent() != null && item.getContent().length() > 850) {
                             try {
                                 item.setSummary(mlController.summarize(item.getContent()));
                                 LOG.debug("Summarized: {}", item.getSummary());
