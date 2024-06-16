@@ -45,14 +45,13 @@ public class LatestView extends VerticalLayout {
 
     @PostConstruct
     public void init() {
-        super.setWidthFull();
-        super.getStyle().set("margin-left", commonComponents.isMobile() ? "0" : "20%");
+        super.getStyle().set("width", "inherit");
+        super.getStyle().set("margin-left", commonComponents.isMobile() ? "0" : "10em");
 
         var image = new Image(baseUrl + "/logo.svg", "Title");
         image.setWidth("8em");
         var heading = new H1("cycling news");
         var header = new HorizontalLayout(image, heading);
-        header.setWidthFull();
         header.setAlignItems(Alignment.CENTER);
         add(header);
 
@@ -60,7 +59,6 @@ public class LatestView extends VerticalLayout {
 
         sourceData = new LinkedList<>(mongo.findAllOrderedByDate(commonSessionComponents.getSelectedLanguages()));
         newsItems = newsItemComponent.createNewsItem(sourceData);
-        newsItems.setWidthFull();
 
         var searchBar = searchComponent.createSearchBar(newsItems);
         add(searchBar);

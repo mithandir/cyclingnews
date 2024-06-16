@@ -60,10 +60,10 @@ public class NewsItemComponent {
 
             if (item.getContent() != null && !item.getContent().isBlank()) {
                 Details details = new Details(formatHtml(item, true), formatHtml(item, false));
-                details.setOpened(false);
+                details.setOpened(commonComponents.isMobile());
                 details.addThemeVariants(DetailsVariant.SMALL);
                 details.getStyle().set("position", "relative");
-                details.getStyle().set("margin-left", "5.5em");
+                details.getStyle().set("margin-left", commonComponents.isMobile() ? "inherit" : "5.5em");
                 details.getStyle().set("margin-top", "-2em");
 
                 verticalLayout.add(details);
@@ -90,6 +90,7 @@ public class NewsItemComponent {
         }));
 
         HorizontalLayout rowTitle = new HorizontalLayout();
+        rowTitle.setAlignItems(FlexComponent.Alignment.CENTER);
         commonComponents.isItemUnRead(item.getPublishedDateTime(), rowTitle, avatar);
 
         // build dialog
@@ -109,6 +110,7 @@ public class NewsItemComponent {
 
         HorizontalLayout rowDateAndLinks = new HorizontalLayout();
         rowDateAndLinks.setAlignItems(FlexComponent.Alignment.CENTER);
+
         Span date = new Span(item.getPublishedDateTime().format(DateTimeFormatter.ISO_LOCAL_DATE));
         date.getStyle().set("font-size", "small");
 
@@ -217,7 +219,7 @@ public class NewsItemComponent {
     }
 
     private Html createHtmlElement(String str) {
-        String width = commonComponents.isMobile() ? "90%" : "40%";
+        String width = commonComponents.isMobile() ? "inherit" : "50em";
         var html = new Html("<div>" + str + "</div>");
         html.getStyle().set("text-align", "justify");
         html.getStyle().set("font-size", "small");
