@@ -18,7 +18,6 @@ public class MlController {
     private final ChatClient chatClient;
     private final MongoController mongo;
     private final LinkedList<NewsEntry> queue = new LinkedList<>();
-    private boolean processing = false;
 
     MlController(ChatClient.Builder chatClientBuilder, MongoController mongoController) {
         this.chatClient = chatClientBuilder.build();
@@ -32,23 +31,16 @@ public class MlController {
 
     @Scheduled(fixedDelay = 1, initialDelay = 2, timeUnit = TimeUnit.MINUTES)
     public void summarize() {
-        LOG.info("Processing summarization queue of length: {}", queue.size());
-        if (processing) {
-            return;
-        }
-
-        processing = true;
         NewsEntry news = null;
         try {
             news = queue.poll();
 
             if (news == null) {
-                processing = false;
                 return;
             }
-
+            LOG.info("Processing summarization queue of length: {}", queue.size());
             news.setSummary(chatClient.prompt()
-                    .user("You are a news reporter that summarizes news articles in maximum 800 characters. Summarize the following text: " + news.getContent())
+                    .user("You are a news reporter that summarizes news articles in maximum 800 characters. Summarize the following text and ignore any videos, images and links: " + news.getContent())
                     .call()
                     .content());
             LOG.debug("Summary: {}", news.getSummary());
@@ -56,8 +48,6 @@ public class MlController {
             LOG.info("Summarized the article: {}", news.getTitle());
         } catch (Exception e) {
             LOG.error("Error summarizing article", e);
-        } finally {
-            processing = false;
         }
     }
 }
