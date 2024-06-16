@@ -40,7 +40,8 @@ public class MlController {
             }
             LOG.info("Processing summarization queue of length: {}", queue.size());
             news.setSummary(chatClient.prompt()
-                    .user("You are a news reporter that summarizes news articles in maximum 800 characters. Summarize the following text and ignore any videos, images and links: " + news.getContent())
+                    .system("You are a news reporter that summarizes news articles")
+                    .user("Summarize the following text and ignore any videos, images and links. Do not use more than 800 characters " + news.getContent())
                     .call()
                     .content());
             LOG.debug("Summary: {}", news.getSummary());
