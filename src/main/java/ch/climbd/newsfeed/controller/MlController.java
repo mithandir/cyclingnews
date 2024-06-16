@@ -14,7 +14,7 @@ public class MlController {
 
     public String summarize(String text) {
         return this.chatClient.prompt()
-                .system("You are a news reporter that summarizes news articles.")
+                .system("You are a news reporter that summarizes news articles in maximum 1000 characters.")
                 .user("Summarize the following text: " + text)
                 .call()
                 .content();

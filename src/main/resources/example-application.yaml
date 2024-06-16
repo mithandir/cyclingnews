@@ -16,12 +16,13 @@ pushover:
 
 spring:
   ai:
-    openai:
-      base-url: <url>
-      api-key: <api-key>
+    ollama:
+      base-url: http://<enter URL to ollama>
       chat.options:
-        model: gpt-4o
+        model: <enter model name>
         temperature: 0.7
+        keep_alive: 35m
+
   data.mongodb:
     host: <host>
     port: <port>
@@ -29,3 +30,6 @@ spring:
     username: <username>
     password: <password>
     database: <dbname>
+
+threads.virtual.enabled: true
+jmx.enabled: false

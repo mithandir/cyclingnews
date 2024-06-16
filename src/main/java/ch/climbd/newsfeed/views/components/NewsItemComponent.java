@@ -164,7 +164,19 @@ public class NewsItemComponent {
     }
 
     private Html formatHtml(NewsEntry item, boolean excerpt) {
-        Document jsoupDoc = Jsoup.parse(item.getContent());
+        String str = processHtmlContent(item.getContent());
+
+        if (excerpt) {
+            str = createExcerpt(str);
+        } else {
+            str = !item.getSummary().isBlank() ? item.getSummary() : str;
+        }
+
+        return createHtmlElement(str);
+    }
+
+    private String processHtmlContent(String content) {
+        Document jsoupDoc = Jsoup.parse(content);
         Document.OutputSettings outputSettings = new Document.OutputSettings();
         outputSettings.prettyPrint(false);
         jsoupDoc.outputSettings(outputSettings);
@@ -175,6 +187,13 @@ public class NewsItemComponent {
                 .replaceAll("\\\\p", "<br><br>")
                 .replaceAll("\n", "");
 
+        str = removeLeadingLineBreaks(str);
+        str = handleMultipleLineBreaks(str);
+
+        return str;
+    }
+
+    private String removeLeadingLineBreaks(String str) {
         for (int i = 0; i < 5; i++) {
             if (str.startsWith("<br>")) {
                 str = str.substring(4);
@@ -182,22 +201,24 @@ public class NewsItemComponent {
                 str = str.substring(8);
             }
         }
+        return str;
+    }
 
-        // Try to handle multiple line breaks
+    private String handleMultipleLineBreaks(String str) {
         str = str.replaceAll("<br><br><br><br>", "<br><br>");
         str = str.replaceAll("<br><br><br>", "<br><br>");
+        return str;
+    }
 
-        if (excerpt) {
-            str = str.replaceAll("<br>", " ");
-            str = str.substring(0, Math.min(str.length(), commonComponents.isMobile() ? 25 : 100)) + "...";
-            var html = new Html("<div>" + str + "</div>");
-            html.getStyle().set("font-size", "small");
-            return html;
-        }
+    private String createExcerpt(String str) {
+        str = str.replaceAll("<br>", " ");
+        str = str.substring(0, Math.min(str.length(), commonComponents.isMobile() ? 25 : 100)) + "...";
+        return str;
+    }
 
+    private Html createHtmlElement(String str) {
         String width = commonComponents.isMobile() ? "90%" : "40%";
-        var text = !item.getSummary().isBlank() ? item.getSummary() : str;
-        var html = new Html("<div>" + text + "</div>");
+        var html = new Html("<div>" + str + "</div>");
         html.getStyle().set("text-align", "justify");
         html.getStyle().set("font-size", "small");
         html.getStyle().set("margin-left", "10px");
