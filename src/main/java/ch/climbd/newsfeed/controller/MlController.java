@@ -21,6 +21,7 @@ public class MlController {
     private final MongoController mongo;
     private final Queue<NewsEntry> queue = new SynchronousQueue<>();
     private final CountDownLatch countDownLatch = new CountDownLatch(1);
+    private int queueSize = 0;
 
     MlController(ChatClient.Builder chatClientBuilder, MongoController mongoController) {
         this.chatClient = chatClientBuilder.build();
@@ -30,15 +31,18 @@ public class MlController {
     public void queueSummarize(NewsEntry news) {
         LOG.info("Queued article for summarization: {}", news.getTitle());
         queue.add(news);
+        queueSize++;
     }
 
     @Scheduled(fixedDelay = 1, initialDelay = 2, timeUnit = TimeUnit.MINUTES)
     public void summarize() {
         LOG.info("Processing summarization queue");
-        try {
-            countDownLatch.await();
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+        if (queueSize >= 0) {
+            try {
+                countDownLatch.await();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
         }
 
         var news = queue.poll();
@@ -53,6 +57,7 @@ public class MlController {
         LOG.debug("Summary: {}", news.getSummary());
         mongo.update(news);
         LOG.info("Summarized the article: {}", news.getTitle());
+        queueSize--;
         countDownLatch.countDown();
     }
 
