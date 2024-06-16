@@ -7,8 +7,7 @@ import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.SynchronousQueue;
+import java.util.LinkedList;
 import java.util.concurrent.TimeUnit;
 
 @Controller
@@ -18,9 +17,8 @@ public class MlController {
 
     private final ChatClient chatClient;
     private final MongoController mongo;
-    private final SynchronousQueue<NewsEntry> queue = new SynchronousQueue<>();
-    private final CountDownLatch countDownLatch = new CountDownLatch(1);
-    private int queueSize = 0;
+    private final LinkedList<NewsEntry> queue = new LinkedList<>();
+    private boolean processing = false;
 
     MlController(ChatClient.Builder chatClientBuilder, MongoController mongoController) {
         this.chatClient = chatClientBuilder.build();
@@ -29,30 +27,23 @@ public class MlController {
 
     public void queueSummarize(NewsEntry news) {
         LOG.info("Queued article for summarization: {}", news.getTitle());
-        try {
-            queue.put(news);
-            queueSize++;
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+        queue.add(news);
     }
 
     @Scheduled(fixedDelay = 1, initialDelay = 2, timeUnit = TimeUnit.MINUTES)
     public void summarize() {
-        LOG.info("Processing summarization queue of length: {}", queueSize);
-        if (queueSize >= 0) {
-            try {
-                countDownLatch.await();
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
+        LOG.info("Processing summarization queue of length: {}", queue.size());
+        if (processing) {
+            return;
         }
 
+        processing = true;
         NewsEntry news = null;
         try {
-            news = queue.take();
+            news = queue.poll();
 
             if (news == null) {
+                processing = false;
                 return;
             }
 
@@ -63,11 +54,10 @@ public class MlController {
             LOG.debug("Summary: {}", news.getSummary());
             mongo.update(news);
             LOG.info("Summarized the article: {}", news.getTitle());
-            queueSize--;
-            countDownLatch.countDown();
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+        } catch (Exception e) {
+            LOG.error("Error summarizing article", e);
+        } finally {
+            processing = false;
         }
     }
-
 }
