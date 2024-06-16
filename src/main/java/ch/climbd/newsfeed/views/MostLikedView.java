@@ -40,8 +40,8 @@ public class MostLikedView extends VerticalLayout {
 
     @PostConstruct
     public void init() {
-        super.setWidthFull();
-        super.getStyle().set("margin-left", commonComponents.isMobile() ? "0" : "20%");
+        super.getStyle().set("width", "inherit");
+        super.getStyle().set("margin-left", commonComponents.isMobile() ? "0" : "10em");
 
         var image = new Image(baseUrl + "/logo.svg", "Title");
         image.setWidth("8em");
