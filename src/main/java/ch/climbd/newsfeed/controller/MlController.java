@@ -7,7 +7,6 @@ import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 
-import java.util.Queue;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.TimeUnit;
@@ -19,7 +18,7 @@ public class MlController {
 
     private final ChatClient chatClient;
     private final MongoController mongo;
-    private final Queue<NewsEntry> queue = new SynchronousQueue<>();
+    private final SynchronousQueue<NewsEntry> queue = new SynchronousQueue<>();
     private final CountDownLatch countDownLatch = new CountDownLatch(1);
     private int queueSize = 0;
 
@@ -30,13 +29,17 @@ public class MlController {
 
     public void queueSummarize(NewsEntry news) {
         LOG.info("Queued article for summarization: {}", news.getTitle());
-        queue.add(news);
-        queueSize++;
+        try {
+            queue.put(news);
+            queueSize++;
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Scheduled(fixedDelay = 1, initialDelay = 2, timeUnit = TimeUnit.MINUTES)
     public void summarize() {
-        LOG.info("Processing summarization queue");
+        LOG.info("Processing summarization queue of length: {}", queueSize);
         if (queueSize >= 0) {
             try {
                 countDownLatch.await();
@@ -45,20 +48,26 @@ public class MlController {
             }
         }
 
-        var news = queue.poll();
-        if (news == null) {
-            return;
+        NewsEntry news = null;
+        try {
+            news = queue.take();
+
+            if (news == null) {
+                return;
+            }
+
+            news.setContent(chatClient.prompt()
+                    .user("You are a news reporter that summarizes news articles in maximum 1000 characters. Summarize the following text: " + news.getContent())
+                    .call()
+                    .content());
+            LOG.debug("Summary: {}", news.getSummary());
+            mongo.update(news);
+            LOG.info("Summarized the article: {}", news.getTitle());
+            queueSize--;
+            countDownLatch.countDown();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
-        news.setContent(chatClient.prompt()
-                .system("You are a news reporter that summarizes news articles in maximum 1000 characters.")
-                .user("Summarize the following text: " + news.getContent())
-                .call()
-                .content());
-        LOG.debug("Summary: {}", news.getSummary());
-        mongo.update(news);
-        LOG.info("Summarized the article: {}", news.getTitle());
-        queueSize--;
-        countDownLatch.countDown();
     }
 
 }
