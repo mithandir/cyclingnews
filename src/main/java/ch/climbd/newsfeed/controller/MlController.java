@@ -47,8 +47,8 @@ public class MlController {
                 return;
             }
 
-            news.setContent(chatClient.prompt()
-                    .user("You are a news reporter that summarizes news articles in maximum 1000 characters. Summarize the following text: " + news.getContent())
+            news.setSummary(chatClient.prompt()
+                    .user("You are a news reporter that summarizes news articles in maximum 800 characters. Summarize the following text: " + news.getContent())
                     .call()
                     .content());
             LOG.debug("Summary: {}", news.getSummary());
