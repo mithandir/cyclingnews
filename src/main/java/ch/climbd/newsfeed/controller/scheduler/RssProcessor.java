@@ -8,6 +8,9 @@ import com.rometools.rome.feed.synd.SyndEntry;
 import com.rometools.rome.feed.synd.SyndFeed;
 import com.rometools.rome.io.SyndFeedInput;
 import com.rometools.rome.io.XmlReader;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.safety.Safelist;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,11 +77,13 @@ public class RssProcessor {
             for (var itemContent : item.getContents()) {
                 content.append(itemContent.getValue());
             }
-            result.setContent(content.toString());
+            var processedContent = processHtmlContent(content.toString());
+            result.setContent(processedContent);
         }
         if ((result.getContent() == null || result.getContent().isBlank())
                 && item.getDescription() != null) {
-            result.setContent(item.getDescription().getValue());
+            var processedContent = processHtmlContent(item.getDescription().getValue());
+            result.setContent(processedContent);
         }
 
         result.setLink(item.getLink().strip());
@@ -90,6 +95,41 @@ public class RssProcessor {
         }
 
         return result;
+    }
+
+    private String processHtmlContent(String content) {
+        Document jsoupDoc = Jsoup.parse(content);
+        Document.OutputSettings outputSettings = new Document.OutputSettings();
+        outputSettings.prettyPrint(false);
+        jsoupDoc.outputSettings(outputSettings);
+        jsoupDoc.select("br").before("\\br");
+        jsoupDoc.select("p").before("\\p");
+        String strWithNewLines = Jsoup.clean(jsoupDoc.html(), "", Safelist.none(), outputSettings);
+        String str = strWithNewLines.replaceAll("\\\\br", "<br>")
+                .replaceAll("\\\\p", "<br><br>")
+                .replaceAll("\n", "");
+
+        str = removeLeadingLineBreaks(str);
+        str = handleMultipleLineBreaks(str);
+
+        return str;
+    }
+
+    private String removeLeadingLineBreaks(String str) {
+        for (int i = 0; i < 5; i++) {
+            if (str.startsWith("<br>")) {
+                str = str.substring(4);
+            } else if (str.startsWith("<br><br>")) {
+                str = str.substring(8);
+            }
+        }
+        return str;
+    }
+
+    private String handleMultipleLineBreaks(String str) {
+        str = str.replaceAll("<br><br><br><br>", "<br><br>");
+        str = str.replaceAll("<br><br><br>", "<br><br>");
+        return str;
     }
 
     private HostnameVerifier initTrustAll() {
