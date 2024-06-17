@@ -57,8 +57,12 @@ public class RssProcessor {
                         pushover.sendNotification(item);
                         LOG.debug("New entry: {}", item.getTitle());
 
-                        if (item.getContent() != null && item.getContent().length() > 1000) {
-                            mlController.queueSummarize(item);
+                        if (item.getContent() != null) {
+                            item.setContent(processHtmlContent(item.getContent()));
+                            mongo.update(item);
+                            if (item.getContent().length() > 1000) {
+                                mlController.queueSummarize(item);
+                            }
                         }
                     }));
 
@@ -77,13 +81,11 @@ public class RssProcessor {
             for (var itemContent : item.getContents()) {
                 content.append(itemContent.getValue());
             }
-            var processedContent = processHtmlContent(content.toString());
-            result.setContent(processedContent);
+            result.setContent(content.toString());
         }
         if ((result.getContent() == null || result.getContent().isBlank())
                 && item.getDescription() != null) {
-            var processedContent = processHtmlContent(item.getDescription().getValue());
-            result.setContent(processedContent);
+            result.setContent(item.getDescription().getValue());
         }
 
         result.setLink(item.getLink().strip());

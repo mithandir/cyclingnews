@@ -29,7 +29,7 @@ public class MlController {
         queue.add(news);
     }
 
-    @Scheduled(fixedDelay = 1, initialDelay = 2, timeUnit = TimeUnit.MINUTES)
+    @Scheduled(fixedDelay = 1, initialDelay = 5, timeUnit = TimeUnit.MINUTES)
     public void summarize() {
         NewsEntry news = null;
         try {
