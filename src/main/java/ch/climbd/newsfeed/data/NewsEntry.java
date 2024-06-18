@@ -22,6 +22,7 @@ public class NewsEntry {
 
     private Integer views = 0;
     private String language = "undefined";
+    private boolean deleted = false;
 
     public NewsEntry() {
     }
@@ -107,6 +108,14 @@ public class NewsEntry {
 
     public void setLanguage(String language) {
         this.language = language;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void delete() {
+        this.deleted = true;
     }
 
     public String getDomainWithProtocol() {

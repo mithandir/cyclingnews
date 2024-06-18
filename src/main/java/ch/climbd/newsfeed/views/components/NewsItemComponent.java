@@ -48,6 +48,9 @@ public class NewsItemComponent {
         var verticalLayout = new VerticalLayout();
         var index = 0;
         for (var item : items) {
+            if (item.isDeleted()) {
+                continue;
+            }
             index++;
             HorizontalLayout row = buildNewsItem(index, item, verticalLayout);
             if (row == null) continue;
@@ -121,7 +124,9 @@ public class NewsItemComponent {
         delete.setSize("15px");
         delete.setTooltipText("Delete");
         delete.addClickListener((ComponentEventListener<ClickEvent<Icon>>) iconClickEvent -> {
-            mongo.delete(item);
+            LOG.info("Delete: " + item.getTitle());
+            item.delete();
+            mongo.update(item);
             UI.getCurrent().getPage().reload();
         });
 
