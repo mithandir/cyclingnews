@@ -11,7 +11,7 @@ spring:
     ollama:
       base-url: http://ollama:11434
       chat.options:
-        model: qwen2:0.5b
+        model: qwen2:1.5b
         temperature: 0.7
         keep_alive: 60m
         num-thread: 1

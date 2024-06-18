@@ -1,6 +1,7 @@
 package ch.climbd.newsfeed.controller;
 
 import ch.climbd.newsfeed.data.NewsEntry;
+import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.client.ChatClient;
@@ -24,14 +25,23 @@ public class MlController {
         this.mongo = mongoController;
     }
 
+    @PostConstruct
+    public void fixQueueAfterRestart() {
+        var todaysNews = mongo.findAllPostedToday();
+        todaysNews.stream()
+                .filter(news -> news.getSummary() == null || news.getSummary().isBlank())
+                .filter(news -> news.getContent() != null && !news.getContent().isBlank() && news.getContent().length() > 1000)
+                .forEach(this::queueSummarize);
+    }
+
     public void queueSummarize(NewsEntry news) {
         LOG.info("Queued article for summarization: {}", news.getTitle());
         queue.add(news);
     }
 
-    @Scheduled(fixedDelay = 1, initialDelay = 5, timeUnit = TimeUnit.MINUTES)
+    @Scheduled(fixedDelay = 15, initialDelay = 30, timeUnit = TimeUnit.SECONDS)
     public void summarize() {
-        NewsEntry news = null;
+        NewsEntry news;
         try {
             news = queue.poll();
 

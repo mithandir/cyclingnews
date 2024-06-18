@@ -113,6 +113,16 @@ public class MongoController {
         return template.find(query, NewsEntry.class);
     }
 
+    public List<NewsEntry> findAllPostedToday() {
+        Query query = new Query();
+        query.addCriteria(Criteria.where("publishedAt").gte(ZonedDateTime.now().truncatedTo(ChronoUnit.DAYS).toInstant()));
+        query.with(Sort.by(Sort.Direction.DESC, "publishedAt"));
+        query.limit(100);
+        query.maxTimeMsec(1000);
+
+        return template.find(query, NewsEntry.class);
+    }
+
     public void save(NewsEntry newsEntry) {
         template.save(newsEntry);
     }
