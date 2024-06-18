@@ -186,6 +186,7 @@ public class NewsItemComponent {
         html.getStyle().set("text-align", "justify");
         html.getStyle().set("font-size", "small");
         html.getStyle().set("margin-left", "10px");
+        html.getStyle().set("max-width", "50em");
 
         return html;
     }
