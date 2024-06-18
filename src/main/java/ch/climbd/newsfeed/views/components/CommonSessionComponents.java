@@ -51,6 +51,7 @@ public class CommonSessionComponents {
 
     public MenuBar createMenu() {
         var menu = new MenuBar();
+        menu.setSizeFull();
         menu.setOpenOnHover(true);
 
         createIconItem(menu, VaadinIcon.NEWSPAPER, "Recent", null).addClickListener(listenerNewest);

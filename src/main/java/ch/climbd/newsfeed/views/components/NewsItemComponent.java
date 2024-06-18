@@ -181,12 +181,12 @@ public class NewsItemComponent {
     }
 
     private Html createHtmlElement(String str) {
-        String width = commonComponents.isMobile() ? "inherit" : "50em";
         var html = new Html("<div>" + str + "</div>");
+        html.getStyle().set("text-wrap", "wrap");
         html.getStyle().set("text-align", "justify");
         html.getStyle().set("font-size", "small");
         html.getStyle().set("margin-left", "10px");
-        html.getStyle().set("width", width);
+
         return html;
     }
 }

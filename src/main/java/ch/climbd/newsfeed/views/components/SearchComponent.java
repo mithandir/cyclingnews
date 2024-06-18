@@ -43,7 +43,10 @@ public class SearchComponent {
         clearButton.addClickListener(event -> clearEventHandler(newsItems, textField, clearButton));
 
         var searchbar = new HorizontalLayout(textField, searchButton, clearButton);
-        return new VerticalLayout(searchbar);
+        var verticalLayout = new VerticalLayout(searchbar);
+        verticalLayout.setSizeFull();
+
+        return verticalLayout;
     }
 
     private void clearEventHandler(VerticalLayout newsItems, TextField textField, Button clearButton) {
