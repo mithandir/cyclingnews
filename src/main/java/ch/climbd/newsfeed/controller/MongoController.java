@@ -131,6 +131,10 @@ public class MongoController {
         template.save(newsEntry);
     }
 
+    public void delete(NewsEntry newsEntry) {
+        template.remove(newsEntry);
+    }
+
     public void increaseVote(NewsEntry newsEntry) {
         var result = template.findById(newsEntry.getLink(), NewsEntry.class);
         if (result != null) {

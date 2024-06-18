@@ -8,10 +8,8 @@ import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.Html;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.avatar.Avatar;
-import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.details.Details;
 import com.vaadin.flow.component.details.DetailsVariant;
-import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.AnchorTarget;
 import com.vaadin.flow.component.html.Div;
@@ -90,19 +88,12 @@ public class NewsItemComponent {
         rowTitle.setAlignItems(FlexComponent.Alignment.CENTER);
         commonComponents.isItemUnRead(item.getPublishedDateTime(), rowTitle, avatar);
 
-        // build dialog
-        Dialog dialog = new Dialog();
-        dialog.setHeaderTitle(item.getTitle());
-
-        Button closeButton = new Button("Close", e -> dialog.close());
-        dialog.getFooter().add(closeButton);
-
         Anchor title = new Anchor(commonComponents.createLinkWithStats(item.getLink()), item.getTitle(), AnchorTarget.BLANK);
         if (commonComponents.isMobile()) {
-            rowTitle.add(title, dialog);
+            rowTitle.add(title);
         } else {
             Span source = new Span("(" + item.getDomainOnly() + ")");
-            rowTitle.add(title, source, dialog);
+            rowTitle.add(title, source);
         }
 
         HorizontalLayout rowDateAndLinks = new HorizontalLayout();
@@ -126,14 +117,18 @@ public class NewsItemComponent {
         vote.setTooltipText("Likes");
         vote.addClickListener((ComponentEventListener<ClickEvent<Icon>>) iconClickEvent -> handleVotes(item, voteSum, vote));
 
-        Icon viewContent = VaadinIcon.SEARCH.create();
-        viewContent.setSize("15px");
-        viewContent.addClickListener(e -> dialog.open());
+        Icon delete = VaadinIcon.TRASH.create();
+        delete.setSize("15px");
+        delete.setTooltipText("Delete");
+        delete.addClickListener((ComponentEventListener<ClickEvent<Icon>>) iconClickEvent -> {
+            mongo.delete(item);
+            UI.getCurrent().getPage().reload();
+        });
 
         commonComponents.checkIconStatus(vote, item.getLink());
 
         if (commonSessionComponents.isAdmin()) {
-            rowDateAndLinks.add(date, viewSum, viewIcon, voteSum, vote);
+            rowDateAndLinks.add(date, viewSum, viewIcon, voteSum, vote, delete);
         } else {
             rowDateAndLinks.add(date, voteSum, vote);
         }
