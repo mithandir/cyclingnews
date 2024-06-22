@@ -1,5 +1,7 @@
 package ch.climbd.newsfeed.data;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -10,7 +12,6 @@ import java.time.ZonedDateTime;
 
 @Document
 public class NewsEntry {
-
     @Id
     private String link;
 
@@ -153,5 +154,32 @@ public class NewsEntry {
         return String.format(
                 "NewsEntry[link=%s, title='%s', votes='%s']",
                 link, title, votes);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (o == null || getClass() != o.getClass()) return false;
+
+        NewsEntry newsEntry = (NewsEntry) o;
+
+        return new EqualsBuilder().append(deleted, newsEntry.deleted)
+                .append(link, newsEntry.link)
+                .append(title, newsEntry.title)
+                .append(publishedAt, newsEntry.publishedAt)
+                .append(language, newsEntry.language)
+                .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37)
+                .append(link)
+                .append(title)
+                .append(publishedAt)
+                .append(language)
+                .append(deleted)
+                .toHashCode();
     }
 }
