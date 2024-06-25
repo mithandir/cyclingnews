@@ -1,9 +1,6 @@
 package ch.climbd.newsfeed.views.components;
 
-import com.vaadin.flow.component.ClickEvent;
-import com.vaadin.flow.component.ComponentEventListener;
-import com.vaadin.flow.component.Text;
-import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.contextmenu.HasMenuItems;
 import com.vaadin.flow.component.contextmenu.MenuItem;
 import com.vaadin.flow.component.contextmenu.SubMenu;
@@ -29,6 +26,10 @@ public class CommonSessionComponents {
 
     @Autowired
     private CommonComponents commonComponents;
+
+    private int focusKeyIndex = 0;
+    private int focusCurrentIndex = 0;
+    private ShortcutRegistration registration;
 
     private boolean isAdmin = false;
     private boolean adminChecked = false;
@@ -153,5 +154,29 @@ public class CommonSessionComponents {
 
     public boolean isAdminChecked() {
         return adminChecked;
+    }
+
+    public int getFocusKeyIndex() {
+        return focusKeyIndex;
+    }
+
+    public void setFocusKeyIndex(int focusKeyIndex) {
+        this.focusKeyIndex = focusKeyIndex;
+    }
+
+    public int getFocusCurrentIndex() {
+        return focusCurrentIndex;
+    }
+
+    public void setFocusCurrentIndex(int focusCurrentIndex) {
+        this.focusCurrentIndex = focusCurrentIndex;
+    }
+
+    public ShortcutRegistration getRegistration() {
+        return registration;
+    }
+
+    public void setRegistration(ShortcutRegistration registration) {
+        this.registration = registration;
     }
 }

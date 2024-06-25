@@ -3,10 +3,7 @@ package ch.climbd.newsfeed.views.components;
 import ch.climbd.newsfeed.controller.MongoController;
 import ch.climbd.newsfeed.controller.scheduler.Filter;
 import ch.climbd.newsfeed.data.NewsEntry;
-import com.vaadin.flow.component.ClickEvent;
-import com.vaadin.flow.component.ComponentEventListener;
-import com.vaadin.flow.component.Html;
-import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.avatar.Avatar;
 import com.vaadin.flow.component.details.Details;
 import com.vaadin.flow.component.details.DetailsVariant;
@@ -45,6 +42,7 @@ public class NewsItemComponent {
     private MongoController mongo;
 
     public VerticalLayout createNewsItem(List<NewsEntry> items) {
+        commonSessionComponents.setFocusKeyIndex(0);
         var verticalLayout = new VerticalLayout();
         var index = 0;
         for (var item : items) {
@@ -67,6 +65,33 @@ public class NewsItemComponent {
                 verticalLayout.add(details);
             }
         }
+        if (commonSessionComponents.getRegistration() != null) {
+            commonSessionComponents.getRegistration().remove();
+        }
+
+        commonSessionComponents.setRegistration(UI.getCurrent().addShortcutListener(
+                () -> {
+                    commonSessionComponents.setFocusCurrentIndex(0);
+
+                    verticalLayout.getChildren().forEach(component -> {
+                        if (component instanceof Details) {
+                            if (!((Details) component).isOpened()) {
+                                ((Details) component).setOpened(true);
+                            }
+                        }
+
+                        if (component instanceof HorizontalLayout) {
+                            if (commonSessionComponents.getFocusCurrentIndex() == commonSessionComponents.getFocusKeyIndex()) {
+                                var row = (HorizontalLayout) component;
+                                component.scrollIntoView();
+                            }
+                            commonSessionComponents.setFocusCurrentIndex(commonSessionComponents.getFocusCurrentIndex() + 1);
+
+
+                        }
+                    });
+                    commonSessionComponents.setFocusKeyIndex(commonSessionComponents.getFocusKeyIndex() + 1);
+                }, Key.KEY_J));
 
         return verticalLayout;
     }
