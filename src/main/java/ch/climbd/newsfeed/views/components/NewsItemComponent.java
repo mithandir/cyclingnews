@@ -66,6 +66,7 @@ public class NewsItemComponent {
             }
         }
         if (!commonSessionComponents.getRegistration().isEmpty()) {
+            commonSessionComponents.getRegistration().forEach(ShortcutRegistration::remove);
             commonSessionComponents.getRegistration().clear();
         }
 
