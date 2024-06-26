@@ -51,7 +51,7 @@ public class MlController {
             LOG.info("Processing summarization queue of length: {}", queue.size());
             news.setSummary(chatClient.prompt()
                     .system("You are a news reporter that summarizes news articles")
-                    .user("Summarize the following text, in a maximum of 3 paragraphs: " + news.getContent())
+                    .user("Write an enganging summary of the following text, for publication in social media, the lenght of the summary should not be more than 3 paragraphs: \n\n" + news.getContent())
                     .call()
                     .content());
             LOG.debug("Summary: {}", news.getSummary());
