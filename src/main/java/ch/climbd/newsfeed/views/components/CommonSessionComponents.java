@@ -14,7 +14,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.SessionScope;
 import org.vaadin.addon.browserstorage.LocalStorage;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Component
@@ -29,7 +31,7 @@ public class CommonSessionComponents {
 
     private int focusKeyIndex = 0;
     private int focusCurrentIndex = 0;
-    private ShortcutRegistration registration;
+    private List<ShortcutRegistration> registration;
 
     private boolean isAdmin = false;
     private boolean adminChecked = false;
@@ -44,6 +46,7 @@ public class CommonSessionComponents {
 
         // Add english anyway
         selectedLanguages.add("en");
+        registration = new ArrayList<>();
     }
 
     public Set<String> getSelectedLanguages() {
@@ -172,11 +175,7 @@ public class CommonSessionComponents {
         this.focusCurrentIndex = focusCurrentIndex;
     }
 
-    public ShortcutRegistration getRegistration() {
+    public List<ShortcutRegistration> getRegistration() {
         return registration;
-    }
-
-    public void setRegistration(ShortcutRegistration registration) {
-        this.registration = registration;
     }
 }

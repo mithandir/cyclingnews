@@ -65,35 +65,55 @@ public class NewsItemComponent {
                 verticalLayout.add(details);
             }
         }
-        if (commonSessionComponents.getRegistration() != null) {
-            commonSessionComponents.getRegistration().remove();
+        if (!commonSessionComponents.getRegistration().isEmpty()) {
+            commonSessionComponents.getRegistration().clear();
         }
 
-        commonSessionComponents.setRegistration(UI.getCurrent().addShortcutListener(
-                () -> {
-                    commonSessionComponents.setFocusCurrentIndex(0);
+        commonSessionComponents.getRegistration().add(UI.getCurrent().addShortcutListener(
+                () -> handleKeyEvents(verticalLayout, true), Key.KEY_J));
 
-                    verticalLayout.getChildren().forEach(component -> {
-                        if (component instanceof Details) {
-                            if (!((Details) component).isOpened()) {
-                                ((Details) component).setOpened(true);
-                            }
-                        }
-
-                        if (component instanceof HorizontalLayout) {
-                            if (commonSessionComponents.getFocusCurrentIndex() == commonSessionComponents.getFocusKeyIndex()) {
-                                var row = (HorizontalLayout) component;
-                                component.scrollIntoView();
-                            }
-                            commonSessionComponents.setFocusCurrentIndex(commonSessionComponents.getFocusCurrentIndex() + 1);
-
-
-                        }
-                    });
-                    commonSessionComponents.setFocusKeyIndex(commonSessionComponents.getFocusKeyIndex() + 1);
-                }, Key.KEY_J));
+        commonSessionComponents.getRegistration().add(UI.getCurrent().addShortcutListener(
+                () -> handleKeyEvents(verticalLayout, false), Key.KEY_K));
 
         return verticalLayout;
+    }
+
+    private void handleKeyEvents(VerticalLayout verticalLayout, boolean goDown) {
+        commonSessionComponents.setFocusCurrentIndex(0);
+
+        if (!goDown) {
+            if (commonSessionComponents.getFocusKeyIndex() == 0) {
+                return;
+            }
+            commonSessionComponents.setFocusKeyIndex(commonSessionComponents.getFocusKeyIndex() - 1);
+        }
+
+        verticalLayout.getChildren().forEach(component -> {
+            if (component instanceof Details) {
+                if (!((Details) component).isOpened()) {
+                    ((Details) component).setOpened(true);
+                }
+            }
+
+            if (component instanceof HorizontalLayout) {
+                if (commonSessionComponents.getFocusCurrentIndex() == commonSessionComponents.getFocusKeyIndex()) {
+                    var row = (HorizontalLayout) component;
+                    component.scrollIntoView();
+                }
+                commonSessionComponents.setFocusCurrentIndex(commonSessionComponents.getFocusCurrentIndex() + 1);
+            }
+        });
+
+        if (goDown) {
+            var sizeHorizontalLayouts = verticalLayout.getChildren()
+                    .filter(component -> component instanceof HorizontalLayout)
+                    .count();
+
+            if (commonSessionComponents.getFocusKeyIndex() == sizeHorizontalLayouts) {
+                return;
+            }
+            commonSessionComponents.setFocusKeyIndex(commonSessionComponents.getFocusKeyIndex() + 1);
+        }
     }
 
     public HorizontalLayout buildNewsItem(int index, NewsEntry item, VerticalLayout sourceLayout) {
@@ -149,7 +169,7 @@ public class NewsItemComponent {
         delete.setSize("15px");
         delete.setTooltipText("Delete");
         delete.addClickListener((ComponentEventListener<ClickEvent<Icon>>) iconClickEvent -> {
-            LOG.info("Delete: " + item.getTitle());
+            LOG.info("Delete: {}", item.getTitle());
             item.delete();
             mongo.update(item);
             UI.getCurrent().getPage().reload();
