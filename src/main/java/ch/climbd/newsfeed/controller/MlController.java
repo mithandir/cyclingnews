@@ -27,7 +27,7 @@ public class MlController {
 
     @PostConstruct
     public void fixQueueAfterRestart() {
-        var todaysNews = mongo.findAllPostedToday();
+        var todaysNews = mongo.findLast100PostsPostedInTheLast48h();
         todaysNews.stream()
                 .filter(news -> news.getSummary() == null || news.getSummary().isBlank())
                 .filter(news -> news.getContent() != null && !news.getContent().isBlank() && news.getContent().length() > 1000)

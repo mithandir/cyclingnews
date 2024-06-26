@@ -113,9 +113,9 @@ public class MongoController {
         return template.find(query, NewsEntry.class);
     }
 
-    public List<NewsEntry> findAllPostedToday() {
+    public List<NewsEntry> findLast100PostsPostedInTheLast48h() {
         Query query = new Query();
-        query.addCriteria(Criteria.where("publishedAt").gte(ZonedDateTime.now().truncatedTo(ChronoUnit.DAYS).toInstant()));
+        query.addCriteria(Criteria.where("publishedAt").gte(ZonedDateTime.now().minusDays(2).toInstant()));
         query.with(Sort.by(Sort.Direction.DESC, "publishedAt"));
         query.limit(100);
         query.maxTimeMsec(1000);
