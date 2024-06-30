@@ -14,6 +14,7 @@ public class AppShell implements AppShellConfigurator {
 
     @Override
     public void configurePage(AppShellSettings settings) {
+        settings.addMetaTag("titel", "Climbd Cycling News - Latest News");
         settings.addMetaTag("author", "climbd");
         settings.addMetaTag("description", "Finding the most popular and freshest news on road bike cycling with the Climbd news aggregator. All your favorite content on a single page.");
         settings.addMetaTag("robots", "index, follow");
