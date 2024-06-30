@@ -79,44 +79,6 @@ public class NewsItemComponent {
         return verticalLayout;
     }
 
-    private void handleKeyEvents(VerticalLayout verticalLayout, boolean goDown) {
-        commonSessionComponents.setFocusCurrentIndex(0);
-
-        if (!goDown) {
-            if (commonSessionComponents.getFocusKeyIndex() == 0) {
-                return;
-            }
-            commonSessionComponents.setFocusKeyIndex(commonSessionComponents.getFocusKeyIndex() - 1);
-        }
-
-        verticalLayout.getChildren().forEach(component -> {
-            if (component instanceof Details) {
-                if (!((Details) component).isOpened()) {
-                    ((Details) component).setOpened(true);
-                }
-            }
-
-            if (component instanceof HorizontalLayout) {
-                if (commonSessionComponents.getFocusCurrentIndex() == commonSessionComponents.getFocusKeyIndex()) {
-                    var row = (HorizontalLayout) component;
-                    component.scrollIntoView();
-                }
-                commonSessionComponents.setFocusCurrentIndex(commonSessionComponents.getFocusCurrentIndex() + 1);
-            }
-        });
-
-        if (goDown) {
-            var sizeHorizontalLayouts = verticalLayout.getChildren()
-                    .filter(component -> component instanceof HorizontalLayout)
-                    .count();
-
-            if (commonSessionComponents.getFocusKeyIndex() == sizeHorizontalLayouts) {
-                return;
-            }
-            commonSessionComponents.setFocusKeyIndex(commonSessionComponents.getFocusKeyIndex() + 1);
-        }
-    }
-
     public HorizontalLayout buildNewsItem(int index, NewsEntry item, VerticalLayout sourceLayout) {
         if (filter.isSpam(item.getTitle())) {
             return null;
@@ -235,5 +197,43 @@ public class NewsItemComponent {
         html.getStyle().set("max-width", "50em");
 
         return html;
+    }
+
+    private void handleKeyEvents(VerticalLayout verticalLayout, boolean goDown) {
+        commonSessionComponents.setFocusCurrentIndex(0);
+
+        if (!goDown) {
+            if (commonSessionComponents.getFocusKeyIndex() == 0) {
+                return;
+            }
+            commonSessionComponents.setFocusKeyIndex(commonSessionComponents.getFocusKeyIndex() - 1);
+        }
+
+        verticalLayout.getChildren().forEach(component -> {
+            if (component instanceof Details) {
+                if (!((Details) component).isOpened()) {
+                    ((Details) component).setOpened(true);
+                }
+            }
+
+            if (component instanceof HorizontalLayout) {
+                if (commonSessionComponents.getFocusCurrentIndex() == commonSessionComponents.getFocusKeyIndex()) {
+                    var row = (HorizontalLayout) component;
+                    component.scrollIntoView();
+                }
+                commonSessionComponents.setFocusCurrentIndex(commonSessionComponents.getFocusCurrentIndex() + 1);
+            }
+        });
+
+        if (goDown) {
+            var sizeHorizontalLayouts = verticalLayout.getChildren()
+                    .filter(component -> component instanceof HorizontalLayout)
+                    .count();
+
+            if (commonSessionComponents.getFocusKeyIndex() == sizeHorizontalLayouts) {
+                return;
+            }
+            commonSessionComponents.setFocusKeyIndex(commonSessionComponents.getFocusKeyIndex() + 1);
+        }
     }
 }

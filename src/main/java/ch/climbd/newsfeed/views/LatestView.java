@@ -21,7 +21,7 @@ import org.springframework.beans.factory.annotation.Value;
 
 import java.util.LinkedList;
 
-@Route("latest")
+@Route("")
 @PageTitle("Climbd Cycling News - Latest News")
 public class LatestView extends VerticalLayout {
 

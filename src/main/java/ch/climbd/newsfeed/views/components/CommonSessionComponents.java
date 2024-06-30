@@ -104,7 +104,7 @@ public class CommonSessionComponents {
     private final ComponentEventListener<ClickEvent<MenuItem>> listenerViews = e -> e.getSource().getUI().ifPresent(ui ->
             ui.navigate("views"));
     private final ComponentEventListener<ClickEvent<MenuItem>> listenerNewest = e -> e.getSource().getUI().ifPresent(ui ->
-            ui.navigate("latest"));
+            ui.navigate(""));
     private final ComponentEventListener<ClickEvent<MenuItem>> listenerAddNews = e -> e.getSource().getUI().ifPresent(ui ->
             ui.navigate("add-news"));
 
