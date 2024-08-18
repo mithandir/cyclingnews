@@ -47,7 +47,7 @@ public class Scheduler {
         rssFeeds.put("https://cycling.today/feed/", "en");
         rssFeeds.put("https://escapecollective.com/feed/", "en");
         rssFeeds.put("https://feeds.sbs.com.au/cycling-central", "en");
-//        rssFeeds.put("https://forum.intervals.icu/latest.rss", "en");
+        rssFeeds.put("https://forum.intervals.icu/latest.rss", "en");
         rssFeeds.put("https://forum.xertonline.com/latest.rss", "en");
         rssFeeds.put("https://granfondo-cycling.com/feed/", "en");
         rssFeeds.put("https://gruppetto-magazin.ch/api/rss-feed", "de");
