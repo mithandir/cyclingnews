@@ -33,7 +33,7 @@ import java.util.Date;
 public class RssProcessor {
     private static final Logger LOG = LoggerFactory.getLogger(RssProcessor.class);
     private final ZoneId zoneId = ZoneId.of("Europe/Berlin");
-    private final YoutubeTranscriptApi youtubeTranscriptApi = TranscriptApiFactory.createDefault();
+    private final YoutubeTranscriptApi youtubeTranscriptApi = TranscriptApiFactory.createWithClient(new DefaultYoutubeClientCopy());
 
     @Autowired
     private MongoController mongo;
@@ -82,13 +82,14 @@ public class RssProcessor {
     }
 
     private void processYoutubeTranscription(NewsEntry item) {
+
         if (item.getLink().startsWith("https://www.youtube.com/watch?v=")) {
             var videoId = item.getLink().substring(32);
             try {
                 TranscriptList transcriptList = youtubeTranscriptApi.listTranscripts(videoId);
                 var fragments = transcriptList.findTranscript("en").fetch();
                 var content = TranscriptFormatters.textFormatter().format(fragments);
-                LOG.info("Transcript found for video: {}", content);
+                LOG.info("Transcript found for video: {}", item.getTitle());
                 item.setContent(content);
             } catch (TranscriptRetrievalException e) {
                 LOG.warn("No transcript found for video: {}", videoId);
