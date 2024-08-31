@@ -15,12 +15,13 @@
     <description>Hackernews clone for cycling news</description>
     <properties>
         <java.version>22</java.version>
-        <spring-ai.version>1.0.0.M1</spring-ai.version>
+        <spring-ai.version>1.0.0.M2</spring-ai.version>
         <vaadin.version>24.3.17</vaadin.version>
         <maven.versions.plugin>2.17.1</maven.versions.plugin>
         <rome.rss.version>2.1.0</rome.rss.version>
         <browserstorage.version>1.0.0</browserstorage.version>
         <jpushover.version>7.2.0</jpushover.version>
+        <youtube.transcript.version>0.3.4</youtube.transcript.version>
     </properties>
 
     <dependencyManagement>
@@ -78,6 +79,11 @@
             <groupId>de.svenkubiak</groupId>
             <artifactId>jpushover</artifactId>
             <version>${jpushover.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.github.thoroldvix</groupId>
+            <artifactId>youtube-transcript-api</artifactId>
+            <version>${youtube.transcript.version}</version>
         </dependency>
     </dependencies>
 
