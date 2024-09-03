@@ -8,11 +8,6 @@ import com.rometools.rome.feed.synd.SyndEntry;
 import com.rometools.rome.feed.synd.SyndFeed;
 import com.rometools.rome.io.SyndFeedInput;
 import com.rometools.rome.io.XmlReader;
-import io.github.thoroldvix.api.TranscriptFormatters;
-import io.github.thoroldvix.api.TranscriptList;
-import io.github.thoroldvix.api.TranscriptRetrievalException;
-import io.github.thoroldvix.api.YoutubeTranscriptApi;
-import io.github.thoroldvix.internal.TranscriptApiFactory;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.safety.Safelist;
@@ -33,7 +28,6 @@ import java.util.Date;
 public class RssProcessor {
     private static final Logger LOG = LoggerFactory.getLogger(RssProcessor.class);
     private final ZoneId zoneId = ZoneId.of("Europe/Berlin");
-    private final YoutubeTranscriptApi youtubeTranscriptApi = TranscriptApiFactory.createWithClient(new DefaultYoutubeClientCopy());
 
     @Autowired
     private MongoController mongo;
@@ -63,37 +57,21 @@ public class RssProcessor {
                         pushover.sendNotification(item);
                         LOG.debug("New entry: {}", item.getTitle());
 
-                        processYoutubeTranscription(item);
                         if (item.getContent() != null) {
-                            if (!item.getLink().startsWith("https://www.youtube.com")) { // don't HTML process youtube videos
-                                item.setContent(processHtmlContent(item.getContent()));
-                            }
-
-                            mongo.update(item);
-                            if (item.getContent().length() > 1000) {
+                            if (item.getLink().startsWith("https://www.youtube.com")) {
                                 mlController.queueSummarize(item);
+                            } else { // PreProcess HTML content
+                                item.setContent(processHtmlContent(item.getContent()));
+                                mongo.update(item);
+                                if (item.getContent().length() > 1000) {
+                                    mlController.queueSummarize(item);
+                                }
                             }
                         }
                     }));
 
         } catch (Exception e) {
             LOG.error("Error reading RSS feed: {}", url);
-        }
-    }
-
-    private void processYoutubeTranscription(NewsEntry item) {
-
-        if (item.getLink().startsWith("https://www.youtube.com/watch?v=")) {
-            var videoId = item.getLink().substring(32);
-            try {
-                TranscriptList transcriptList = youtubeTranscriptApi.listTranscripts(videoId);
-                var fragments = transcriptList.findTranscript("en").fetch();
-                var content = TranscriptFormatters.textFormatter().format(fragments);
-                LOG.info("Transcript found for video: {}", item.getTitle());
-                item.setContent(content);
-            } catch (TranscriptRetrievalException e) {
-                LOG.warn("No transcript found for video: {}", videoId);
-            }
         }
     }
 

@@ -1,6 +1,11 @@
 package ch.climbd.newsfeed.controller;
 
 import ch.climbd.newsfeed.data.NewsEntry;
+import io.github.thoroldvix.api.TranscriptFormatters;
+import io.github.thoroldvix.api.TranscriptList;
+import io.github.thoroldvix.api.TranscriptRetrievalException;
+import io.github.thoroldvix.api.YoutubeTranscriptApi;
+import io.github.thoroldvix.internal.TranscriptApiFactory;
 import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +20,7 @@ import java.util.concurrent.TimeUnit;
 public class MlController {
 
     private static final Logger LOG = LoggerFactory.getLogger(MlController.class);
+    private final YoutubeTranscriptApi youtubeTranscriptApi = TranscriptApiFactory.createWithClient(new DefaultYoutubeClientCopy());
 
     private final ChatClient chatClient;
     private final MongoController mongo;
@@ -49,6 +55,17 @@ public class MlController {
                 return;
             }
             LOG.info("Processing summarization queue of length: {}", queue.size());
+
+            processYoutubeTranscription(news);
+
+            summarizeNormalText(news);
+        } catch (Exception e) {
+            LOG.error("Error summarizing article", e);
+        }
+    }
+
+    private void summarizeNormalText(NewsEntry news) {
+        if (!news.getLink().startsWith("https://www.youtube.com/watch?v=")) {
             news.setSummary(chatClient.prompt()
                     .system("You are a news reporter that summarizes news articles")
                     .user("Write an enganging summary of the following text, for publication in social media, the lenght of the summary should not be more than 3 paragraphs: \n\n" + news.getContent())
@@ -57,8 +74,30 @@ public class MlController {
             LOG.debug("Summary: {}", news.getSummary());
             mongo.update(news);
             LOG.info("Summarized the article: {}", news.getTitle());
-        } catch (Exception e) {
-            LOG.error("Error summarizing article", e);
+        }
+    }
+
+    private void processYoutubeTranscription(NewsEntry item) {
+        if (item.getLink().startsWith("https://www.youtube.com/watch?v=")) {
+            var videoId = item.getLink().substring(32);
+            try {
+                TranscriptList transcriptList = youtubeTranscriptApi.listTranscripts(videoId);
+                var fragments = transcriptList.findTranscript("en").fetch();
+                var content = TranscriptFormatters.textFormatter().format(fragments);
+                LOG.info("Transcript found for video: {}", item.getTitle());
+
+                item.setSummary(chatClient.prompt()
+                        .system("You are a news reporter that summarizes news articles")
+                        .user("Create a summary of the following youtube subtitles: \n\n" + content)
+                        .call()
+                        .content());
+                LOG.debug("Summary: {}", item.getSummary());
+                mongo.update(item);
+                LOG.info("Summarized the article: {}", item.getTitle());
+
+            } catch (TranscriptRetrievalException e) {
+                LOG.warn("No transcript found for video: {}", videoId);
+            }
         }
     }
 }

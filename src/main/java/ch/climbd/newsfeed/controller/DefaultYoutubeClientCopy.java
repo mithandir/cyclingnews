@@ -1,4 +1,4 @@
-package ch.climbd.newsfeed.controller.scheduler;
+package ch.climbd.newsfeed.controller;
 
 import io.github.thoroldvix.api.TranscriptRetrievalException;
 import io.github.thoroldvix.api.YoutubeClient;
@@ -17,7 +17,7 @@ import java.util.Map;
 /**
  * Added HTTP proxy configuration for Youtube
  */
-final class DefaultYoutubeClientCopy implements YoutubeClient {
+public final class DefaultYoutubeClientCopy implements YoutubeClient {
     private final HttpClient httpClient;
 
     DefaultYoutubeClientCopy() {
