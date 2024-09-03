@@ -55,17 +55,14 @@ public class NewsItemComponent {
             verticalLayout.add(row);
 
             if (item.getContent() != null && !item.getContent().isBlank()) {
-                // Ignore youtube video transcripts that are not yet summarized
-                if (!item.getLink().startsWith("https://www.youtube.com") || !item.getSummary().isBlank()) {
-                    Details details = new Details(formatHtml(item, true), formatHtml(item, false));
-                    details.setOpened(commonComponents.isMobile());
-                    details.addThemeVariants(DetailsVariant.SMALL);
-                    details.getStyle().set("position", "relative");
-                    details.getStyle().set("margin-left", commonComponents.isMobile() ? "inherit" : "5.5em");
-                    details.getStyle().set("margin-top", "-2em");
-                    verticalLayout.add(details);
-                }
+                Details details = new Details(formatHtml(item, true), formatHtml(item, false));
+                details.setOpened(commonComponents.isMobile());
+                details.addThemeVariants(DetailsVariant.SMALL);
+                details.getStyle().set("position", "relative");
+                details.getStyle().set("margin-left", commonComponents.isMobile() ? "inherit" : "5.5em");
+                details.getStyle().set("margin-top", "-2em");
 
+                verticalLayout.add(details);
             }
         }
         if (!commonSessionComponents.getRegistration().isEmpty()) {
