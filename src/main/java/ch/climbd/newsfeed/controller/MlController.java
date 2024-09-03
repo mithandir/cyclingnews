@@ -86,12 +86,17 @@ public class MlController {
                 var content = TranscriptFormatters.textFormatter().format(fragments);
                 LOG.info("Transcript found for video: {}", item.getTitle());
 
-                item.setSummary(chatClient.prompt()
+                // 32k token limit
+                if (content.length() > 100000) {
+                    content = content.substring(0, 100000);
+                }
+
+                var summary = chatClient.prompt()
                         .system("You are a news reporter that summarizes news articles")
                         .user("Create a summary of the following youtube subtitles: \n\n" + content)
                         .call()
-                        .content());
-                LOG.debug("Summary: {}", item.getSummary());
+                        .content();
+                item.setContent(summary);
                 mongo.update(item);
                 LOG.info("Summarized the article: {}", item.getTitle());
 
