@@ -67,8 +67,8 @@ public class MlController {
     private void summarizeNormalText(NewsEntry news) {
         if (!news.getLink().startsWith("https://www.youtube.com/watch?v=")) {
             news.setSummary(chatClient.prompt()
-                    .system("You are a news reporter that summarizes news articles")
-                    .user("Write an enganging summary of the following text, for publication in social media, the lenght of the summary should not be more than 3 paragraphs: \n\n" + news.getContent())
+                    .system("You are a news reporter that summarizes news articles for social media")
+                    .user("Write an enganging summary of the following text: \n\n" + news.getContent())
                     .call()
                     .content());
             LOG.debug("Summary: {}", news.getSummary());
@@ -92,8 +92,7 @@ public class MlController {
                 }
 
                 var summary = chatClient.prompt()
-                        .system("You are a news reporter that summarizes news articles")
-                        .user("Create a summary of the following youtube subtitles: \n\n" + content)
+                        .user("Generate a summary of the following transcript : \n\n" + content)
                         .call()
                         .content();
                 item.setContent(summary);
