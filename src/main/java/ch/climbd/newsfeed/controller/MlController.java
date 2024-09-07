@@ -67,8 +67,14 @@ public class MlController {
     private void summarizeNormalText(NewsEntry news) {
         if (!news.getLink().startsWith("https://www.youtube.com/watch?v=")) {
             news.setSummary(chatClient.prompt()
-                    .system("You are a news reporter that summarizes news articles for social media")
-                    .user("Write an enganging summary of the following text: \n\n" + news.getContent())
+                    .system("As a professional summarizer, create a concise and comprehensive summary of the provided text, be it an article, post, conversation, or passage, while adhering to these guidelines:\n" +
+                            "* Craft a summary that is detailed, thorough, in-depth, and complex, while maintaining clarity and conciseness.\n" +
+                            "* Incorporate main ideas and essential information, eliminating extraneous language and focusing on critical aspects.\n" +
+                            "* Rely strictly on the provided text, without including external information.\n" +
+                            "* Show just the content of the summary\n" +
+                            "* Do not print any system information, logs or debug statements\n" +
+                            "* Format the summary in paragraph form for easy understanding.")
+                    .user(news.getContent())
                     .call()
                     .content());
             LOG.debug("Summary: {}", news.getSummary());
@@ -92,7 +98,14 @@ public class MlController {
                 }
 
                 var summary = chatClient.prompt()
-                        .user("Generate a summary of the following transcript : \n\n" + content)
+                        .system("As a professional summarizer, create a concise and comprehensive summary of the provided text, be it an article, post, conversation, or passage, while adhering to these guidelines:\n" +
+                                "* Craft a summary that is detailed, thorough, in-depth, and complex, while maintaining clarity and conciseness.\n" +
+                                "* Incorporate main ideas and essential information, eliminating extraneous language and focusing on critical aspects.\n" +
+                                "* Rely strictly on the provided text, without including external information.\n" +
+                                "* Show just the content of the summary\n" +
+                                "* Do not print any system information, logs or debug statements\n" +
+                                "* Format the summary in paragraph form for easy understanding.")
+                        .user(content)
                         .call()
                         .content();
                 item.setContent(summary);
