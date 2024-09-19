@@ -10,7 +10,8 @@ COPY / /opt/src/newsfeed/
 
 WORKDIR /opt/src/newsfeed
 RUN --mount=type=cache,target=/root/.m2 mvn clean install -DskipTests=true -P production
-RUN java -Djarmode=layertools -jar /opt/src/newsfeed/target/newsfeed-0.0.1-SNAPSHOT.jar extract
+
+#------------------------------------------------
 
 FROM eclipse-temurin:22-jre-alpine
 VOLUME /tmp
@@ -22,10 +23,6 @@ RUN addgroup -S newsfeed && adduser -S newsfeed -G newsfeed
 USER newsfeed
 
 ARG DEPENDENCY=/opt/src/newsfeed
+COPY --from=builder ${DEPENDENCY}/*.jar app.jar
 
-COPY --from=builder ${DEPENDENCY}/dependencies/ ./
-COPY --from=builder ${DEPENDENCY}/spring-boot-loader/ ./
-COPY --from=builder ${DEPENDENCY}/snapshot-dependencies/ ./
-COPY --from=builder ${DEPENDENCY}/application/ ./
-
-ENTRYPOINT ["java","--enable-preview", "org.springframework.boot.loader.launch.JarLauncher"]
+ENTRYPOINT ["java","--enable-preview", "-jar", "app.jar"]

@@ -31,6 +31,7 @@ public class Scheduler {
 
     @PostConstruct
     public void init() {
+        LOG.info("Initialising Feed List");
         rssFeeds.put("http://feeds.feedburner.com/ilovecyclingde", "de");
         rssFeeds.put("http://feeds.feedburner.com/inrng/inrng0", "en");
         rssFeeds.put("http://feeds.feedburner.com/shutuplegsde", "de");
@@ -118,6 +119,7 @@ public class Scheduler {
                 }
             }
         }));
+        LOG.info("Icon cache initialised");
     }
 
     @Scheduled(fixedDelay = 15, initialDelay = 1, timeUnit = TimeUnit.MINUTES)
