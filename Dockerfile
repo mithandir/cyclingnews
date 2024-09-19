@@ -9,7 +9,7 @@ RUN mkdir /opt/src
 COPY / /opt/src/newsfeed/
 
 WORKDIR /opt/src/newsfeed
-RUN --mount=type=cache,target=/root/.m2 mvn clean install -DskipTests=true -P production
+RUN --mount=type=cache,target=/root/.m2 MAVEN_OPTS=-Dorg.slf4j.simpleLogger.defaultLogLevel=warn mvn clean install -DskipTests=true -P production && cp target/*.jar /opt/app.jar
 
 #------------------------------------------------
 
@@ -22,7 +22,5 @@ LABEL MAINTAINER=mithandir@gmail.com
 RUN addgroup -S newsfeed && adduser -S newsfeed -G newsfeed
 USER newsfeed
 
-ARG DEPENDENCY=/opt/src/newsfeed
-COPY --from=builder ${DEPENDENCY}/*.jar /opt/app.jar
-
+COPY --from=builder /opt/app.jar /opt/app.jar
 ENTRYPOINT ["java","--enable-preview", "-jar", "/opt/app.jar"]
