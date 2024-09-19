@@ -23,6 +23,6 @@ RUN addgroup -S newsfeed && adduser -S newsfeed -G newsfeed
 USER newsfeed
 
 ARG DEPENDENCY=/opt/src/newsfeed
-COPY --from=builder ${DEPENDENCY}/*.jar app.jar
+COPY --from=builder ${DEPENDENCY}/*.jar /opt/app.jar
 
-ENTRYPOINT ["java","--enable-preview", "-jar", "app.jar"]
+ENTRYPOINT ["java","--enable-preview", "-jar", "/opt/app.jar"]
