@@ -13,7 +13,7 @@ RUN --mount=type=cache,target=/root/.m2 MAVEN_OPTS=-Dorg.slf4j.simpleLogger.defa
 
 #------------------------------------------------
 
-FROM eclipse-temurin:22-jre-alpine
+FROM eclipse-temurin:23-jre-alpine
 VOLUME /tmp
 LABEL NAME="climbd-newsfeed"
 LABEL VERSION=1.0.0
