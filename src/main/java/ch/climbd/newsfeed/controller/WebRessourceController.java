@@ -27,28 +27,6 @@ public class WebRessourceController {
 
         var currentDate = LocalDateTime.now().toLocalDate().format(DateTimeFormatter.ISO_LOCAL_DATE);
 
-        return STR."""
-        <?xml version="1.0" encoding="UTF-8"?>
-        <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-            <url>
-                <loc>https://news.qfotografie.de/latest</loc>
-                <lastmod>\{ currentDate }</lastmod>
-                <changefreq>daily</changefreq>
-                <priority>1.0</priority>
-            </url>
-            <url>
-                <loc>https://news.qfotografie.de/views</loc>
-                <lastmod>\{ currentDate }</lastmod>
-                <changefreq>daily</changefreq>
-                <priority>0.5</priority>
-            </url>
-            <url>
-                <loc>https://news.qfotografie.de/liked</loc>
-                <lastmod>\{ currentDate }</lastmod>
-                <changefreq>daily</changefreq>
-                <priority>0.5</priority>
-            </url>
-        </urlset>
-        """;
+        return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\n    <url>\n        <loc>https://news.qfotografie.de/</loc>\n        <lastmod>" + currentDate + "</lastmod>\n        <changefreq>daily</changefreq>\n        <priority>1.0</priority>\n    </url>\n    <url>\n        <loc>https://news.qfotografie.de/views</loc>\n        <lastmod>" + currentDate + "</lastmod>\n        <changefreq>daily</changefreq>\n        <priority>0.5</priority>\n    </url>\n    <url>\n        <loc>https://news.qfotografie.de/liked</loc>\n        <lastmod>" + currentDate + "</lastmod>\n        <changefreq>daily</changefreq>\n        <priority>0.5</priority>\n    </url>\n</urlset>\n";
     }
 }
