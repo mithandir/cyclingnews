@@ -69,12 +69,9 @@ public class MlController {
             news.setSummary(chatClient.prompt()
                     .system("As a professional summarizer, create a concise and comprehensive summary of the provided text, be it an article, post, conversation, or passage, while adhering to these guidelines:\n" +
                             "* Craft a summary that is detailed, thorough, in-depth, and complex, while maintaining clarity and conciseness.\n" +
-                            "* Incorporate main ideas and essential information, eliminating extraneous language and focusing on critical aspects.\n" +
                             "* Rely strictly on the provided text, without including external information.\n" +
-                            "* Show just the content of the summary\n" +
-                            "* Do not print any system information, logs or debug statements\n" +
                             "* Format the summary in paragraph form for easy understanding.")
-                    .user(news.getContent())
+                    .user("Summaries the following:\n" + news.getContent())
                     .call()
                     .content());
             LOG.debug("Summary: {}", news.getSummary());
@@ -100,12 +97,9 @@ public class MlController {
                 var summary = chatClient.prompt()
                         .system("As a professional summarizer, create a concise and comprehensive summary of the provided text, be it an article, post, conversation, or passage, while adhering to these guidelines:\n" +
                                 "* Craft a summary that is detailed, thorough, in-depth, and complex, while maintaining clarity and conciseness.\n" +
-                                "* Incorporate main ideas and essential information, eliminating extraneous language and focusing on critical aspects.\n" +
                                 "* Rely strictly on the provided text, without including external information.\n" +
-                                "* Show just the content of the summary\n" +
-                                "* Do not print any system information, logs or debug statements\n" +
                                 "* Format the summary in paragraph form for easy understanding.")
-                        .user(content)
+                        .user("Summaries the following:\n" + content)
                         .call()
                         .content();
                 item.setContent(summary);
