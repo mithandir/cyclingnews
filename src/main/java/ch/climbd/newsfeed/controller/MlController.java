@@ -66,15 +66,18 @@ public class MlController {
 
     private void summarizeNormalText(NewsEntry news) {
         if (!news.getLink().startsWith("https://www.youtube.com/watch?v=")) {
-            news.setSummary(chatClient.prompt()
+            var content = chatClient.prompt()
                     .system("As a professional summarizer, create a concise and comprehensive summary of the provided text, be it an article, post, conversation, or passage, while adhering to these guidelines:\n" +
                             "* Craft a summary that is detailed, thorough, in-depth, and complex, while maintaining clarity and conciseness.\n" +
                             "* Rely strictly on the provided text, without including external information.\n" +
                             "* Format the summary in paragraph form for easy understanding.")
                     .user("Summaries the following:\n" + news.getContent())
                     .call()
-                    .content());
-            LOG.debug("Summary: {}", news.getSummary());
+                    .content();
+
+            content = content.replaceAll("\n", "<br><br>");
+            news.setSummary(content);
+            LOG.debug("Summary: {}", content);
             mongo.update(news);
             LOG.info("Summarized the article: {}", news.getTitle());
         }
