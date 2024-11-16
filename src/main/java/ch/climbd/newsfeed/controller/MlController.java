@@ -75,7 +75,7 @@ public class MlController {
                     .call()
                     .content();
 
-            content = content.replaceAll("\n", "<br><br>");
+            content = content.replaceAll("\n", "<br>");
             news.setSummary(content);
             LOG.debug("Summary: {}", content);
             mongo.update(news);
