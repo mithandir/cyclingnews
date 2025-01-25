@@ -32,6 +32,7 @@ public class Scheduler {
     @PostConstruct
     public void init() {
         LOG.info("Initialising Feed List");
+        rssFeeds.put("https://forum.xertonline.com/latest.rss", "en");
         rssFeeds.put("http://feeds.feedburner.com/ilovecyclingde", "de");
         rssFeeds.put("http://feeds.feedburner.com/inrng/inrng0", "en");
         rssFeeds.put("http://feeds.feedburner.com/shutuplegsde", "de");
@@ -49,7 +50,6 @@ public class Scheduler {
         rssFeeds.put("https://escapecollective.com/feed/", "en");
         rssFeeds.put("https://feeds.sbs.com.au/cycling-central", "en");
         rssFeeds.put("https://forum.intervals.icu/latest.rss", "en");
-        //rssFeeds.put("https://forum.xertonline.com/latest.rss", "en");
         rssFeeds.put("https://granfondo-cycling.com/feed/", "en");
         rssFeeds.put("https://gruppetto-magazin.ch/api/rss-feed", "de");
         rssFeeds.put("https://intheknowcycling.com/feed/", "en");
@@ -71,12 +71,14 @@ public class Scheduler {
         rssFeeds.put("https://www.cycling-challenge.com/feed/", "en");
         rssFeeds.put("https://www.cyclingapps.net/feed/", "en");
         rssFeeds.put("https://www.cyclingmagazine.de/feed/", "de");
+        rssFeeds.put("https://www.cyclingnews.com/feeds.xml", "en");
         rssFeeds.put("https://www.cyclingtips.com/category/news/feed/", "en");
         rssFeeds.put("https://www.cyclist.co.uk/feeds/all", "en");
         rssFeeds.put("https://www.cyclist.co.uk/type/news/feed", "en");
         rssFeeds.put("https://www.cyclistshub.com/feed/", "en");
         rssFeeds.put("https://www.dcrainmaker.com/feed/", "en");
         rssFeeds.put("https://www.dirtracingseries.com/feed/", "en");
+        rssFeeds.put("https://www.hambini.com/feed/", "en");
         rssFeeds.put("https://www.podiumcafe.com/rss/current.xml", "en");
         rssFeeds.put("https://www.radsport-events.de/rss", "de");
         rssFeeds.put("https://www.radsport-news.com/rss.xml", "de");
@@ -99,7 +101,6 @@ public class Scheduler {
         rssFeeds.put("https://www.youtube.com/feeds/videos.xml?channel_id=UCYuKCZ35_lrDmFj2gNuAwZw", "en");
         rssFeeds.put("https://www.youtube.com/feeds/videos.xml?channel_id=UCuTaETsuCOkJ0H_GAztWt0Q", "en");
         rssFeeds.put("https://zwiftinsider.com/feed/", "en");
-        rssFeeds.put("https://www.cyclingnews.com/feeds.xml", "en");
 //        rssFeeds.put("https://road.cc/rss", "en"); Mostly AD articles
 
         initIconCache();
