@@ -87,6 +87,12 @@ public class MlController {
 
     private void processYoutubeTranscription(NewsEntry item) {
         if (item.getLink().startsWith("https://www.youtube.com/watch?v=")) {
+
+            // Fix potential double summarization
+            if (item.getContent() != null && !item.getContent().isBlank()) {
+                return;
+            }
+
             var videoId = item.getLink().substring(32);
             try {
                 TranscriptList transcriptList = youtubeTranscriptApi.listTranscripts(videoId);
@@ -95,9 +101,9 @@ public class MlController {
                 LOG.info("Transcript found for video: {}", item.getTitle());
 
                 // 32k token limit
-                if (content.length() > 100000) {
-                    content = content.substring(0, 100000);
-                }
+//                if (content.length() > 100000) {
+//                    content = content.substring(0, 100000);
+//                }
 
                 var summary = chatClient.prompt()
                         .system("As a professional summarizer, create a concise and comprehensive summary of the provided text, be it an article, post, conversation, or passage, while adhering to these guidelines:\n" +
@@ -107,6 +113,9 @@ public class MlController {
                         .user("Summaries the following:\n" + content)
                         .call()
                         .content();
+
+                summary = handleO1Reasoning(summary);
+
                 item.setContent(summary);
                 mongo.update(item);
                 LOG.info("Summarized the article: {}", item.getTitle());
