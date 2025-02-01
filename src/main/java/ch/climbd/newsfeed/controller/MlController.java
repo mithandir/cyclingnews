@@ -75,12 +75,30 @@ public class MlController {
                     .call()
                     .content();
 
+            content = handleO1Reasoning(content);
+
             content = content.replaceAll("\n", "<br>");
             news.setSummary(content);
             LOG.debug("Summary: {}", content);
             mongo.update(news);
             LOG.info("Summarized the article: {}", news.getTitle());
         }
+    }
+
+    private static String handleO1Reasoning(String content) {
+        var thinkStart = content.indexOf("<think>");
+        if (thinkStart > 0) {
+            var thinkEnd = content.indexOf("</think><br><br>");
+            if (thinkEnd == -1) {
+                thinkEnd = content.indexOf("</think>");
+            }
+
+            if (thinkEnd > 0) {
+                content = content.substring(thinkStart, thinkEnd);
+            }
+        }
+
+        return content;
     }
 
     private void processYoutubeTranscription(NewsEntry item) {
