@@ -88,9 +88,9 @@ public class MlController {
     private static String handleO1Reasoning(String content) {
         var thinkStart = content.indexOf("<think>");
         if (thinkStart > 0) {
-            var thinkEnd = content.indexOf("</think><br><br>");
+            var thinkEnd = content.indexOf("</think><br><br>") + 16;
             if (thinkEnd == -1) {
-                thinkEnd = content.indexOf("</think>");
+                thinkEnd = content.indexOf("</think>") + 8;
             }
 
             if (thinkEnd > 0) {
