@@ -85,22 +85,6 @@ public class MlController {
         }
     }
 
-    private static String handleO1Reasoning(String content) {
-        var thinkStart = content.indexOf("<think>");
-        if (thinkStart > 0) {
-            var thinkEnd = content.indexOf("</think><br><br>") + 16;
-            if (thinkEnd == -1) {
-                thinkEnd = content.indexOf("</think>") + 8;
-            }
-
-            if (thinkEnd > 0) {
-                content = content.substring(thinkStart, thinkEnd);
-            }
-        }
-
-        return content;
-    }
-
     private void processYoutubeTranscription(NewsEntry item) {
         if (item.getLink().startsWith("https://www.youtube.com/watch?v=")) {
             var videoId = item.getLink().substring(32);
@@ -131,5 +115,17 @@ public class MlController {
                 LOG.warn("No transcript found for video: {}", videoId);
             }
         }
+    }
+
+    private static String handleO1Reasoning(String content) {
+        var thinkStart = content.indexOf("<think>");
+        if (thinkStart > 0) {
+            var thinkEnd = content.indexOf("</think>");
+            if (thinkEnd > 0) {
+                return content.substring(thinkStart, thinkEnd + 8);
+            }
+        }
+
+        return content;
     }
 }
