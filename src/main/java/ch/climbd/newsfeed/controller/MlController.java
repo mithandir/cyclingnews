@@ -127,12 +127,10 @@ public class MlController {
     }
 
     private static String handleO1Reasoning(String content) {
-        var thinkStart = content.indexOf("<think>");
-        if (thinkStart > 0) {
-            var thinkEnd = content.indexOf("</think>");
-            if (thinkEnd > 0) {
-                return content.substring(thinkStart, thinkEnd + 8);
-            }
+        var thinkEnd = content.indexOf("</think>");
+
+        if (thinkEnd > 0) {
+            return content.substring(thinkEnd + 8);
         }
 
         return content;
