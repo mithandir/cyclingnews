@@ -22,6 +22,7 @@
         <browserstorage.version>1.0.0</browserstorage.version>
         <jpushover.version>7.2.5</jpushover.version>
         <youtube.transcript.version>0.3.6</youtube.transcript.version>
+        <commonmark.version>0.24.0</commonmark.version>
     </properties>
 
     <dependencyManagement>
@@ -84,6 +85,11 @@
             <groupId>io.github.thoroldvix</groupId>
             <artifactId>youtube-transcript-api</artifactId>
             <version>${youtube.transcript.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.commonmark</groupId>
+            <artifactId>commonmark</artifactId>
+            <version>${commonmark.version}</version>
         </dependency>
     </dependencies>
 

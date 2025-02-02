@@ -7,6 +7,9 @@ import io.github.thoroldvix.api.TranscriptRetrievalException;
 import io.github.thoroldvix.api.YoutubeTranscriptApi;
 import io.github.thoroldvix.internal.TranscriptApiFactory;
 import jakarta.annotation.PostConstruct;
+import org.commonmark.node.Node;
+import org.commonmark.parser.Parser;
+import org.commonmark.renderer.html.HtmlRenderer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.client.ChatClient;
@@ -76,8 +79,8 @@ public class MlController {
                     .content();
 
             content = handleO1Reasoning(content);
+            content = convertMarkdownToHtml(content);
 
-            content = content.replaceAll("\n", "<br>");
             news.setSummary(content);
             LOG.debug("Summary: {}", content);
             mongo.update(news);
@@ -115,6 +118,7 @@ public class MlController {
                         .content();
 
                 summary = handleO1Reasoning(summary);
+                summary = convertMarkdownToHtml(summary);
 
                 item.setContent(summary);
                 mongo.update(item);
@@ -123,6 +127,18 @@ public class MlController {
             } catch (TranscriptRetrievalException e) {
                 LOG.warn("No transcript found for video: {}", videoId);
             }
+        }
+    }
+
+    private static String convertMarkdownToHtml(String markdown) {
+        try {
+            Parser parser = Parser.builder().build();
+            Node document = parser.parse(markdown);
+            HtmlRenderer renderer = HtmlRenderer.builder().build();
+            return renderer.render(document);
+        } catch (Exception e) {
+            LOG.error("Error converting markdown to html", e);
+            return markdown;
         }
     }
 
