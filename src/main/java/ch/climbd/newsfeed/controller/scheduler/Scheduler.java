@@ -100,8 +100,12 @@ public class Scheduler {
         rssFeeds.put("https://www.youtube.com/feeds/videos.xml?channel_id=UCIf1xvRN8pzyd_VfLgj_dow", "en");
         rssFeeds.put("https://www.youtube.com/feeds/videos.xml?channel_id=UCYuKCZ35_lrDmFj2gNuAwZw", "en");
         rssFeeds.put("https://www.youtube.com/feeds/videos.xml?channel_id=UCuTaETsuCOkJ0H_GAztWt0Q", "en");
+        rssFeeds.put("https://israelpremiertech.com/feed", "en");
         rssFeeds.put("https://zwiftinsider.com/feed/", "en");
-//        rssFeeds.put("https://road.cc/rss", "en"); Mostly AD articles
+        rssFeeds.put("https://bahraincyclingteam.com/feed", "en");
+        rssFeeds.put("https://www.wmncycling.com/feed", "en");
+        rssFeeds.put("https://racing.trekbikes.com/feed", "en");
+//      rssFeeds.put("https://road.cc/rss", "en"); Mostly AD articles
 
         initIconCache();
     }
