@@ -55,14 +55,18 @@ public class NewsItemComponent {
             verticalLayout.add(row);
 
             if (item.getContent() != null && !item.getContent().isBlank()) {
-                Details details = new Details(formatHtml(item, true), formatHtml(item, false));
-                details.setOpened(commonComponents.isMobile());
-                details.addThemeVariants(DetailsVariant.SMALL);
-                details.getStyle().set("position", "relative");
-                details.getStyle().set("margin-left", commonComponents.isMobile() ? "inherit" : "5.5em");
-                details.getStyle().set("margin-top", "-2em");
+                try {
+                    Details details = new Details(formatHtml(item, true), formatHtml(item, false));
+                    details.setOpened(commonComponents.isMobile());
+                    details.addThemeVariants(DetailsVariant.SMALL);
+                    details.getStyle().set("position", "relative");
+                    details.getStyle().set("margin-left", commonComponents.isMobile() ? "inherit" : "5.5em");
+                    details.getStyle().set("margin-top", "-2em");
 
-                verticalLayout.add(details);
+                    verticalLayout.add(details);
+                } catch (Exception e) {
+                    LOG.error("Error: {}", e.getMessage());
+                }
             }
         }
         if (!commonSessionComponents.getRegistration().isEmpty()) {
