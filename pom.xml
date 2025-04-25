@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.4.4</version>
+        <version>3.4.5</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>ch.climbd</groupId>
@@ -15,8 +15,8 @@
     <description>Hackernews clone for cycling news</description>
     <properties>
         <java.version>23</java.version>
-        <spring-ai.version>1.0.0-M6</spring-ai.version>
-        <vaadin.version>24.7.0</vaadin.version>
+        <spring-ai.version>1.0.0-M7</spring-ai.version>
+        <vaadin.version>24.7.2</vaadin.version>
         <maven.versions.plugin>2.18.0</maven.versions.plugin>
         <rome.rss.version>2.1.0</rome.rss.version>
         <browserstorage.version>1.0.0</browserstorage.version>
@@ -55,7 +55,7 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.ai</groupId>
-            <artifactId>spring-ai-ollama-spring-boot-starter</artifactId>
+            <artifactId>spring-ai-starter-model-ollama</artifactId>
         </dependency>
         <dependency>
             <groupId>com.vaadin</groupId>
