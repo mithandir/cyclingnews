@@ -176,7 +176,7 @@ public class MongoController {
                 || (newsEntries.size() == currentPage * 10
                 && newsEntries.size() <= 90)) {
 
-            if (Duration.between(startTime, LocalDateTime.now()).toSeconds() < 1) {
+            if (Duration.between(startTime, LocalDateTime.now()).toSeconds() > 1) {
                 break;
             }
 
