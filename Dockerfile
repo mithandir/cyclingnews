@@ -13,7 +13,7 @@ RUN --mount=type=cache,target=/root/.m2 mvn -q install -DskipTests=true -P produ
 
 #------------------------------------------------
 
-FROM eclipse-temurin:23-jre-alpine
+FROM eclipse-temurin:24-jre-alpine
 VOLUME /tmp
 LABEL NAME="climbd-newsfeed"
 LABEL VERSION=1.0.0
