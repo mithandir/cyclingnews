@@ -174,8 +174,11 @@ public class MongoController {
 
         while (newsEntries.isEmpty()
                 || (newsEntries.size() == currentPage * 10
-                && newsEntries.size() <= 90
-                && Duration.between(startTime, LocalDateTime.now()).toSeconds() < 1)) {
+                && newsEntries.size() <= 90)) {
+
+            if (Duration.between(startTime, LocalDateTime.now()).toSeconds() < 1) {
+                break;
+            }
 
             var paging = PageRequest.of(currentPage, 10);
             var query = new Query()
