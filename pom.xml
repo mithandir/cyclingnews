@@ -20,7 +20,7 @@
         <maven.versions.plugin>2.18.0</maven.versions.plugin>
         <rome.rss.version>2.1.0</rome.rss.version>
         <browserstorage.version>1.0.0</browserstorage.version>
-        <jpushover.version>7.2.5</jpushover.version>
+        <jpushover.version>7.2.6</jpushover.version>
         <youtube.transcript.version>0.3.6</youtube.transcript.version>
         <commonmark.version>0.24.0</commonmark.version>
     </properties>
