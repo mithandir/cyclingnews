@@ -77,10 +77,8 @@ public class NewsItemComponent {
         cardLayout.getStyle().set("border-radius", "8px");
         cardLayout.getStyle().set("padding", "16px");
         cardLayout.getStyle().set("margin-bottom", "16px");
-        cardLayout.getStyle().set("margin-right", "10%");
-        cardLayout.setWidth("90%");
+        cardLayout.setWidth(commonComponents.isMobile() ? "100%" : "90%");
         cardLayout.setSpacing(false); // Ensure no default spacing from VerticalLayout itself
-        // cardLayout.setPadding(true); // Padding is set via direct style "padding: 16px"
 
         HorizontalLayout row = new HorizontalLayout();
         // Align items to the top for better alignment of index, avatar, and text column
