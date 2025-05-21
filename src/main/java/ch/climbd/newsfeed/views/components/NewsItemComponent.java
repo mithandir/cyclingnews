@@ -5,8 +5,6 @@ import ch.climbd.newsfeed.controller.scheduler.Filter;
 import ch.climbd.newsfeed.data.NewsEntry;
 import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.avatar.Avatar;
-import com.vaadin.flow.component.details.Details;
-import com.vaadin.flow.component.details.DetailsVariant;
 import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.AnchorTarget;
 import com.vaadin.flow.component.html.Div;
@@ -50,7 +48,7 @@ public class NewsItemComponent {
                 continue;
             }
             index++;
-            HorizontalLayout row = buildNewsItem(index, item, verticalLayout);
+            var row = buildNewsItem(index, item, verticalLayout);
             if (row == null) continue;
             verticalLayout.add(row);
 
@@ -79,7 +77,8 @@ public class NewsItemComponent {
         cardLayout.getStyle().set("border-radius", "8px");
         cardLayout.getStyle().set("padding", "16px");
         cardLayout.getStyle().set("margin-bottom", "16px");
-        cardLayout.setWidth("100%");
+        cardLayout.getStyle().set("margin-right", "10%");
+        cardLayout.setWidth("90%");
         cardLayout.setSpacing(false); // Ensure no default spacing from VerticalLayout itself
         // cardLayout.setPadding(true); // Padding is set via direct style "padding: 16px"
 
@@ -101,8 +100,8 @@ public class NewsItemComponent {
 
         HorizontalLayout rowTitle = new HorizontalLayout();
         // Align items on baseline for better visual consistency of text
-        rowTitle.setAlignItems(FlexComponent.Alignment.BASELINE); 
-        rowTitle.setGap("var(--lumo-space-s)"); // Add gap between title and source
+        rowTitle.setAlignItems(FlexComponent.Alignment.BASELINE);
+        //TODO rowTitle.setGap("var(--lumo-space-s)"); // Add gap between title and source
         commonComponents.isItemUnRead(item.getPublishedDateTime(), rowTitle, avatar);
 
         Anchor title = new Anchor(commonComponents.createLinkWithStats(item.getLink()), item.getTitle(), AnchorTarget.BLANK);
@@ -117,7 +116,7 @@ public class NewsItemComponent {
 
         HorizontalLayout rowDateAndLinks = new HorizontalLayout();
         rowDateAndLinks.setAlignItems(FlexComponent.Alignment.CENTER);
-        rowDateAndLinks.setGap("var(--lumo-space-s)"); // Add gaps between date/icon items
+        //TODO rowDateAndLinks.setGap("var(--lumo-space-s)"); // Add gaps between date/icon items
 
         Span date = new Span(item.getPublishedDateTime().format(DateTimeFormatter.ISO_LOCAL_DATE));
         date.getStyle().set("font-size", "small");
@@ -157,12 +156,9 @@ public class NewsItemComponent {
 
         VerticalLayout column = new VerticalLayout();
         column.add(rowTitle, rowDateAndLinks);
-        column.setGap("var(--lumo-space-xs)"); // Small gap between title row and date/links row
+        //TODO column.setGap("var(--lumo-space-xs)"); // Small gap between title row and date/links row
         column.setSpacing(false); // Explicitly false, gap is used instead
         column.setPadding(false); // No padding for the column itself
-
-        row.add(new Span(String.valueOf(index)), avatarDiv, column);
-        cardLayout.add(row);
 
         row.add(new Span(String.valueOf(index)), avatarDiv, column);
         cardLayout.add(row);
