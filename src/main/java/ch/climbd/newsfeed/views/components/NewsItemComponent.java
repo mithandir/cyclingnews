@@ -261,9 +261,6 @@ public class NewsItemComponent {
         html.getStyle().set("text-wrap", "wrap");
         html.getStyle().set("text-align", "justify");
         html.getStyle().set("font-size", "small");
-        // Removed margin-left and max-width as card handles padding and width.
-        // Margin-top for the contentHtml is set in buildNewsItem.
-
         return html;
     }
 
@@ -278,17 +275,8 @@ public class NewsItemComponent {
         }
 
         verticalLayout.getChildren().forEach(component -> {
-            // Details component removed, so this block is no longer needed.
-            // if (component instanceof Details) {
-            //    if (!((Details) component).isOpened()) {
-            //        ((Details) component).setOpened(true);
-            //    }
-            // }
-
-            // Each news item is now a VerticalLayout (cardLayout)
             if (component instanceof VerticalLayout) {
                 if (commonSessionComponents.getFocusCurrentIndex() == commonSessionComponents.getFocusKeyIndex()) {
-                    // var card = (VerticalLayout) component; // No need to cast if not used
                     component.scrollIntoView();
                 }
                 commonSessionComponents.setFocusCurrentIndex(commonSessionComponents.getFocusCurrentIndex() + 1);
@@ -296,7 +284,6 @@ public class NewsItemComponent {
         });
 
         if (goDown) {
-            // Count VerticalLayouts (cards) instead of HorizontalLayouts
             var sizeNewsItems = verticalLayout.getChildren()
                     .filter(component -> component instanceof VerticalLayout)
                     .count();
