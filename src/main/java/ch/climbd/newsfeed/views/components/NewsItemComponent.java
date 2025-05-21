@@ -164,16 +164,65 @@ public class NewsItemComponent {
         row.add(new Span(String.valueOf(index)), avatarDiv, column);
         cardLayout.add(row);
 
+        row.add(new Span(String.valueOf(index)), avatarDiv, column);
+        cardLayout.add(row);
+
+        // Base styles for animation
+        String transitionStyle = "max-height 0.5s ease-in-out";
+        String collapsedHeight = "5em"; // Example for a few lines
+        String expandedHeight = "1000px"; // Increased height for full content
+
+        // Store both content versions and apply styles
+        Html excerptContent = formatHtml(item, true);
+        excerptContent.getStyle().set("margin-top", "10px");
+        excerptContent.getStyle().set("overflow", "hidden");
+        excerptContent.getStyle().set("transition", transitionStyle);
+        excerptContent.getStyle().set("box-sizing", "border-box");
+        excerptContent.getStyle().set("max-height", collapsedHeight); // Initial state: collapsed
+
+        Html fullContent = formatHtml(item, false);
+        fullContent.getStyle().set("margin-top", "10px");
+        fullContent.getStyle().set("overflow-y", "auto"); // Allow vertical scroll on fullContent
+        fullContent.getStyle().set("transition", transitionStyle);
+        fullContent.getStyle().set("box-sizing", "border-box");
+        fullContent.getStyle().set("max-height", "0px"); // Initial state: hidden collapsed
+
+        // Initial display & state
+        cardLayout.getElement().setProperty("isExpanded", false);
         if (item.getContent() != null && !item.getContent().isBlank()) {
-            try {
-                Html contentHtml = formatHtml(item, true);
-                // Adjust styling for contentHtml if necessary, e.g., add margin-top
-                contentHtml.getStyle().set("margin-top", "10px");
-                cardLayout.add(contentHtml);
-            } catch (Exception e) {
-                LOG.error("Error adding content to card: {}", e.getMessage());
-            }
+            cardLayout.add(excerptContent);
         }
+
+        // "Read more..." / "Show less..." indicator
+        Span expandIndicator = new Span("Read more...");
+        expandIndicator.getStyle().set("cursor", "pointer");
+        expandIndicator.getStyle().set("color", "var(--lumo-primary-text-color)");
+        expandIndicator.getStyle().set("font-size", "var(--lumo-font-size-s)");
+        expandIndicator.getStyle().set("margin-top", "var(--lumo-space-s)");
+        cardLayout.add(expandIndicator); // Add it to the layout
+
+        boolean isContentDifferent = !fullContent.getInnerHtml().equals(excerptContent.getInnerHtml());
+        expandIndicator.setVisible(isContentDifferent && item.getContent() != null && !item.getContent().isBlank());
+
+        // Click listener on card
+        cardLayout.addClickListener(event -> {
+            boolean isExpanded = cardLayout.getElement().getProperty("isExpanded", false);
+            if (item.getContent() != null && !item.getContent().isBlank() && isContentDifferent) {
+                if (!isExpanded) {
+                    excerptContent.getStyle().set("max-height", "0px"); // Collapse current
+                    fullContent.getStyle().set("max-height", expandedHeight); // Expand new
+                    cardLayout.replace(excerptContent, fullContent);
+                    cardLayout.getElement().setProperty("isExpanded", true);
+                    expandIndicator.setText("Show less...");
+                } else {
+                    fullContent.getStyle().set("max-height", "0px"); // Collapse current
+                    excerptContent.getStyle().set("max-height", collapsedHeight); // Expand new
+                    cardLayout.replace(fullContent, excerptContent);
+                    cardLayout.getElement().setProperty("isExpanded", false);
+                    expandIndicator.setText("Read more...");
+                }
+            }
+        });
 
         return cardLayout;
     }
