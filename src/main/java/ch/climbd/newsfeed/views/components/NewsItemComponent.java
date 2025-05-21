@@ -54,20 +54,6 @@ public class NewsItemComponent {
             if (row == null) continue;
             verticalLayout.add(row);
 
-            if (item.getContent() != null && !item.getContent().isBlank()) {
-                try {
-                    Details details = new Details(formatHtml(item, true), formatHtml(item, false));
-                    details.setOpened(commonComponents.isMobile());
-                    details.addThemeVariants(DetailsVariant.SMALL);
-                    details.getStyle().set("position", "relative");
-                    details.getStyle().set("margin-left", commonComponents.isMobile() ? "inherit" : "5.5em");
-                    details.getStyle().set("margin-top", "-2em");
-
-                    verticalLayout.add(details);
-                } catch (Exception e) {
-                    LOG.error("Error: {}", e.getMessage());
-                }
-            }
         }
         if (!commonSessionComponents.getRegistration().isEmpty()) {
             commonSessionComponents.getRegistration().forEach(ShortcutRegistration::remove);
@@ -83,14 +69,28 @@ public class NewsItemComponent {
         return verticalLayout;
     }
 
-    public HorizontalLayout buildNewsItem(int index, NewsEntry item, VerticalLayout sourceLayout) {
+    public VerticalLayout buildNewsItem(int index, NewsEntry item, VerticalLayout sourceLayout) {
         if (filter.isSpam(item.getTitle())) {
             return null;
         }
+
+        VerticalLayout cardLayout = new VerticalLayout();
+        cardLayout.getStyle().set("border", "1px solid #e0e0e0");
+        cardLayout.getStyle().set("border-radius", "8px");
+        cardLayout.getStyle().set("padding", "16px");
+        cardLayout.getStyle().set("margin-bottom", "16px");
+        cardLayout.setWidth("100%");
+        cardLayout.setSpacing(false); // Ensure no default spacing from VerticalLayout itself
+        // cardLayout.setPadding(true); // Padding is set via direct style "padding: 16px"
+
         HorizontalLayout row = new HorizontalLayout();
-        row.setAlignItems(FlexComponent.Alignment.CENTER);
+        // Align items to the top for better alignment of index, avatar, and text column
+        row.setAlignItems(FlexComponent.Alignment.START); 
+        row.setSpacing(true); // Add spacing between index, avatar, and column
 
         Div avatarDiv = new Div();
+        // Add margin to the right of the avatar for spacing from the text column
+        avatarDiv.getStyle().set("margin-right", "var(--lumo-space-s)"); 
         Avatar avatar = commonComponents.buildSiteIcon(item.getDomainWithProtocol(), item.getDomainOnly());
         avatarDiv.add(avatar);
         avatarDiv.addClickListener(e -> UI.getCurrent().access(() -> {
@@ -100,19 +100,24 @@ public class NewsItemComponent {
         }));
 
         HorizontalLayout rowTitle = new HorizontalLayout();
-        rowTitle.setAlignItems(FlexComponent.Alignment.CENTER);
+        // Align items on baseline for better visual consistency of text
+        rowTitle.setAlignItems(FlexComponent.Alignment.BASELINE); 
+        rowTitle.setGap("var(--lumo-space-s)"); // Add gap between title and source
         commonComponents.isItemUnRead(item.getPublishedDateTime(), rowTitle, avatar);
 
         Anchor title = new Anchor(commonComponents.createLinkWithStats(item.getLink()), item.getTitle(), AnchorTarget.BLANK);
+        title.getStyle().set("word-break", "break-word"); // Ensure title wraps if too long
         if (commonComponents.isMobile()) {
             rowTitle.add(title);
         } else {
             Span source = new Span("(" + item.getDomainOnly() + ")");
+            source.getStyle().set("flex-shrink", "0"); // Prevent source from shrinking
             rowTitle.add(title, source);
         }
 
         HorizontalLayout rowDateAndLinks = new HorizontalLayout();
         rowDateAndLinks.setAlignItems(FlexComponent.Alignment.CENTER);
+        rowDateAndLinks.setGap("var(--lumo-space-s)"); // Add gaps between date/icon items
 
         Span date = new Span(item.getPublishedDateTime().format(DateTimeFormatter.ISO_LOCAL_DATE));
         date.getStyle().set("font-size", "small");
@@ -152,11 +157,25 @@ public class NewsItemComponent {
 
         VerticalLayout column = new VerticalLayout();
         column.add(rowTitle, rowDateAndLinks);
-        column.setSpacing(false);
+        column.setGap("var(--lumo-space-xs)"); // Small gap between title row and date/links row
+        column.setSpacing(false); // Explicitly false, gap is used instead
+        column.setPadding(false); // No padding for the column itself
 
         row.add(new Span(String.valueOf(index)), avatarDiv, column);
+        cardLayout.add(row);
 
-        return row;
+        if (item.getContent() != null && !item.getContent().isBlank()) {
+            try {
+                Html contentHtml = formatHtml(item, true);
+                // Adjust styling for contentHtml if necessary, e.g., add margin-top
+                contentHtml.getStyle().set("margin-top", "10px");
+                cardLayout.add(contentHtml);
+            } catch (Exception e) {
+                LOG.error("Error adding content to card: {}", e.getMessage());
+            }
+        }
+
+        return cardLayout;
     }
 
     private void handleVotes(NewsEntry item, Span voteSum, Icon vote) {
@@ -197,8 +216,8 @@ public class NewsItemComponent {
         html.getStyle().set("text-wrap", "wrap");
         html.getStyle().set("text-align", "justify");
         html.getStyle().set("font-size", "small");
-        html.getStyle().set("margin-left", "10px");
-        html.getStyle().set("max-width", "50em");
+        // Removed margin-left and max-width as card handles padding and width.
+        // Margin-top for the contentHtml is set in buildNewsItem.
 
         return html;
     }
@@ -214,15 +233,17 @@ public class NewsItemComponent {
         }
 
         verticalLayout.getChildren().forEach(component -> {
-            if (component instanceof Details) {
-                if (!((Details) component).isOpened()) {
-                    ((Details) component).setOpened(true);
-                }
-            }
+            // Details component removed, so this block is no longer needed.
+            // if (component instanceof Details) {
+            //    if (!((Details) component).isOpened()) {
+            //        ((Details) component).setOpened(true);
+            //    }
+            // }
 
-            if (component instanceof HorizontalLayout) {
+            // Each news item is now a VerticalLayout (cardLayout)
+            if (component instanceof VerticalLayout) {
                 if (commonSessionComponents.getFocusCurrentIndex() == commonSessionComponents.getFocusKeyIndex()) {
-                    var row = (HorizontalLayout) component;
+                    // var card = (VerticalLayout) component; // No need to cast if not used
                     component.scrollIntoView();
                 }
                 commonSessionComponents.setFocusCurrentIndex(commonSessionComponents.getFocusCurrentIndex() + 1);
@@ -230,11 +251,12 @@ public class NewsItemComponent {
         });
 
         if (goDown) {
-            var sizeHorizontalLayouts = verticalLayout.getChildren()
-                    .filter(component -> component instanceof HorizontalLayout)
+            // Count VerticalLayouts (cards) instead of HorizontalLayouts
+            var sizeNewsItems = verticalLayout.getChildren()
+                    .filter(component -> component instanceof VerticalLayout)
                     .count();
 
-            if (commonSessionComponents.getFocusKeyIndex() == sizeHorizontalLayouts) {
+            if (commonSessionComponents.getFocusKeyIndex() == sizeNewsItems) {
                 return;
             }
             commonSessionComponents.setFocusKeyIndex(commonSessionComponents.getFocusKeyIndex() + 1);
