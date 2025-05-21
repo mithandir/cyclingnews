@@ -73,7 +73,7 @@ public class NewsItemComponent {
         }
 
         VerticalLayout cardLayout = new VerticalLayout();
-        cardLayout.getStyle().set("border", "1px solid #e0e0e0");
+        cardLayout.getStyle().set("border", "1px solid hsl(214, 90%, 77%)");
         cardLayout.getStyle().set("border-radius", "8px");
         cardLayout.getStyle().set("padding", "16px");
         cardLayout.getStyle().set("margin-bottom", "16px");
