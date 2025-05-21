@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:experimental
-FROM maven:3-eclipse-temurin-23 as builder
+FROM maven:3-eclipse-temurin-24 as builder
 
 LABEL NAME="newsfeed-build"
 LABEL VERSION=1.0.0
