@@ -104,6 +104,9 @@ public class RssProcessor {
     }
 
     private String processHtmlContent(String content) {
+        if (content == null || content.isEmpty()) {
+            return ""; // Return empty for null or empty input
+        }
         Document jsoupDoc = Jsoup.parse(content);
         Document.OutputSettings outputSettings = new Document.OutputSettings();
         outputSettings.prettyPrint(false);
@@ -111,30 +114,23 @@ public class RssProcessor {
         jsoupDoc.select("br").before("\\br");
         jsoupDoc.select("p").before("\\p");
         String strWithNewLines = Jsoup.clean(jsoupDoc.html(), "", Safelist.none(), outputSettings);
-        String str = strWithNewLines.replaceAll("\\\\br", "<br>")
-                .replaceAll("\\\\p", "<br><br>")
-                .replaceAll("\n", "");
 
-        str = removeLeadingLineBreaks(str);
-        str = handleMultipleLineBreaks(str);
+        // Step 1: Replace placeholders and remove literal newlines
+        // Using String.replace for literal replacements is slightly more performant
+        // than replaceAll for non-regex patterns.
+        String str = strWithNewLines.replace("\\br", "<br>")
+                .replace("\\p", "<br><br>")
+                .replace("\n", "");
 
-        return str;
-    }
+        // Step 2: Remove all leading <br> sequences.
+        // Uses a non-capturing group (?:<br>) to match one or more <br> tags at the beginning.
+        str = str.replaceAll("^(?:<br>)+", "");
 
-    private String removeLeadingLineBreaks(String str) {
-        for (int i = 0; i < 5; i++) {
-            if (str.startsWith("<br>")) {
-                str = str.substring(4);
-            } else if (str.startsWith("<br><br>")) {
-                str = str.substring(8);
-            }
-        }
-        return str;
-    }
+        // Step 3: Reduce sequences of 3 or more <br> tags to <br><br>.
+        // E.g., <br><br><br> becomes <br><br>
+        // E.g., <br><br><br><br> becomes <br><br>
+        str = str.replaceAll("(?:<br>){3,}", "<br><br>");
 
-    private String handleMultipleLineBreaks(String str) {
-        str = str.replaceAll("<br><br><br><br>", "<br><br>");
-        str = str.replaceAll("<br><br><br>", "<br><br>");
         return str;
     }
 
