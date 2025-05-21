@@ -5,8 +5,6 @@ import ch.climbd.newsfeed.controller.scheduler.Filter;
 import ch.climbd.newsfeed.data.NewsEntry;
 import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.avatar.Avatar;
-import com.vaadin.flow.component.details.Details;
-import com.vaadin.flow.component.details.DetailsVariant;
 import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.AnchorTarget;
 import com.vaadin.flow.component.html.Div;
@@ -50,24 +48,10 @@ public class NewsItemComponent {
                 continue;
             }
             index++;
-            HorizontalLayout row = buildNewsItem(index, item, verticalLayout);
+            var row = buildNewsItem(index, item, verticalLayout);
             if (row == null) continue;
             verticalLayout.add(row);
 
-            if (item.getContent() != null && !item.getContent().isBlank()) {
-                try {
-                    Details details = new Details(formatHtml(item, true), formatHtml(item, false));
-                    details.setOpened(commonComponents.isMobile());
-                    details.addThemeVariants(DetailsVariant.SMALL);
-                    details.getStyle().set("position", "relative");
-                    details.getStyle().set("margin-left", commonComponents.isMobile() ? "inherit" : "5.5em");
-                    details.getStyle().set("margin-top", "-2em");
-
-                    verticalLayout.add(details);
-                } catch (Exception e) {
-                    LOG.error("Error: {}", e.getMessage());
-                }
-            }
         }
         if (!commonSessionComponents.getRegistration().isEmpty()) {
             commonSessionComponents.getRegistration().forEach(ShortcutRegistration::remove);
@@ -83,14 +67,29 @@ public class NewsItemComponent {
         return verticalLayout;
     }
 
-    public HorizontalLayout buildNewsItem(int index, NewsEntry item, VerticalLayout sourceLayout) {
+    public VerticalLayout buildNewsItem(int index, NewsEntry item, VerticalLayout sourceLayout) {
         if (filter.isSpam(item.getTitle())) {
             return null;
         }
+
+        VerticalLayout cardLayout = new VerticalLayout();
+        cardLayout.getStyle().set("border", "1px solid #e0e0e0");
+        cardLayout.getStyle().set("border-radius", "8px");
+        cardLayout.getStyle().set("padding", "16px");
+        cardLayout.getStyle().set("margin-bottom", "16px");
+        cardLayout.getStyle().set("margin-right", "10%");
+        cardLayout.setWidth("90%");
+        cardLayout.setSpacing(false); // Ensure no default spacing from VerticalLayout itself
+        // cardLayout.setPadding(true); // Padding is set via direct style "padding: 16px"
+
         HorizontalLayout row = new HorizontalLayout();
-        row.setAlignItems(FlexComponent.Alignment.CENTER);
+        // Align items to the top for better alignment of index, avatar, and text column
+        row.setAlignItems(FlexComponent.Alignment.START); 
+        row.setSpacing(true); // Add spacing between index, avatar, and column
 
         Div avatarDiv = new Div();
+        // Add margin to the right of the avatar for spacing from the text column
+        avatarDiv.getStyle().set("margin-right", "var(--lumo-space-s)"); 
         Avatar avatar = commonComponents.buildSiteIcon(item.getDomainWithProtocol(), item.getDomainOnly());
         avatarDiv.add(avatar);
         avatarDiv.addClickListener(e -> UI.getCurrent().access(() -> {
@@ -100,19 +99,24 @@ public class NewsItemComponent {
         }));
 
         HorizontalLayout rowTitle = new HorizontalLayout();
-        rowTitle.setAlignItems(FlexComponent.Alignment.CENTER);
+        // Align items on baseline for better visual consistency of text
+        rowTitle.setAlignItems(FlexComponent.Alignment.BASELINE);
+        //TODO rowTitle.setGap("var(--lumo-space-s)"); // Add gap between title and source
         commonComponents.isItemUnRead(item.getPublishedDateTime(), rowTitle, avatar);
 
         Anchor title = new Anchor(commonComponents.createLinkWithStats(item.getLink()), item.getTitle(), AnchorTarget.BLANK);
+        title.getStyle().set("word-break", "break-word"); // Ensure title wraps if too long
         if (commonComponents.isMobile()) {
             rowTitle.add(title);
         } else {
             Span source = new Span("(" + item.getDomainOnly() + ")");
+            source.getStyle().set("flex-shrink", "0"); // Prevent source from shrinking
             rowTitle.add(title, source);
         }
 
         HorizontalLayout rowDateAndLinks = new HorizontalLayout();
         rowDateAndLinks.setAlignItems(FlexComponent.Alignment.CENTER);
+        //TODO rowDateAndLinks.setGap("var(--lumo-space-s)"); // Add gaps between date/icon items
 
         Span date = new Span(item.getPublishedDateTime().format(DateTimeFormatter.ISO_LOCAL_DATE));
         date.getStyle().set("font-size", "small");
@@ -152,11 +156,71 @@ public class NewsItemComponent {
 
         VerticalLayout column = new VerticalLayout();
         column.add(rowTitle, rowDateAndLinks);
-        column.setSpacing(false);
+        //TODO column.setGap("var(--lumo-space-xs)"); // Small gap between title row and date/links row
+        column.setSpacing(false); // Explicitly false, gap is used instead
+        column.setPadding(false); // No padding for the column itself
 
         row.add(new Span(String.valueOf(index)), avatarDiv, column);
+        cardLayout.add(row);
 
-        return row;
+        // Base styles for animation
+        String transitionStyle = "max-height 0.5s ease-in-out";
+        String collapsedHeight = "5em"; // Example for a few lines
+        String expandedHeight = "1000px"; // Increased height for full content
+
+        // Store both content versions and apply styles
+        Html excerptContent = formatHtml(item, true);
+        excerptContent.getStyle().set("margin-top", "10px");
+        excerptContent.getStyle().set("overflow", "hidden");
+        excerptContent.getStyle().set("transition", transitionStyle);
+        excerptContent.getStyle().set("box-sizing", "border-box");
+        excerptContent.getStyle().set("max-height", collapsedHeight); // Initial state: collapsed
+
+        Html fullContent = formatHtml(item, false);
+        fullContent.getStyle().set("margin-top", "10px");
+        fullContent.getStyle().set("overflow-y", "auto"); // Allow vertical scroll on fullContent
+        fullContent.getStyle().set("transition", transitionStyle);
+        fullContent.getStyle().set("box-sizing", "border-box");
+        fullContent.getStyle().set("max-height", "0px"); // Initial state: hidden collapsed
+
+        // Initial display & state
+        cardLayout.getElement().setProperty("isExpanded", false);
+        if (item.getContent() != null && !item.getContent().isBlank()) {
+            cardLayout.add(excerptContent);
+        }
+
+        // "Read more..." / "Show less..." indicator
+        Span expandIndicator = new Span("Read more...");
+        expandIndicator.getStyle().set("cursor", "pointer");
+        expandIndicator.getStyle().set("color", "var(--lumo-primary-text-color)");
+        expandIndicator.getStyle().set("font-size", "var(--lumo-font-size-s)");
+        expandIndicator.getStyle().set("margin-top", "var(--lumo-space-s)");
+        cardLayout.add(expandIndicator); // Add it to the layout
+
+        boolean isContentDifferent = !fullContent.getInnerHtml().equals(excerptContent.getInnerHtml());
+        expandIndicator.setVisible(isContentDifferent && item.getContent() != null && !item.getContent().isBlank());
+
+        // Click listener on card
+        cardLayout.addClickListener(event -> {
+            boolean isExpanded = cardLayout.getElement().getProperty("isExpanded", false);
+            if (item.getContent() != null && !item.getContent().isBlank() && isContentDifferent) {
+                if (!isExpanded) {
+                    excerptContent.getStyle().set("max-height", "0px"); // Collapse current
+                    fullContent.getStyle().set("max-height", expandedHeight); // Expand new
+                    cardLayout.replace(excerptContent, fullContent);
+                    cardLayout.getElement().setProperty("isExpanded", true);
+                    expandIndicator.setText("Show less...");
+                } else {
+                    fullContent.getStyle().set("max-height", "0px"); // Collapse current
+                    excerptContent.getStyle().set("max-height", collapsedHeight); // Expand new
+                    cardLayout.replace(fullContent, excerptContent);
+                    cardLayout.getElement().setProperty("isExpanded", false);
+                    expandIndicator.setText("Read more...");
+                }
+            }
+        });
+
+        return cardLayout;
     }
 
     private void handleVotes(NewsEntry item, Span voteSum, Icon vote) {
@@ -197,8 +261,8 @@ public class NewsItemComponent {
         html.getStyle().set("text-wrap", "wrap");
         html.getStyle().set("text-align", "justify");
         html.getStyle().set("font-size", "small");
-        html.getStyle().set("margin-left", "10px");
-        html.getStyle().set("max-width", "50em");
+        // Removed margin-left and max-width as card handles padding and width.
+        // Margin-top for the contentHtml is set in buildNewsItem.
 
         return html;
     }
@@ -214,15 +278,17 @@ public class NewsItemComponent {
         }
 
         verticalLayout.getChildren().forEach(component -> {
-            if (component instanceof Details) {
-                if (!((Details) component).isOpened()) {
-                    ((Details) component).setOpened(true);
-                }
-            }
+            // Details component removed, so this block is no longer needed.
+            // if (component instanceof Details) {
+            //    if (!((Details) component).isOpened()) {
+            //        ((Details) component).setOpened(true);
+            //    }
+            // }
 
-            if (component instanceof HorizontalLayout) {
+            // Each news item is now a VerticalLayout (cardLayout)
+            if (component instanceof VerticalLayout) {
                 if (commonSessionComponents.getFocusCurrentIndex() == commonSessionComponents.getFocusKeyIndex()) {
-                    var row = (HorizontalLayout) component;
+                    // var card = (VerticalLayout) component; // No need to cast if not used
                     component.scrollIntoView();
                 }
                 commonSessionComponents.setFocusCurrentIndex(commonSessionComponents.getFocusCurrentIndex() + 1);
@@ -230,11 +296,12 @@ public class NewsItemComponent {
         });
 
         if (goDown) {
-            var sizeHorizontalLayouts = verticalLayout.getChildren()
-                    .filter(component -> component instanceof HorizontalLayout)
+            // Count VerticalLayouts (cards) instead of HorizontalLayouts
+            var sizeNewsItems = verticalLayout.getChildren()
+                    .filter(component -> component instanceof VerticalLayout)
                     .count();
 
-            if (commonSessionComponents.getFocusKeyIndex() == sizeHorizontalLayouts) {
+            if (commonSessionComponents.getFocusKeyIndex() == sizeNewsItems) {
                 return;
             }
             commonSessionComponents.setFocusKeyIndex(commonSessionComponents.getFocusKeyIndex() + 1);
