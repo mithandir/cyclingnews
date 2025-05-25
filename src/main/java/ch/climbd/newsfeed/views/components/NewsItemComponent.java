@@ -68,75 +68,77 @@ public class NewsItemComponent {
         commonSessionComponents.getRegistration().add(UI.getCurrent().addShortcutListener(
                 () -> handleKeyEvents(verticalLayout, false), Key.KEY_K));
 
-        HorizontalLayout mobileNavBar = new HorizontalLayout();
-        var nextBtn = new Button(new Icon(VaadinIcon.ARROW_DOWN));
-        nextBtn.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        nextBtn.addClickListener(event -> {
-            commonSessionComponents.setFocusCurrentIndex(0);
-            var sizeNewsItems = verticalLayout.getChildren()
-                    .filter(component -> component instanceof VerticalLayout)
-                    .count();
+        if (commonComponents.isMobile()) {
+            HorizontalLayout mobileNavBar = new HorizontalLayout();
+            var nextBtn = new Button(new Icon(VaadinIcon.ARROW_DOWN));
+            nextBtn.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+            nextBtn.addClickListener(event -> {
+                commonSessionComponents.setFocusCurrentIndex(0);
+                var sizeNewsItems = verticalLayout.getChildren()
+                        .filter(component -> component instanceof VerticalLayout)
+                        .count();
 
-            if (commonSessionComponents.getFocusKeyIndex() == sizeNewsItems) {
-                return;
-            }
-            commonSessionComponents.setFocusKeyIndex(commonSessionComponents.getFocusKeyIndex() + 1);
+                if (commonSessionComponents.getFocusKeyIndex() == sizeNewsItems) {
+                    return;
+                }
+                commonSessionComponents.setFocusKeyIndex(commonSessionComponents.getFocusKeyIndex() + 1);
 
-            verticalLayout.getChildren().forEach(component -> {
-                if (component instanceof VerticalLayout) {
-                    boolean isExpanded = component.getElement().getProperty("isExpanded", false);
+                verticalLayout.getChildren().forEach(component -> {
+                    if (component instanceof VerticalLayout) {
+                        boolean isExpanded = component.getElement().getProperty("isExpanded", false);
 
-                    if (commonSessionComponents.getFocusCurrentIndex() == commonSessionComponents.getFocusKeyIndex()) {
-                        component.scrollIntoView();
+                        if (commonSessionComponents.getFocusCurrentIndex() == commonSessionComponents.getFocusKeyIndex()) {
+                            component.scrollIntoView();
 
-                        if (!isExpanded) {
+                            if (!isExpanded) {
+                                fireEvent(component, new ClickEvent<VerticalLayout>(component));
+                            }
+                        } else if (isExpanded) {
                             fireEvent(component, new ClickEvent<VerticalLayout>(component));
                         }
-                    } else if (isExpanded) {
-                        fireEvent(component, new ClickEvent<VerticalLayout>(component));
+                        commonSessionComponents.setFocusCurrentIndex(commonSessionComponents.getFocusCurrentIndex() + 1);
                     }
-                    commonSessionComponents.setFocusCurrentIndex(commonSessionComponents.getFocusCurrentIndex() + 1);
-                }
+                });
             });
-        });
-        var prevBtn = new Button(new Icon(VaadinIcon.ARROW_UP));
-        prevBtn.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        prevBtn.addClickListener(event -> {
-            commonSessionComponents.setFocusCurrentIndex(0);
-            var sizeNewsItems = verticalLayout.getChildren()
-                    .filter(component -> component instanceof VerticalLayout)
-                    .count();
+            var prevBtn = new Button(new Icon(VaadinIcon.ARROW_UP));
+            prevBtn.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+            prevBtn.addClickListener(event -> {
+                commonSessionComponents.setFocusCurrentIndex(0);
+                var sizeNewsItems = verticalLayout.getChildren()
+                        .filter(component -> component instanceof VerticalLayout)
+                        .count();
 
-            if (commonSessionComponents.getFocusKeyIndex() == sizeNewsItems) {
-                return;
-            }
-            commonSessionComponents.setFocusKeyIndex(commonSessionComponents.getFocusKeyIndex() - 1);
+                if (commonSessionComponents.getFocusKeyIndex() == sizeNewsItems) {
+                    return;
+                }
+                commonSessionComponents.setFocusKeyIndex(commonSessionComponents.getFocusKeyIndex() - 1);
 
-            verticalLayout.getChildren().forEach(component -> {
-                if (component instanceof VerticalLayout) {
-                    boolean isExpanded = component.getElement().getProperty("isExpanded", false);
+                verticalLayout.getChildren().forEach(component -> {
+                    if (component instanceof VerticalLayout) {
+                        boolean isExpanded = component.getElement().getProperty("isExpanded", false);
 
-                    if (commonSessionComponents.getFocusCurrentIndex() == commonSessionComponents.getFocusKeyIndex()) {
-                        component.scrollIntoView();
+                        if (commonSessionComponents.getFocusCurrentIndex() == commonSessionComponents.getFocusKeyIndex()) {
+                            component.scrollIntoView();
 
-                        if (!isExpanded) {
+                            if (!isExpanded) {
+                                fireEvent(component, new ClickEvent<VerticalLayout>(component));
+                            }
+                        } else if (isExpanded) {
                             fireEvent(component, new ClickEvent<VerticalLayout>(component));
                         }
-                    } else if (isExpanded) {
-                        fireEvent(component, new ClickEvent<VerticalLayout>(component));
+                        commonSessionComponents.setFocusCurrentIndex(commonSessionComponents.getFocusCurrentIndex() + 1);
                     }
-                    commonSessionComponents.setFocusCurrentIndex(commonSessionComponents.getFocusCurrentIndex() + 1);
-                }
+                });
             });
-        });
 
-        mobileNavBar.add(nextBtn, prevBtn);
-        mobileNavBar.getStyle().set("position", "fixed");
-        mobileNavBar.getStyle().set("bottom", "1em");
-        mobileNavBar.getStyle().set("right", "1em");
-        mobileNavBar.getStyle().set("cursor", "pointer");
+            mobileNavBar.add(nextBtn, prevBtn);
+            mobileNavBar.getStyle().set("position", "fixed");
+            mobileNavBar.getStyle().set("bottom", "1em");
+            mobileNavBar.getStyle().set("right", "1em");
+            mobileNavBar.getStyle().set("cursor", "pointer");
 
-        verticalLayout.add(mobileNavBar);
+            verticalLayout.add(mobileNavBar);
+        }
 
         return verticalLayout;
     }
