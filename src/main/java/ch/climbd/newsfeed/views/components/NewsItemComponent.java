@@ -158,7 +158,11 @@ public class NewsItemComponent {
         column.setSpacing(false); // Explicitly false, gap is used instead
         column.setPadding(false); // No padding for the column itself
 
-        row.add(new Span(String.valueOf(index)), avatarDiv, column);
+        if (commonComponents.isMobile()) {
+            row.add(new Span(String.valueOf(index)), column);
+        } else {
+            row.add(new Span(String.valueOf(index)), avatarDiv, column);
+        }
         cardLayout.add(row);
 
         // Base styles for animation
