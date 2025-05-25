@@ -3,13 +3,10 @@ package ch.climbd.newsfeed.views;
 import ch.climbd.newsfeed.views.components.CommonComponents;
 import ch.climbd.newsfeed.views.components.CommonSessionComponents;
 import com.vaadin.flow.component.UI;
-import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Image;
-import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import jakarta.annotation.PostConstruct;
@@ -19,10 +16,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
 
-@Route("login")
+@Route("logout")
 @PageTitle("Climbd Cycling News - Login")
-public class LoginView extends VerticalLayout {
-    private static final Logger LOG = LoggerFactory.getLogger(LoginView.class);
+public class LogoutView extends VerticalLayout {
+    private static final Logger LOG = LoggerFactory.getLogger(LogoutView.class);
 
     @Autowired
     private CommonComponents commonComponents;
@@ -47,35 +44,14 @@ public class LoginView extends VerticalLayout {
         add(commonSessionComponents.createMenu());
 
         if (commonSessionComponents.isAdmin()) {
-            add(new Span("Already logged in!"));
-        } else {
-            VerticalLayout form = buildForm();
-            add(form);
-        }
-    }
-
-    private VerticalLayout buildForm() {
-        TextField apiKey = new TextField("API Key");
-        apiKey.setWidth("22em");
-        apiKey.setClearButtonVisible(true);
-        apiKey.getStyle().set("margin-left", commonComponents.isMobile() ? "2%" : "10%");
-
-        Button button = new Button("Save");
-        button.setDisableOnClick(true);
-        button.addClickListener(event -> clickSaveAction(apiKey));
-        button.getStyle().set("margin-left", commonComponents.isMobile() ? "2%" : "10%");
-
-        return new VerticalLayout(apiKey, button);
-    }
-
-    private void clickSaveAction(TextField apiKey) {
-        if (!apiKey.getValue().isBlank()) {
-            LOG.info("Login successful");
-            commonComponents.writeLocalStorage("API-KEY", apiKey.getValue());
+            commonComponents.deleteLocalStorage("API-KEY");
             commonSessionComponents.checkIsAdmin(true);
+            LOG.info("Logout successful");
+
             UI.getCurrent().navigate("");
         } else {
-            LOG.warn("Login attempt failed!");
+            LOG.info("Logout: User was not logged in");
+            UI.getCurrent().navigate("");
         }
     }
 }

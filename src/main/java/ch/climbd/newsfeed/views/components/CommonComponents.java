@@ -37,6 +37,12 @@ public class CommonComponents {
         localStorage.setItem(id, value);
     }
 
+    public void deleteLocalStorage(String id) {
+        UI currentUI = UI.getCurrent();
+        LocalStorage localStorage = new LocalStorage(currentUI);
+        localStorage.removeItem(id);
+    }
+
     public void checkIconStatus(Icon icon, String id) {
         UI currentUI = UI.getCurrent();
         LocalStorage localStorage = new LocalStorage(currentUI);
