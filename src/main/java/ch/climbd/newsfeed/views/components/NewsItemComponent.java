@@ -68,6 +68,12 @@ public class NewsItemComponent {
         commonSessionComponents.getRegistration().add(UI.getCurrent().addShortcutListener(
                 () -> handleKeyEvents(verticalLayout, false), Key.KEY_K));
 
+        renderMobileNavigation(verticalLayout);
+
+        return verticalLayout;
+    }
+
+    private void renderMobileNavigation(VerticalLayout verticalLayout) {
         if (commonComponents.isMobile()) {
             HorizontalLayout mobileNavBar = new HorizontalLayout();
             var nextBtn = new Button(new Icon(VaadinIcon.ARROW_DOWN));
@@ -139,8 +145,6 @@ public class NewsItemComponent {
 
             verticalLayout.add(mobileNavBar);
         }
-
-        return verticalLayout;
     }
 
     public VerticalLayout buildNewsItem(int index, NewsEntry item, VerticalLayout sourceLayout) {
@@ -335,11 +339,16 @@ public class NewsItemComponent {
     }
 
     private Html createHtmlElement(String str) {
-        var html = new Html("<div>" + str + "</div>");
-        html.getStyle().set("text-wrap", "wrap");
-        html.getStyle().set("text-align", "justify");
-        html.getStyle().set("font-size", "small");
-        return html;
+        try {
+            var html = new Html("<div>" + str + "</div>");
+            html.getStyle().set("text-wrap", "wrap");
+            html.getStyle().set("text-align", "justify");
+            html.getStyle().set("font-size", "small");
+            return html;
+        } catch (IllegalArgumentException e) {
+            LOG.error("Invalid HTML: " + str, e);
+            return new Html("-");
+        }
     }
 
     private void handleKeyEvents(VerticalLayout verticalLayout, boolean goDown) {
