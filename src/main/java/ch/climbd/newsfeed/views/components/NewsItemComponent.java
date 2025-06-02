@@ -329,6 +329,10 @@ public class NewsItemComponent {
             str = !item.getSummary().isBlank() ? item.getSummary() : str;
         }
 
+        str.replaceAll("<div>", "");
+        str.replaceAll("</div>", "");
+        str.replaceAll("<p>", "<br>");
+        str.replaceAll("</p>", "<br>");
         return createHtmlElement(str);
     }
 
@@ -339,16 +343,11 @@ public class NewsItemComponent {
     }
 
     private Html createHtmlElement(String str) {
-        try {
-            var html = new Html("<div>" + str + "</div>");
-            html.getStyle().set("text-wrap", "wrap");
-            html.getStyle().set("text-align", "justify");
-            html.getStyle().set("font-size", "small");
-            return html;
-        } catch (IllegalArgumentException e) {
-            LOG.error("Invalid HTML: " + str, e);
-            return new Html("-");
-        }
+        var html = new Html("<div>" + str + "</div>");
+        html.getStyle().set("text-wrap", "wrap");
+        html.getStyle().set("text-align", "justify");
+        html.getStyle().set("font-size", "small");
+        return html;
     }
 
     private void handleKeyEvents(VerticalLayout verticalLayout, boolean goDown) {
