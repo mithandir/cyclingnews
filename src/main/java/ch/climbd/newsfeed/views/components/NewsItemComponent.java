@@ -329,20 +329,26 @@ public class NewsItemComponent {
             str = !item.getSummary().isBlank() ? item.getSummary() : str;
         }
 
-        str.replaceAll("<div>", "");
-        str.replaceAll("</div>", "");
-        str.replaceAll("<p>", "<br>");
-        str.replaceAll("</p>", "<br>");
+        // Remove all <div> and </div> tags to avoid nested/multiple top-level elements
+        str = str.replaceAll("(?i)</?div>", "");
+        // Remove all <p> and </p> tags, replace with <br> for line breaks
+        str = str.replaceAll("(?i)</p>", "<br>");
+        str = str.replaceAll("(?i)<p>", "");
+        // Remove leading/trailing whitespace and <br>
+        str = str.trim().replaceAll("^(<br>)+", "").replaceAll("(<br>)+$", "");
+
         return createHtmlElement(str);
     }
 
     private String createExcerpt(String str) {
-        str = str.replaceAll("<br>", " ");
+        // Remove <br> for excerpt length calculation
+        str = str.replaceAll("(?i)<br>", " ");
         str = str.substring(0, Math.min(str.length(), commonComponents.isMobile() ? 25 : 100)) + "...";
         return str;
     }
 
     private Html createHtmlElement(String str) {
+        // Always wrap in a single <div> to ensure only one top-level element
         var html = new Html("<div>" + str + "</div>");
         html.getStyle().set("text-wrap", "wrap");
         html.getStyle().set("text-align", "justify");
