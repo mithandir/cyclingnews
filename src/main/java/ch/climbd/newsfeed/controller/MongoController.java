@@ -4,7 +4,10 @@ import ch.climbd.newsfeed.data.NewsEntry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -40,14 +43,21 @@ public class MongoController {
         return exists(newsEntry.getLink());
     }
 
-    public List<NewsEntry> findAllOrderedByDate(Set<String> language) {
+    public Page<NewsEntry> findAllOrderedByDate(Set<String> language, int page, int size) {
         Query query = new Query();
         query.addCriteria(Criteria.where("publishedAt").gte(ZonedDateTime.now().minusDays(2).toInstant()));
         query.addCriteria(Criteria.where("language").in(language));
-        query.with(Sort.by(Sort.Direction.DESC, "publishedAt"));
-        query.limit(100);
 
-        return template.find(query, NewsEntry.class);
+        // Create a copy of the query for counting documents without pagination
+        Query queryWithoutPaging = Query.of(query);
+
+        long total = template.count(queryWithoutPaging, NewsEntry.class);
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "publishedAt"));
+        query.with(pageable);
+
+        List<NewsEntry> newsEntries = template.find(query, NewsEntry.class);
+        return new PageImpl<>(newsEntries, pageable, total);
     }
 
     public List<NewsEntry> findAllOrderedByVotes(Set<String> language) {
