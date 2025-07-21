@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.5.2</version>
+        <version>3.5.3</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>ch.climbd</groupId>
@@ -16,13 +16,13 @@
     <properties>
         <java.version>24</java.version>
         <spring-ai.version>1.0.0</spring-ai.version>
-        <vaadin.version>24.8.0</vaadin.version>
+        <vaadin.version>24.8.3</vaadin.version>
         <maven.versions.plugin>2.18.0</maven.versions.plugin>
         <rome.rss.version>2.1.0</rome.rss.version>
         <browserstorage.version>1.0.0</browserstorage.version>
         <jpushover.version>7.2.6</jpushover.version>
         <youtube.transcript.version>0.3.6</youtube.transcript.version>
-        <commonmark.version>0.24.0</commonmark.version>
+        <commonmark.version>0.25.0</commonmark.version>
     </properties>
 
     <dependencyManagement>
