@@ -22,7 +22,7 @@
         <browserstorage.version>1.0.0</browserstorage.version>
         <jpushover.version>7.2.6</jpushover.version>
         <youtube.transcript.version>0.3.6</youtube.transcript.version>
-        <commonmark.version>0.25.0</commonmark.version>
+        <commonmark.version>0.25.1</commonmark.version>
     </properties>
 
     <dependencyManagement>
