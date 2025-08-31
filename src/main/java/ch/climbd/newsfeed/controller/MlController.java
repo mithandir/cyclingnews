@@ -1,11 +1,7 @@
 package ch.climbd.newsfeed.controller;
 
 import ch.climbd.newsfeed.data.NewsEntry;
-import io.github.thoroldvix.api.TranscriptFormatters;
-import io.github.thoroldvix.api.TranscriptList;
-import io.github.thoroldvix.api.TranscriptRetrievalException;
-import io.github.thoroldvix.api.YoutubeTranscriptApi;
-import io.github.thoroldvix.internal.TranscriptApiFactory;
+import io.github.thoroldvix.api.*;
 import jakarta.annotation.PostConstruct;
 import org.commonmark.node.Node;
 import org.commonmark.parser.Parser;
@@ -13,11 +9,9 @@ import org.commonmark.renderer.html.HtmlRenderer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.client.ChatClient;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 
 import java.util.LinkedList;
-import java.util.concurrent.TimeUnit;
 
 @Controller
 public class MlController {

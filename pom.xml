@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.5.3</version>
+        <version>3.5.5</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>ch.climbd</groupId>
@@ -15,14 +15,15 @@
     <description>Hackernews clone for cycling news</description>
     <properties>
         <java.version>24</java.version>
-        <spring-ai.version>1.0.0</spring-ai.version>
-        <vaadin.version>24.8.3</vaadin.version>
+        <spring-ai.version>1.0.1</spring-ai.version>
+        <vaadin.version>24.8.7</vaadin.version>
         <maven.versions.plugin>2.18.0</maven.versions.plugin>
         <rome.rss.version>2.1.0</rome.rss.version>
         <browserstorage.version>1.0.0</browserstorage.version>
         <jpushover.version>7.2.6</jpushover.version>
-        <youtube.transcript.version>0.3.6</youtube.transcript.version>
-        <commonmark.version>0.25.0</commonmark.version>
+        <youtube.transcript.version>0.4.0</youtube.transcript.version>
+        <commonmark.version>0.25.1</commonmark.version>
+        <ok.http.version>5.1.0</ok.http.version>
     </properties>
 
     <dependencyManagement>
@@ -80,6 +81,11 @@
             <groupId>de.svenkubiak</groupId>
             <artifactId>jpushover</artifactId>
             <version>${jpushover.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>okhttp</artifactId>
+            <version>${ok.http.version}</version>
         </dependency>
         <dependency>
             <groupId>io.github.thoroldvix</groupId>
