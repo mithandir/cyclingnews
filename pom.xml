@@ -17,7 +17,7 @@
         <java.version>24</java.version>
         <spring-ai.version>1.0.1</spring-ai.version>
         <vaadin.version>24.8.7</vaadin.version>
-        <maven.versions.plugin>2.18.0</maven.versions.plugin>
+        <maven.versions.plugin>2.19.0</maven.versions.plugin>
         <rome.rss.version>2.1.0</rome.rss.version>
         <browserstorage.version>1.0.0</browserstorage.version>
         <jpushover.version>7.2.6</jpushover.version>
