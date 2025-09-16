@@ -21,15 +21,31 @@ import java.util.*;
 public class MongoController {
 
     private static final Logger LOG = LoggerFactory.getLogger(MongoController.class);
+    private final Set<String> cache = new HashSet<>();
+    private LocalDateTime cacheTimestamp = LocalDateTime.now();
 
     @Autowired
     private MongoTemplate template;
 
     public boolean exists(String link) {
         if (link != null && link.startsWith("http")) {
+            if (Duration.between(cacheTimestamp, LocalDateTime.now()).toMinutes() > 15) {
+                cache.clear();
+                cacheTimestamp = LocalDateTime.now();
+            }
+
+            if (cache.contains(link)) {
+                return true;
+            }
+
             Query query = new Query();
             query.addCriteria(Criteria.where("link").in(link));
-            return template.exists(query, NewsEntry.class);
+            var result = template.exists(query, NewsEntry.class);
+
+            if (result) {
+                cache.add(link);
+            }
+            return result;
         }
 
         LOG.warn("Not a link: {}", link);

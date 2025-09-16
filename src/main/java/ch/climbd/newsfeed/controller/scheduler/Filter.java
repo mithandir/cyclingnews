@@ -14,18 +14,12 @@ public class Filter {
             "&#039;", "'");
 
     public boolean isSpam(String title) {
-        for (String entry : spam) {
-            if (title.toLowerCase().contains(entry)) {
-                return true;
-            }
-        }
-
-        return false;
+        return spam.stream().anyMatch(title.toLowerCase()::contains);
     }
 
     public String replaceHtml(String title) {
-        for (String search : replace.keySet()) {
-            title = title.replaceAll(search, replace.get(search));
+        for (Map.Entry<String, String> entry : replace.entrySet()) {
+            title = title.replace(entry.getKey(), entry.getValue());
         }
 
         return title;
