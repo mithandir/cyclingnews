@@ -15,7 +15,7 @@
     <description>Hackernews clone for cycling news</description>
     <properties>
         <java.version>24</java.version>
-        <spring-ai.version>1.0.1</spring-ai.version>
+        <spring-ai.version>1.0.3</spring-ai.version>
         <vaadin.version>24.9.0</vaadin.version>
         <maven.versions.plugin>2.19.0</maven.versions.plugin>
         <rome.rss.version>2.1.0</rome.rss.version>
