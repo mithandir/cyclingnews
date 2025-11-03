@@ -23,7 +23,7 @@
         <jpushover.version>7.2.6</jpushover.version>
         <youtube.transcript.version>0.4.0</youtube.transcript.version>
         <commonmark.version>0.27.0</commonmark.version>
-        <ok.http.version>5.2.1</ok.http.version>
+        <ok.http.version>5.3.0</ok.http.version>
     </properties>
 
     <dependencyManagement>
