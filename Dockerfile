@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:experimental
-FROM maven:3-eclipse-temurin-24 as builder
+FROM maven:3-eclipse-temurin-25 as builder
 
 LABEL NAME="newsfeed-build"
 LABEL VERSION=1.0.0
@@ -13,7 +13,7 @@ RUN --mount=type=cache,target=/root/.m2 mvn -q install -DskipTests=true -P produ
 
 #------------------------------------------------
 
-FROM eclipse-temurin:24-jre-alpine
+FROM eclipse-temurin:25-jre-alpine
 VOLUME /tmp
 LABEL NAME="climbd-newsfeed"
 LABEL VERSION=1.0.0
