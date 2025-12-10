@@ -15,12 +15,12 @@
     <description>Hackernews clone for cycling news</description>
     <properties>
         <java.version>24</java.version>
-        <spring-ai.version>1.1.0</spring-ai.version>
-        <vaadin.version>24.9.5</vaadin.version>
-        <maven.versions.plugin>2.19.1</maven.versions.plugin>
+        <spring-ai.version>1.1.2</spring-ai.version>
+        <vaadin.version>24.9.6</vaadin.version>
+        <maven.versions.plugin>2.20.1</maven.versions.plugin>
         <rome.rss.version>2.1.0</rome.rss.version>
         <browserstorage.version>1.0.0</browserstorage.version>
-        <jpushover.version>7.2.6</jpushover.version>
+        <jpushover.version>8.0.0</jpushover.version>
         <youtube.transcript.version>0.4.0</youtube.transcript.version>
         <commonmark.version>0.27.0</commonmark.version>
         <ok.http.version>5.3.2</ok.http.version>
