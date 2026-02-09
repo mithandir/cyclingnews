@@ -1,19 +1,36 @@
-﻿# Climbd cycling news
+# Climbd Cycling News
 
 ![Docker Build](https://github.com/mithandir/cyclingnews/actions/workflows/docker-publish.yml/badge.svg)
 
-Running at: https://news.qfotografie.de
+Live deployment (if configured): https://news.qfotografie.de
 
 <img src="img.png" width="500" >
 
-This is a "Hackernews" clone for cycling related content. Content entries are automatically created using RSS feeds.
+This is a "Hacker News" clone for cycling-related content. Content entries are automatically created from RSS feeds.
 
-The project uses Vaadin to create the frontend. The backend is using Spring Boot with a reactive MongoDB backend.
+The project uses Vaadin (Flow + React components) for the UI. The backend uses Spring Boot with MongoDB for persistence.
+
+## Architecture Overview
+
+- UI: Vaadin views (`src/main/java/ch/climbd/newsfeed/views`) rendered by Spring Boot.
+- API/controllers: REST-style endpoints, SEO helpers, and admin actions in
+  `src/main/java/ch/climbd/newsfeed/controller`.
+- Ingestion: a scheduled RSS processor (Rome) pulls feeds and stores entries in MongoDB.
+- Data: Spring Data MongoDB stores `NewsEntry` documents.
+- Integrations: optional Pushover notifications, YouTube transcript lookup, and Spring AI for enrichment.
 
 ## Setup
 
-Look into the `src/main/ressources` folder and edit the `example-application.yaml`. After modifying the values rename the file to `application.yaml`.
+Start from `src/main/resources/example-application.yaml` and rename it to `src/main/resources/application.yaml` or
+`src/main/resources/application-local.yaml`
+(used by the `local` Spring profile). Adjust MongoDB credentials, RSS/AI settings, and optional Pushover keys.
 
-Set the maven profile to "dev" for development and "prod" for releases.
+Set the Maven profile to `dev` for development and `production` for releases.
 
-You can start the application like a normal spring boot application. The frontend should be available at http://localhost:8080.
+Run the app like a normal Spring Boot application, for example:
+
+```bash
+./mvnw -Pdev spring-boot:run
+```
+
+The frontend is available at http://localhost:8080.
