@@ -17,7 +17,6 @@ import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.regex.Pattern;
 
 @Service
@@ -25,7 +24,7 @@ public class MongoController {
 
     private static final Logger LOG = LoggerFactory.getLogger(MongoController.class);
     private final Set<String> cache = ConcurrentHashMap.newKeySet();
-    private final AtomicLong cacheTimestamp = new AtomicLong(System.currentTimeMillis());
+    private LocalDateTime cacheTimestamp = LocalDateTime.now();
 
     @Autowired
     private MongoTemplate template;
@@ -33,9 +32,9 @@ public class MongoController {
     public boolean exists(String link) {
         if (link != null && link.startsWith("http")) {
             var now = System.currentTimeMillis();
-            if (now - cacheTimestamp.get() > Duration.ofMinutes(15).toMillis()) {
+            if (Duration.between(cacheTimestamp, LocalDateTime.now()).toMinutes() > 15) {
                 cache.clear();
-                cacheTimestamp.set(now);
+                cacheTimestamp = LocalDateTime.now();
             }
 
             if (cache.contains(link)) {

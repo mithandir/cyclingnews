@@ -16,7 +16,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import jakarta.annotation.PreDestroy;
 import javax.net.ssl.*;
 import java.net.URL;
 import java.security.cert.X509Certificate;
@@ -24,15 +23,11 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Date;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 @Component
 public class RssProcessor {
     private static final Logger LOG = LoggerFactory.getLogger(RssProcessor.class);
     private final ZoneId zoneId = ZoneId.of("Europe/Berlin");
-    private final ExecutorService itemExecutor =
-            Executors.newFixedThreadPool(Math.max(4, Runtime.getRuntime().availableProcessors()));
 
     @Autowired
     private MongoController mongo;
@@ -56,7 +51,7 @@ public class RssProcessor {
                     .filter(item -> item.getLink().startsWith("http"))
                     .filter(item -> !filter.isSpam(item.getTitle()))
                     .filter(item -> !mongo.exists(item))
-                    .forEach(item -> itemExecutor.execute(() -> {
+                    .forEach(item -> Thread.startVirtualThread(() -> {
                         item.setLanguage(language);
                         mongo.save(item);
                         pushover.sendNotification(item);
@@ -78,11 +73,6 @@ public class RssProcessor {
         } catch (Exception e) {
             LOG.error("Error reading RSS feed: {}", url);
         }
-    }
-
-    @PreDestroy
-    public void shutdown() {
-        itemExecutor.shutdown();
     }
 
     private NewsEntry map(SyndEntry item) {
