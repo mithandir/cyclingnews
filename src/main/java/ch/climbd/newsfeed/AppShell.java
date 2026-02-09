@@ -1,7 +1,9 @@
 package ch.climbd.newsfeed;
 
 import com.vaadin.flow.component.page.AppShellConfigurator;
+import com.vaadin.flow.component.page.Inline;
 import com.vaadin.flow.component.page.Push;
+import com.vaadin.flow.component.page.TargetElement;
 import com.vaadin.flow.server.AppShellSettings;
 import com.vaadin.flow.server.PWA;
 import com.vaadin.flow.theme.Theme;
@@ -20,6 +22,12 @@ public class AppShell implements AppShellConfigurator {
         settings.addMetaTag("robots", "index, follow");
         settings.addMetaTag("viewport", "width=device-width, initial-scale=1.0");
         settings.addMetaTag("charset", "UTF-8");
+
+        String noscript = "<noscript><meta http-equiv=\"refresh\" content=\"0; url=/seo\">"
+                + "<div style=\"padding:16px;font-family:Arial,sans-serif;\">"
+                + "JavaScript is disabled. Visit <a href=\"/seo\">the SEO view</a> for the latest news."
+                + "</div></noscript>";
+        settings.addInlineWithContents(TargetElement.BODY, Inline.Position.APPEND, noscript, Inline.Wrapping.NONE);
 
         settings.addFavIcon("icon", "icon/favicon-192x192.png", "192x192");
         settings.addFavIcon("icon", "icon/favicon-96x96.png", "96x96");
