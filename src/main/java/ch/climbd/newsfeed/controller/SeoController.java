@@ -11,12 +11,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 @Controller
 public class SeoController {
 
-    private static final int SUMMARY_LIMIT = 220;
     private static final Set<String> DEFAULT_LANGUAGES = Set.of("en", "de");
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     private static final DateTimeFormatter DATETIME_FORMAT = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
@@ -61,7 +61,7 @@ public class SeoController {
     }
 
     private String renderPage(String title, String description, String canonicalUrl, List<NewsEntry> entries) {
-        StringBuilder html = new StringBuilder(16384);
+        StringBuilder html = new StringBuilder();
         html.append("<!doctype html>");
         html.append("<html lang=\"en\">");
         html.append("<head>");
@@ -121,14 +121,16 @@ public class SeoController {
         String title = entry.getTitle() == null ? "" : entry.getTitle();
         String link = entry.getLink() == null ? "" : entry.getLink();
         String summary = entry.getSummary();
-        String content = entry.getContent();
+        String content = stripHtmlTags(entry.getContent());
         String excerptSource = (summary == null || summary.isBlank()) ? content : summary;
-        String excerpt = excerptSource == null ? "" : trimToLimit(excerptSource, SUMMARY_LIMIT);
+        String excerpt = excerptSource == null ? "" : stripHtmlTags(excerptSource);
         ZonedDateTime published = entry.getPublishedDateTime();
 
         html.append("<article>");
         html.append("<h2><a href=\"").append(escape(link)).append("\">").append(escape(title)).append("</a></h2>");
-        if (!excerpt.isBlank()) {
+        if (!Objects.requireNonNull(content).isBlank()) {
+            html.append("<p>").append(escape(content)).append("</p>");
+        } else if (!excerpt.isBlank()) {
             html.append("<p>").append(escape(excerpt)).append("</p>");
         }
         html.append("<div class=\"meta\">");
@@ -147,12 +149,11 @@ public class SeoController {
         html.append("</article>");
     }
 
-    private String trimToLimit(String value, int limit) {
-        String clean = value.replaceAll("\\s+", " ").strip();
-        if (clean.length() <= limit) {
-            return clean;
-        }
-        return clean.substring(0, limit - 1) + "...";
+    private String stripHtmlTags(String value) {
+        return value
+                .replaceAll("<[^>]*>", "")
+                .replaceAll("&nbsp;", " ")
+                .replaceAll("&amp;", "&");
     }
 
     private String escape(String value) {
