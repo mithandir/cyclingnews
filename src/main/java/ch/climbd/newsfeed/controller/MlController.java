@@ -6,13 +6,16 @@ import jakarta.annotation.PostConstruct;
 import org.commonmark.node.Node;
 import org.commonmark.parser.Parser;
 import org.commonmark.renderer.html.HtmlRenderer;
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Safelist;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 
-import java.util.LinkedList;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 @Controller
@@ -23,7 +26,7 @@ public class MlController {
 
     private final ChatClient chatClient;
     private final MongoController mongo;
-    private final LinkedList<NewsEntry> queue = new LinkedList<>();
+    private final BlockingQueue<NewsEntry> queue = new LinkedBlockingQueue<>();
 
     MlController(ChatClient.Builder chatClientBuilder, MongoController mongoController) {
         this.chatClient = chatClientBuilder.build();
@@ -41,7 +44,7 @@ public class MlController {
 
     public void queueSummarize(NewsEntry news) {
         LOG.info("Queued article for summarization: {}", news.getTitle());
-        queue.add(news);
+        queue.offer(news);
     }
 
     @Scheduled(fixedDelay = 15, initialDelay = 30, timeUnit = TimeUnit.SECONDS)
@@ -131,7 +134,8 @@ public class MlController {
             Parser parser = Parser.builder().build();
             Node document = parser.parse(markdown);
             HtmlRenderer renderer = HtmlRenderer.builder().build();
-            return renderer.render(document);
+            var html = renderer.render(document);
+            return Jsoup.clean(html, Safelist.basic().addTags("br"));
         } catch (Exception e) {
             LOG.error("Error converting markdown to html", e);
             return markdown;

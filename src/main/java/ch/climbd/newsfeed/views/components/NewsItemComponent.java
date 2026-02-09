@@ -16,6 +16,8 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Safelist;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -329,6 +331,8 @@ public class NewsItemComponent {
             str = !item.getSummary().isBlank() ? item.getSummary() : str;
         }
 
+        str = sanitizeHtml(str);
+
         // Remove all <div> and </div> tags to avoid nested/multiple top-level elements
         str = str.replaceAll("(?i)</?div>", "");
         // Remove all <p> and </p> tags, replace with <br> for line breaks
@@ -341,10 +345,20 @@ public class NewsItemComponent {
     }
 
     private String createExcerpt(String str) {
+        if (str == null || str.isBlank()) {
+            return "";
+        }
         // Remove <br> for excerpt length calculation
         str = str.replaceAll("(?i)<br>", " ");
         str = str.substring(0, Math.min(str.length(), commonComponents.isMobile() ? 25 : 100)) + "...";
         return str;
+    }
+
+    private String sanitizeHtml(String str) {
+        if (str == null || str.isBlank()) {
+            return "";
+        }
+        return Jsoup.clean(str, Safelist.basic().addTags("br"));
     }
 
     private Html createHtmlElement(String str) {

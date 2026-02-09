@@ -9,8 +9,11 @@ import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import jakarta.annotation.PreDestroy;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 @Component
@@ -28,6 +31,8 @@ public class Scheduler {
     Environment env;
 
     private final Map<String, String> rssFeeds = new HashMap<>();
+    private final ExecutorService feedExecutor =
+            Executors.newFixedThreadPool(Math.max(4, Runtime.getRuntime().availableProcessors()));
 
     @PostConstruct
     public void init() {
@@ -111,7 +116,7 @@ public class Scheduler {
     }
 
     private void initIconCache() {
-        rssFeeds.keySet().forEach(url -> Thread.startVirtualThread(() -> {
+        rssFeeds.keySet().forEach(url -> feedExecutor.execute(() -> {
             if (!url.isEmpty()) {
                 var start = url.indexOf("://") + 3;
 
@@ -132,8 +137,13 @@ public class Scheduler {
         LOG.info("Running RSS scheduler");
 
         rssFeeds.keySet()
-                .forEach(feedId -> Thread.startVirtualThread(
+                .forEach(feedId -> feedExecutor.execute(
                         () -> processor.processRss(feedId, rssFeeds.get(feedId)))
                 );
+    }
+
+    @PreDestroy
+    public void shutdown() {
+        feedExecutor.shutdown();
     }
 }

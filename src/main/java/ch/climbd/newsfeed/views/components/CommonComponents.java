@@ -19,12 +19,12 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Component
 public class CommonComponents {
-    private final Map<String, String> iconCache = new HashMap<>();
+    private final Map<String, String> iconCache = new ConcurrentHashMap<>();
     private final static DateTimeFormatter FORMATTER = DateTimeFormatter.ISO_DATE_TIME;
     private final ZoneId zoneId = ZoneId.of("Europe/Berlin");
 
@@ -123,7 +123,8 @@ public class CommonComponents {
 
     public String findIcon(String pageUrl) {
         if (iconCache.containsKey(pageUrl)) {
-            return iconCache.get(pageUrl);
+            var cached = iconCache.get(pageUrl);
+            return cached != null && !cached.isBlank() ? cached : null;
         }
 
         try {
@@ -166,7 +167,7 @@ public class CommonComponents {
             // DO nothing
         }
 
-        iconCache.put(pageUrl, null);
+        iconCache.put(pageUrl, "");
         return null;
     }
 }

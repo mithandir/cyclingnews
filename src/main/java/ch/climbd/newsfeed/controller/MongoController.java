@@ -16,22 +16,26 @@ import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.regex.Pattern;
 
 @Service
 public class MongoController {
 
     private static final Logger LOG = LoggerFactory.getLogger(MongoController.class);
-    private final Set<String> cache = new HashSet<>();
-    private LocalDateTime cacheTimestamp = LocalDateTime.now();
+    private final Set<String> cache = ConcurrentHashMap.newKeySet();
+    private final AtomicLong cacheTimestamp = new AtomicLong(System.currentTimeMillis());
 
     @Autowired
     private MongoTemplate template;
 
     public boolean exists(String link) {
         if (link != null && link.startsWith("http")) {
-            if (Duration.between(cacheTimestamp, LocalDateTime.now()).toMinutes() > 15) {
+            var now = System.currentTimeMillis();
+            if (now - cacheTimestamp.get() > Duration.ofMinutes(15).toMillis()) {
                 cache.clear();
-                cacheTimestamp = LocalDateTime.now();
+                cacheTimestamp.set(now);
             }
 
             if (cache.contains(link)) {
@@ -117,8 +121,11 @@ public class MongoController {
     }
 
     public List<NewsEntry> findAllFilterdBySite(String host) {
+        if (host == null || host.isBlank()) {
+            return List.of();
+        }
         Query query = new Query();
-        query.addCriteria(Criteria.where("link").regex("^" + host));
+        query.addCriteria(Criteria.where("link").regex("^" + Pattern.quote(host)));
         query.with(Sort.by(Sort.Direction.DESC, "publishedAt"));
         query.limit(100);
 
@@ -181,9 +188,14 @@ public class MongoController {
         var splitted = searchString.strip().split(" ");
 
         StringBuilder searchQuery = new StringBuilder();
-        Arrays.stream(splitted).map(e -> "(?=.*" + e + ")").forEach(searchQuery::append);
+        Arrays.stream(splitted)
+                .filter(token -> !token.isBlank())
+                .map(Pattern::quote)
+                .map(token -> "(?=.*" + token + ")")
+                .forEach(searchQuery::append);
 
-        Criteria regex = Criteria.where("title").regex(searchQuery.toString(), "i");
+        Pattern pattern = Pattern.compile(searchQuery.toString(), Pattern.CASE_INSENSITIVE);
+        Criteria regex = Criteria.where("title").regex(pattern);
 
         int currentPage = 0;
         List<NewsEntry> newsEntries = new ArrayList<>();
