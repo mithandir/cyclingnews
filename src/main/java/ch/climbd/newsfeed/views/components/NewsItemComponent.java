@@ -46,7 +46,8 @@ public class NewsItemComponent {
     private MongoController mongo;
 
     public VerticalLayout createNewsItem(List<NewsEntry> items) {
-        commonSessionComponents.setFocusKeyIndex(0);
+        // Start before the first item so the first "j" selects index 0.
+        commonSessionComponents.setFocusKeyIndex(-1);
         var verticalLayout = new VerticalLayout();
         verticalLayout.addClassName("news-list");
         verticalLayout.setPadding(false);
@@ -118,7 +119,7 @@ public class NewsItemComponent {
                         .filter(component -> component instanceof VerticalLayout)
                         .count();
 
-                if (commonSessionComponents.getFocusKeyIndex() == sizeNewsItems) {
+                if (commonSessionComponents.getFocusKeyIndex() <= 0) {
                     return;
                 }
                 commonSessionComponents.setFocusKeyIndex(commonSessionComponents.getFocusKeyIndex() - 1);
@@ -363,7 +364,7 @@ public class NewsItemComponent {
         commonSessionComponents.setFocusCurrentIndex(0);
 
         if (!goDown) {
-            if (commonSessionComponents.getFocusKeyIndex() == 0) {
+            if (commonSessionComponents.getFocusKeyIndex() <= 0) {
                 return;
             }
             commonSessionComponents.setFocusKeyIndex(commonSessionComponents.getFocusKeyIndex() - 1);

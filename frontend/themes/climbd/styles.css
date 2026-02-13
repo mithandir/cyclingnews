@@ -1,0 +1,265 @@
+:root {
+  --md-primary: #7cc3ff;
+  --md-primary-container: #1b3550;
+  --md-secondary: #9fb3c8;
+  --md-tertiary: #b8a3ff;
+  --md-surface: #0f1724;
+  --md-surface-2: #121e2e;
+  --md-surface-3: #172235;
+  --md-outline: #2b3b54;
+  --md-shadow: 0 16px 40px rgba(3, 10, 20, 0.45);
+
+  --lumo-font-family: "Manrope", "IBM Plex Sans", "Noto Sans", "Segoe UI", sans-serif;
+  --lumo-primary-color: var(--md-primary);
+  --lumo-primary-text-color: var(--md-primary);
+  --lumo-primary-contrast-color: #ffffff;
+  --lumo-base-color: var(--md-surface);
+  --lumo-body-text-color: #e6edf7;
+  --lumo-secondary-text-color: #b7c6d8;
+  --lumo-tertiary-text-color: #8ea2b9;
+  --lumo-shade-10pct: rgba(6, 16, 28, 0.65);
+  --lumo-shade-20pct: rgba(6, 16, 28, 0.8);
+  --lumo-border-radius-s: 10px;
+  --lumo-border-radius-m: 14px;
+  --lumo-border-radius-l: 20px;
+  --lumo-space-m: 1rem;
+  --lumo-space-l: 1.5rem;
+  --lumo-space-xl: 2rem;
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  background:
+    radial-gradient(1000px 600px at 10% -10%, rgba(74, 164, 255, 0.3) 0%, transparent 60%),
+    radial-gradient(900px 500px at 90% 0%, rgba(52, 98, 160, 0.45) 0%, transparent 65%),
+    linear-gradient(180deg, #0a1220 0%, #0d1a2d 55%, #12223a 100%);
+  color: var(--lumo-body-text-color);
+}
+
+h1 {
+  font-family: "Newsreader", "Iowan Old Style", "Palatino", serif;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+.page-layout {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2.5rem 2.75rem 4rem;
+  box-sizing: border-box;
+  gap: 1.5rem;
+}
+
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: 1.25rem 1.5rem;
+  border-radius: 24px;
+  background: rgba(18, 30, 46, 0.85);
+  backdrop-filter: blur(12px);
+  box-shadow: var(--md-shadow);
+}
+
+.app-brand {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.app-title {
+  font-size: clamp(1.8rem, 3vw, 2.6rem);
+  text-transform: lowercase;
+}
+
+.app-menu {
+  width: 100%;
+}
+
+vaadin-menu-bar::part(container) {
+  width: 100%;
+  padding: 0.25rem;
+  border-radius: 999px;
+  background: rgba(18, 30, 46, 0.9);
+  border: 1px solid rgba(124, 195, 255, 0.16);
+  box-shadow: 0 6px 16px rgba(6, 16, 28, 0.4);
+}
+
+vaadin-menu-bar-button::part(content) {
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+vaadin-menu-bar-button::part(label) {
+  text-transform: none;
+}
+
+.search-shell {
+  width: 100%;
+  padding: 1rem 1.25rem;
+  border-radius: 18px;
+  background: var(--md-surface-2);
+  box-shadow: inset 0 0 0 1px rgba(124, 195, 255, 0.12);
+}
+
+.search-bar {
+  width: 100%;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.search-input {
+  flex: 1 1 320px;
+}
+
+vaadin-text-field::part(input-field) {
+  background: rgba(15, 23, 36, 0.85);
+  border-radius: 14px;
+  border: 1px solid rgba(124, 195, 255, 0.2);
+  box-shadow: none;
+}
+
+vaadin-text-field::part(input-field):focus-within {
+  border-color: var(--md-primary);
+  box-shadow: 0 0 0 3px rgba(0, 99, 156, 0.15);
+}
+
+vaadin-button::part(base) {
+  border-radius: 999px;
+  font-weight: 600;
+}
+
+.news-list {
+  width: 100%;
+  padding: 0;
+  gap: 1.25rem;
+}
+
+.news-card {
+  width: 100%;
+  padding: 1.25rem 1.5rem;
+  border-radius: 18px;
+  border: 1px solid rgba(124, 195, 255, 0.12);
+  background: rgba(18, 30, 46, 0.9);
+  box-shadow: 0 12px 28px rgba(3, 10, 20, 0.4);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+@media (hover: hover) {
+  .news-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 18px 38px rgba(2, 8, 18, 0.55);
+  }
+}
+
+.news-row {
+  width: 100%;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.news-avatar {
+  margin-right: 0.5rem;
+}
+
+.news-title a {
+  font-weight: 600;
+  font-size: 1.05rem;
+}
+
+.news-meta {
+  color: var(--lumo-secondary-text-color);
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.news-meta vaadin-icon {
+  color: var(--md-primary);
+}
+
+.news-content {
+  color: var(--lumo-body-text-color);
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin-top: 0.75rem;
+  text-align: justify;
+}
+
+.news-expand {
+  cursor: pointer;
+  color: var(--md-primary);
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-top: 0.5rem;
+}
+
+.mobile-nav {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  padding: 0.5rem;
+  border-radius: 999px;
+  background: rgba(18, 30, 46, 0.9);
+  box-shadow: 0 8px 20px rgba(3, 10, 20, 0.5);
+  backdrop-filter: blur(10px);
+  gap: 0.5rem;
+}
+
+.form-shell {
+  width: 100%;
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 1.5rem;
+  border-radius: 20px;
+  background: rgba(18, 30, 46, 0.9);
+  box-shadow: var(--md-shadow);
+}
+
+@media (max-width: 1024px) {
+  .page-layout {
+    padding: 2rem 1.75rem 3rem;
+  }
+
+  .app-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 768px) {
+  .page-layout {
+    padding: 1.5rem 1.25rem 2.5rem;
+  }
+
+  .app-header {
+    padding: 1rem 1.25rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .page-layout {
+    padding: 1.25rem 1rem 2rem;
+  }
+
+  .app-title {
+    font-size: 1.75rem;
+  }
+
+  .news-card {
+    padding: 1rem 1.1rem;
+  }
+}
