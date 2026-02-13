@@ -113,6 +113,8 @@ public class Scheduler {
         rssFeeds.put("https://bahraincyclingteam.com/feed", "en");
         rssFeeds.put("https://www.wmncycling.com/feed", "en");
         rssFeeds.put("https://racing.trekbikes.com/feed", "en");
+        rssFeeds.put("https://velo.outsideonline.com/category/news/feed/", "en");
+
 //      rssFeeds.put("https://road.cc/rss", "en"); Mostly AD articles
 
         initIconCache();
