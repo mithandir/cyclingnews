@@ -1,6 +1,8 @@
 package ch.climbd.newsfeed.controller.scheduler;
 
+import ch.climbd.newsfeed.controller.MongoChangeStreamService;
 import ch.climbd.newsfeed.views.components.CommonComponents;
+import com.mongodb.client.model.changestream.OperationType;
 import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,7 +12,10 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 @Component
@@ -26,6 +31,9 @@ public class Scheduler {
 
     @Autowired
     Environment env;
+
+    @Autowired
+    private MongoChangeStreamService mongoChangeStreamService;
 
     private final Map<String, String> rssFeeds = new HashMap<>();
 
@@ -130,10 +138,29 @@ public class Scheduler {
     @Scheduled(fixedDelay = 15, initialDelay = 1, timeUnit = TimeUnit.MINUTES)
     public void scheduleFeedProcessing() {
         LOG.info("Running RSS scheduler");
+        int newEntries = 0;
+        try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
+            List<java.util.concurrent.Future<Integer>> futures = rssFeeds.entrySet()
+                    .stream()
+                    .map(entry -> executor.submit(() -> processor.processRss(entry.getKey(), entry.getValue())))
+                    .toList();
 
-        rssFeeds.keySet()
-                .forEach(feedId -> Thread.startVirtualThread(
-                        () -> processor.processRss(feedId, rssFeeds.get(feedId)))
-                );
+            for (var future : futures) {
+                newEntries += future.get();
+            }
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            LOG.warn("RSS scheduler interrupted");
+            return;
+        } catch (ExecutionException e) {
+            LOG.warn("RSS scheduler failed to process one or more feeds", e);
+        }
+
+        if (newEntries > 0) {
+            LOG.info("RSS scheduler added {} new entries. Triggering single frontend refresh.", newEntries);
+            mongoChangeStreamService.publishSyntheticChange(OperationType.INSERT, "__rss_batch__");
+        } else {
+            LOG.info("RSS scheduler finished with no new entries.");
+        }
     }
 }

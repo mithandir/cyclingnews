@@ -1,11 +1,13 @@
 package ch.climbd.newsfeed.views;
 
+import ch.climbd.newsfeed.controller.MongoChangeStreamService;
 import ch.climbd.newsfeed.controller.MongoController;
 import ch.climbd.newsfeed.data.NewsEntry;
 import ch.climbd.newsfeed.views.components.CommonComponents;
 import ch.climbd.newsfeed.views.components.CommonSessionComponents;
 import ch.climbd.newsfeed.views.components.NewsItemComponent;
 import ch.climbd.newsfeed.views.components.SearchComponent;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -18,7 +20,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
+import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @Route("")
 @PageTitle("Climbd Cycling News - Latest News")
@@ -41,11 +46,17 @@ public class LatestView extends VerticalLayout {
     @Autowired
     private NewsItemComponent newsItemComponent;
 
+    @Autowired
+    private MongoChangeStreamService mongoChangeStreamService;
+
     @Value("${baseurl}")
     private String baseUrl;
 
     private LinkedList<NewsEntry> sourceData;
-    private VerticalLayout newsItems;
+    private VerticalLayout newsItemsContainer;
+    private Set<String> selectedLanguagesSnapshot;
+    private AutoCloseable mongoSubscription;
+    private final AtomicBoolean refreshQueued = new AtomicBoolean(false);
 
     @PostConstruct
     public void init() {
@@ -68,18 +79,65 @@ public class LatestView extends VerticalLayout {
         add(header);
 
         add(commonSessionComponents.createMenu());
+        selectedLanguagesSnapshot = new HashSet<>(commonSessionComponents.getSelectedLanguages());
 
-        sourceData = new LinkedList<>(mongo.findAllOrderedByDate(commonSessionComponents.getSelectedLanguages()));
-        newsItems = newsItemComponent.createNewsItem(sourceData);
+        newsItemsContainer = new VerticalLayout();
+        newsItemsContainer.setPadding(false);
+        newsItemsContainer.setSpacing(false);
+        newsItemsContainer.setWidthFull();
+        refreshNewsItems();
 
-        var searchBar = searchComponent.createSearchBar(newsItems);
+        var searchBar = searchComponent.createSearchBar(newsItemsContainer);
 
         add(searchBar);
+        add(newsItemsContainer);
 
-        add(newsItems);
+        addAttachListener(attachEvent -> subscribeForRealtimeUpdates(attachEvent.getUI()));
+        addDetachListener(detachEvent -> unsubscribeFromRealtimeUpdates());
 
         if (commonSessionComponents.isAdminChecked()) {
             commonComponents.updateLastVisit();
+        }
+    }
+
+    private void refreshNewsItems() {
+        sourceData = new LinkedList<>(mongo.findAllOrderedByDate(selectedLanguagesSnapshot));
+        newsItemsContainer.removeAll();
+        newsItemsContainer.add(newsItemComponent.createNewsItem(sourceData));
+    }
+
+    private void subscribeForRealtimeUpdates(UI ui) {
+        unsubscribeFromRealtimeUpdates();
+        mongoSubscription = mongoChangeStreamService.subscribe(event -> {
+            if (!"__rss_batch__".equals(event.link())) {
+                return;
+            }
+            if (refreshQueued.compareAndSet(false, true)) {
+                ui.access(() -> {
+                    try {
+                        if (ui.isAttached()) {
+                            ui.getPage().reload();
+                        }
+                    } finally {
+                        refreshQueued.set(false);
+                    }
+                });
+            }
+        });
+    }
+
+    private void unsubscribeFromRealtimeUpdates() {
+        if (mongoSubscription == null) {
+            return;
+        }
+
+        try {
+            mongoSubscription.close();
+        } catch (Exception e) {
+            LOG.debug("Failed to close MongoDB realtime subscription", e);
+        } finally {
+            mongoSubscription = null;
+            refreshQueued.set(false);
         }
     }
 }

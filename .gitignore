@@ -37,3 +37,4 @@ build/
 /frontend/generated/
 /vite.generated.ts
 /package-lock.json
+/src/main/*bundle*/*

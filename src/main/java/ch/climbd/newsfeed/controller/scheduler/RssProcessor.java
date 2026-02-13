@@ -23,6 +23,7 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Date;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Component
 public class RssProcessor {
@@ -41,7 +42,8 @@ public class RssProcessor {
     @Autowired
     MlController mlController;
 
-    public void processRss(String url, String language) {
+    public int processRss(String url, String language) {
+        var newEntries = new AtomicInteger(0);
         try {
             HttpsURLConnection.setDefaultHostnameVerifier(initTrustAll());
             SyndFeed feed = new SyndFeedInput().build(new XmlReader(new URL(url)));
@@ -51,9 +53,10 @@ public class RssProcessor {
                     .filter(item -> item.getLink().startsWith("http"))
                     .filter(item -> !filter.isSpam(item.getTitle()))
                     .filter(item -> !mongo.exists(item))
-                    .forEach(item -> Thread.startVirtualThread(() -> {
+                    .forEach(item -> {
                         item.setLanguage(language);
                         mongo.save(item);
+                        newEntries.incrementAndGet();
                         pushover.sendNotification(item);
                         LOG.debug("New entry: {}", item.getTitle());
 
@@ -68,11 +71,12 @@ public class RssProcessor {
                                 }
                             }
                         }
-                    }));
+                    });
 
         } catch (Exception e) {
             LOG.error("Error reading RSS feed: {}", url);
         }
+        return newEntries.get();
     }
 
     private NewsEntry map(SyndEntry item) {
