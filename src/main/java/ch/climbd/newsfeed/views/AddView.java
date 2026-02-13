@@ -39,13 +39,21 @@ public class AddView extends VerticalLayout {
 
     @PostConstruct
     public void init() {
+        addClassName("page-layout");
+        setWidthFull();
+        setPadding(false);
+
         var image = new Image(baseUrl + "/logo.svg", "Title");
         image.setWidth("8em");
-        image.getStyle().set("margin-left", commonComponents.isMobile() ? "2%" : "10%");
         var heading = new H1("cycling news");
-        var header = new HorizontalLayout(image, heading);
+        heading.addClassName("app-title");
+        var brand = new HorizontalLayout(image, heading);
+        brand.addClassName("app-brand");
+        brand.setAlignItems(Alignment.CENTER);
+
+        var header = new HorizontalLayout(brand);
+        header.addClassName("app-header");
         header.setWidthFull();
-        header.setAlignItems(Alignment.CENTER);
         add(header);
 
         add(commonSessionComponents.createMenu());
@@ -60,24 +68,29 @@ public class AddView extends VerticalLayout {
 
     private VerticalLayout buildForm() {
         VerticalLayout verticalLayout = new VerticalLayout();
+        verticalLayout.addClassName("form-shell");
+        verticalLayout.setPadding(true);
+        verticalLayout.setWidthFull();
 
         TextField title = new TextField("Title");
         title.setClearButtonVisible(true);
+        title.setWidthFull();
         TextField link = new TextField("Link");
         link.setClearButtonVisible(true);
+        link.setWidthFull();
 
         CheckboxGroup<String> languageGroup = new CheckboxGroup<>();
         languageGroup.setLabel("Language");
         languageGroup.setItems("English", "German");
 
         FormLayout formLayout = new FormLayout();
+        formLayout.setWidthFull();
         handleFormLayout(title, link, languageGroup, formLayout);
         verticalLayout.add(formLayout);
 
         Button button = new Button("Save");
         button.setDisableOnClick(true);
         button.addClickListener(event -> clickSaveAction(title, link, languageGroup, button));
-        button.getStyle().set("margin-left", commonComponents.isMobile() ? "2%" : "10%");
 
         verticalLayout.add(button);
 
@@ -150,7 +163,5 @@ public class AddView extends VerticalLayout {
             formLayout.setColspan(link, 1);
         }
 
-        formLayout.getStyle().set("margin-left", commonComponents.isMobile() ? "2%" : "10%");
-        formLayout.getStyle().set("margin-right", commonComponents.isMobile() ? "2%" : "10%");
     }
 }

@@ -1,5 +1,6 @@
 package ch.climbd.newsfeed;
 
+import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.page.AppShellConfigurator;
 import com.vaadin.flow.component.page.Inline;
 import com.vaadin.flow.component.page.Push;
@@ -9,7 +10,8 @@ import com.vaadin.flow.server.PWA;
 import com.vaadin.flow.theme.Theme;
 import com.vaadin.flow.theme.lumo.Lumo;
 
-@Theme(themeClass = Lumo.class, variant = Lumo.DARK)
+@CssImport("./themes/climbd/styles.css")
+@Theme(themeClass = Lumo.class, variant = Lumo.LIGHT)
 @PWA(name = "Climbd Cycling News - Latest News", shortName = "Climbd News")
 @Push
 public class AppShell implements AppShellConfigurator {

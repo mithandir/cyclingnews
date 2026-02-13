@@ -35,13 +35,21 @@ public class LoginView extends VerticalLayout {
 
     @PostConstruct
     public void init() {
+        addClassName("page-layout");
+        setWidthFull();
+        setPadding(false);
+
         var image = new Image(baseUrl + "/logo.svg", "Title");
         image.setWidth("8em");
-        image.getStyle().set("margin-left", commonComponents.isMobile() ? "2%" : "10%");
         var heading = new H1("cycling news");
-        var header = new HorizontalLayout(image, heading);
+        heading.addClassName("app-title");
+        var brand = new HorizontalLayout(image, heading);
+        brand.addClassName("app-brand");
+        brand.setAlignItems(Alignment.CENTER);
+
+        var header = new HorizontalLayout(brand);
+        header.addClassName("app-header");
         header.setWidthFull();
-        header.setAlignItems(Alignment.CENTER);
         add(header);
 
         add(commonSessionComponents.createMenu());
@@ -56,16 +64,17 @@ public class LoginView extends VerticalLayout {
 
     private VerticalLayout buildForm() {
         TextField apiKey = new TextField("API Key");
-        apiKey.setWidth("22em");
+        apiKey.setWidthFull();
         apiKey.setClearButtonVisible(true);
-        apiKey.getStyle().set("margin-left", commonComponents.isMobile() ? "2%" : "10%");
 
         Button button = new Button("Save");
         button.setDisableOnClick(true);
         button.addClickListener(event -> clickSaveAction(apiKey));
-        button.getStyle().set("margin-left", commonComponents.isMobile() ? "2%" : "10%");
 
-        return new VerticalLayout(apiKey, button);
+        var form = new VerticalLayout(apiKey, button);
+        form.addClassName("form-shell");
+        form.setWidthFull();
+        return form;
     }
 
     private void clickSaveAction(TextField apiKey) {

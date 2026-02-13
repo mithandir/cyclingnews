@@ -57,6 +57,7 @@ public class CommonSessionComponents {
         var menu = new MenuBar();
         menu.setSizeFull();
         menu.setOpenOnHover(true);
+        menu.addClassName("app-menu");
 
         createIconItem(menu, VaadinIcon.NEWSPAPER, "Recent", null).addClickListener(listenerNewest);
         createIconItem(menu, VaadinIcon.BAR_CHART, "Most views", null).addClickListener(listenerViews);

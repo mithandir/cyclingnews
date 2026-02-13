@@ -32,13 +32,21 @@ public class LogoutView extends VerticalLayout {
 
     @PostConstruct
     public void init() {
+        addClassName("page-layout");
+        setWidthFull();
+        setPadding(false);
+
         var image = new Image(baseUrl + "/logo.svg", "Title");
         image.setWidth("8em");
-        image.getStyle().set("margin-left", commonComponents.isMobile() ? "2%" : "10%");
         var heading = new H1("cycling news");
-        var header = new HorizontalLayout(image, heading);
+        heading.addClassName("app-title");
+        var brand = new HorizontalLayout(image, heading);
+        brand.addClassName("app-brand");
+        brand.setAlignItems(Alignment.CENTER);
+
+        var header = new HorizontalLayout(brand);
+        header.addClassName("app-header");
         header.setWidthFull();
-        header.setAlignItems(Alignment.CENTER);
         add(header);
 
         add(commonSessionComponents.createMenu());

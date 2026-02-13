@@ -48,6 +48,8 @@ public class NewsItemComponent {
     public VerticalLayout createNewsItem(List<NewsEntry> items) {
         commonSessionComponents.setFocusKeyIndex(0);
         var verticalLayout = new VerticalLayout();
+        verticalLayout.addClassName("news-list");
+        verticalLayout.setPadding(false);
         var index = 0;
         for (var item : items) {
             if (item.isDeleted()) {
@@ -140,10 +142,7 @@ public class NewsItemComponent {
             });
 
             mobileNavBar.add(nextBtn, prevBtn);
-            mobileNavBar.getStyle().set("position", "fixed");
-            mobileNavBar.getStyle().set("bottom", "1em");
-            mobileNavBar.getStyle().set("right", "1em");
-            mobileNavBar.getStyle().set("cursor", "pointer");
+            mobileNavBar.addClassName("mobile-nav");
 
             verticalLayout.add(mobileNavBar);
         }
@@ -155,21 +154,18 @@ public class NewsItemComponent {
         }
 
         VerticalLayout cardLayout = new VerticalLayout();
-        cardLayout.getStyle().set("border", "1px solid hsl(214, 90%, 77%)");
-        cardLayout.getStyle().set("border-radius", "8px");
-        cardLayout.getStyle().set("padding", "16px");
-        cardLayout.getStyle().set("margin-bottom", "16px");
-        cardLayout.setWidth(commonComponents.isMobile() ? "100%" : "90%");
-        cardLayout.setSpacing(false); // Ensure no default spacing from VerticalLayout itself
+        cardLayout.addClassName("news-card");
+        cardLayout.setWidthFull();
+        cardLayout.setSpacing(false);
+        cardLayout.setPadding(false);
 
         HorizontalLayout row = new HorizontalLayout();
-        // Align items to the top for better alignment of index, avatar, and text column
+        row.addClassName("news-row");
         row.setAlignItems(FlexComponent.Alignment.START);
-        row.setSpacing(true); // Add spacing between index, avatar, and column
+        row.setSpacing(true);
 
         Div avatarDiv = new Div();
-        // Add margin to the right of the avatar for spacing from the text column
-        avatarDiv.getStyle().set("margin-right", "var(--lumo-space-s)");
+        avatarDiv.addClassName("news-avatar");
         Avatar avatar = commonComponents.buildSiteIcon(item.getDomainWithProtocol(), item.getDomainOnly());
         avatarDiv.add(avatar);
         avatarDiv.addClickListener(e -> UI.getCurrent().access(() -> {
@@ -179,9 +175,8 @@ public class NewsItemComponent {
         }));
 
         HorizontalLayout rowTitle = new HorizontalLayout();
-        // Align items on baseline for better visual consistency of text
         rowTitle.setAlignItems(FlexComponent.Alignment.BASELINE);
-        //TODO rowTitle.setGap("var(--lumo-space-s)"); // Add gap between title and source
+        rowTitle.addClassName("news-title");
         commonComponents.isItemUnRead(item.getPublishedDateTime(), rowTitle, avatar);
 
         Anchor title = new Anchor(commonComponents.createLinkWithStats(item.getLink()), item.getTitle(), AnchorTarget.BLANK);
@@ -196,7 +191,7 @@ public class NewsItemComponent {
 
         HorizontalLayout rowDateAndLinks = new HorizontalLayout();
         rowDateAndLinks.setAlignItems(FlexComponent.Alignment.CENTER);
-        //TODO rowDateAndLinks.setGap("var(--lumo-space-s)"); // Add gaps between date/icon items
+        rowDateAndLinks.addClassName("news-meta");
 
         Span date = new Span(item.getPublishedDateTime().format(DateTimeFormatter.ISO_LOCAL_DATE));
         date.getStyle().set("font-size", "small");
@@ -236,9 +231,9 @@ public class NewsItemComponent {
 
         VerticalLayout column = new VerticalLayout();
         column.add(rowTitle, rowDateAndLinks);
-        //TODO column.setGap("var(--lumo-space-xs)"); // Small gap between title row and date/links row
-        column.setSpacing(false); // Explicitly false, gap is used instead
-        column.setPadding(false); // No padding for the column itself
+        column.addClassName("news-column");
+        column.setSpacing(false);
+        column.setPadding(false);
 
         if (commonComponents.isMobile()) {
             row.add(new Span(String.valueOf(index)), column);
@@ -254,18 +249,18 @@ public class NewsItemComponent {
 
         // Store both content versions and apply styles
         Html excerptContent = formatHtml(item, true);
-        excerptContent.getStyle().set("margin-top", "10px");
         excerptContent.getStyle().set("overflow", "hidden");
         excerptContent.getStyle().set("transition", transitionStyle);
         excerptContent.getStyle().set("box-sizing", "border-box");
         excerptContent.getStyle().set("max-height", collapsedHeight); // Initial state: collapsed
+        excerptContent.addClassName("news-content");
 
         Html fullContent = formatHtml(item, false);
-        fullContent.getStyle().set("margin-top", "10px");
         fullContent.getStyle().set("overflow-y", "auto"); // Allow vertical scroll on fullContent
         fullContent.getStyle().set("transition", transitionStyle);
         fullContent.getStyle().set("box-sizing", "border-box");
         fullContent.getStyle().set("max-height", "0px"); // Initial state: hidden collapsed
+        fullContent.addClassName("news-content");
 
         // Initial display & state
         cardLayout.getElement().setProperty("isExpanded", false);
@@ -275,10 +270,7 @@ public class NewsItemComponent {
 
         // "Read more..." / "Show less..." indicator
         Span expandIndicator = new Span("Read more...");
-        expandIndicator.getStyle().set("cursor", "pointer");
-        expandIndicator.getStyle().set("color", "var(--lumo-primary-text-color)");
-        expandIndicator.getStyle().set("font-size", "var(--lumo-font-size-s)");
-        expandIndicator.getStyle().set("margin-top", "var(--lumo-space-s)");
+        expandIndicator.addClassName("news-expand");
         cardLayout.add(expandIndicator); // Add it to the layout
 
         boolean isContentDifferent = !fullContent.getInnerHtml().equals(excerptContent.getInnerHtml());
@@ -364,9 +356,6 @@ public class NewsItemComponent {
     private Html createHtmlElement(String str) {
         // Always wrap in a single <div> to ensure only one top-level element
         var html = new Html("<div>" + str + "</div>");
-        html.getStyle().set("text-wrap", "wrap");
-        html.getStyle().set("text-align", "justify");
-        html.getStyle().set("font-size", "small");
         return html;
     }
 

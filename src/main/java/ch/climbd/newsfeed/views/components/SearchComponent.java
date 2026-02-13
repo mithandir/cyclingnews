@@ -4,6 +4,7 @@ import ch.climbd.newsfeed.controller.MongoController;
 import ch.climbd.newsfeed.data.NewsEntry;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -31,9 +32,12 @@ public class SearchComponent {
         textField.setPlaceholder("Search");
         textField.setPrefixComponent(VaadinIcon.SEARCH.create());
         textField.setClearButtonVisible(true);
+        textField.addClassName("search-input");
 
         var searchButton = new Button("Search");
+        searchButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         var clearButton = new Button("Clear");
+        clearButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
         clearButton.setVisible(false);
 
         textField.addKeyPressListener(Key.ENTER, event -> searchEventHandler(newsItems, textField, clearButton));
@@ -43,8 +47,12 @@ public class SearchComponent {
         clearButton.addClickListener(event -> clearEventHandler(newsItems, textField, clearButton));
 
         var searchbar = new HorizontalLayout(textField, searchButton, clearButton);
+        searchbar.addClassName("search-bar");
+        searchbar.setWidthFull();
+
         var verticalLayout = new VerticalLayout(searchbar);
-        verticalLayout.setSizeFull();
+        verticalLayout.addClassName("search-shell");
+        verticalLayout.setWidthFull();
 
         return verticalLayout;
     }
