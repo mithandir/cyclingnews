@@ -81,8 +81,12 @@ a:hover {
 }
 
 .app-title {
+  margin-top: 35px;
   font-size: clamp(1.8rem, 3vw, 2.6rem);
   text-transform: lowercase;
+  color: #ffffff;
+  font-family: "Manrope", "IBM Plex Sans", "Noto Sans", "Segoe UI", sans-serif;
+  font-weight: 700;
 }
 
 .app-menu {
