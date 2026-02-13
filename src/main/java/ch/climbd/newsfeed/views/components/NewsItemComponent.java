@@ -24,7 +24,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import static com.vaadin.flow.component.ComponentUtil.fireEvent;
 
@@ -32,6 +34,8 @@ import static com.vaadin.flow.component.ComponentUtil.fireEvent;
 public class NewsItemComponent {
 
     private static final Logger LOG = LoggerFactory.getLogger(NewsItemComponent.class);
+    private static final Pattern PARAGRAPH_LIKE_TAG_PATTERN =
+            Pattern.compile("(?i)<\\s*(p|ul|ol|li|h1|h2|h3|h4|h5|h6|blockquote)\\b");
 
     @Autowired
     private Filter filter;
@@ -316,42 +320,115 @@ public class NewsItemComponent {
     }
 
     private Html formatHtml(NewsEntry item, boolean excerpt) {
-        var str = item.getContent();
-
         if (excerpt) {
-            str = createExcerpt(str);
-        } else {
-            str = !item.getSummary().isBlank() ? item.getSummary() : str;
+            var str = createExcerpt(item.getContent());
+            return createHtmlElement(str);
         }
 
-        str = sanitizeHtml(str);
-
-        // Remove all <div> and </div> tags to avoid nested/multiple top-level elements
-        str = str.replaceAll("(?i)</?div>", "");
-        // Remove all <p> and </p> tags, replace with <br> for line breaks
-        str = str.replaceAll("(?i)</p>", "<br>");
-        str = str.replaceAll("(?i)<p>", "");
-        // Remove leading/trailing whitespace and <br>
-        str = str.trim().replaceAll("^(<br>)+", "").replaceAll("(<br>)+$", "");
-
+        var summary = item.getSummary();
+        var source = (summary != null && !summary.isBlank()) ? summary : item.getContent();
+        var str = formatFullContent(source);
         return createHtmlElement(str);
+    }
+
+    private String formatFullContent(String str) {
+        if (str == null || str.isBlank()) {
+            return "";
+        }
+
+        str = str.replaceAll("(?i)</?div[^>]*>", "").trim();
+
+        if (PARAGRAPH_LIKE_TAG_PATTERN.matcher(str).find()) {
+            return sanitizeHtml(str);
+        }
+
+        return paragraphizeText(str);
+    }
+
+    private String paragraphizeText(String html) {
+        String normalized = html
+                .replaceAll("(?i)<br\\s*/?>", "\n")
+                .replace("&nbsp;", " ")
+                .replaceAll("\\r\\n?", "\n");
+
+        String plainText = Jsoup.parse(normalized).wholeText().trim();
+        if (plainText.isBlank()) {
+            return "";
+        }
+
+        String[] initialParagraphs = plainText.split("\\n\\s*\\n+");
+        List<String> readableParagraphs = new ArrayList<>();
+
+        for (String paragraph : initialParagraphs) {
+            String compact = paragraph.replaceAll("\\s*\\n\\s*", " ").trim();
+            if (compact.isBlank()) {
+                continue;
+            }
+            readableParagraphs.addAll(splitLongParagraph(compact));
+        }
+
+        if (readableParagraphs.isEmpty()) {
+            return "";
+        }
+
+        StringBuilder htmlBuilder = new StringBuilder();
+        for (String paragraph : readableParagraphs) {
+            htmlBuilder.append("<p>")
+                    .append(Jsoup.clean(paragraph, Safelist.none()))
+                    .append("</p>");
+        }
+        return htmlBuilder.toString();
+    }
+
+    private List<String> splitLongParagraph(String paragraph) {
+        List<String> parts = new ArrayList<>();
+        if (paragraph.length() <= 320) {
+            parts.add(paragraph);
+            return parts;
+        }
+
+        String[] sentences = paragraph.split("(?<=[.!?])\\s+(?=[A-Z0-9\"'\\(])");
+        if (sentences.length <= 1) {
+            parts.add(paragraph);
+            return parts;
+        }
+
+        StringBuilder currentPart = new StringBuilder();
+        int sentenceCount = 0;
+        for (String sentence : sentences) {
+            boolean exceedsLength = currentPart.length() > 0 && currentPart.length() + sentence.length() > 320;
+            boolean exceedsSentenceLimit = sentenceCount >= 3;
+            if (exceedsLength || exceedsSentenceLimit) {
+                parts.add(currentPart.toString().trim());
+                currentPart = new StringBuilder();
+                sentenceCount = 0;
+            }
+            currentPart.append(sentence).append(" ");
+            sentenceCount++;
+        }
+        if (currentPart.length() > 0) {
+            parts.add(currentPart.toString().trim());
+        }
+
+        return parts;
     }
 
     private String createExcerpt(String str) {
         if (str == null || str.isBlank()) {
             return "";
         }
-        // Remove <br> for excerpt length calculation
-        str = str.replaceAll("(?i)<br>", " ");
-        str = str.substring(0, Math.min(str.length(), commonComponents.isMobile() ? 25 : 100)) + "...";
-        return str;
+        String plainText = Jsoup.parse(str).text().trim();
+        if (plainText.isBlank()) {
+            return "";
+        }
+        return plainText.substring(0, Math.min(plainText.length(), commonComponents.isMobile() ? 25 : 100)) + "...";
     }
 
     private String sanitizeHtml(String str) {
         if (str == null || str.isBlank()) {
             return "";
         }
-        return Jsoup.clean(str, Safelist.basic().addTags("br"));
+        return Jsoup.clean(str, Safelist.basic().addTags("br").addTags("p"));
     }
 
     private Html createHtmlElement(String str) {
