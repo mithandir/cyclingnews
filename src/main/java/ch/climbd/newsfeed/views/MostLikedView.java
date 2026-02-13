@@ -18,8 +18,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
-import java.util.HashSet;
-import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 @Route("liked")
@@ -47,7 +45,6 @@ public class MostLikedView extends VerticalLayout {
     private String baseUrl;
 
     private VerticalLayout newsItemsContainer;
-    private Set<String> selectedLanguagesSnapshot;
     private AutoCloseable mongoSubscription;
     private final AtomicBoolean refreshQueued = new AtomicBoolean(false);
 
@@ -71,7 +68,6 @@ public class MostLikedView extends VerticalLayout {
         add(header);
 
         add(commonSessionComponents.createMenu());
-        selectedLanguagesSnapshot = new HashSet<>(commonSessionComponents.getSelectedLanguages());
 
         newsItemsContainer = new VerticalLayout();
         newsItemsContainer.setPadding(false);
@@ -90,21 +86,21 @@ public class MostLikedView extends VerticalLayout {
     private void refreshNewsItems() {
         newsItemsContainer.removeAll();
         newsItemsContainer.add(newsItemComponent.createNewsItem(
-                mongo.findAllOrderedByVotes(selectedLanguagesSnapshot)
+                mongo.findAllOrderedByVotes(commonSessionComponents.getSelectedLanguages())
         ));
     }
 
     private void subscribeForRealtimeUpdates(UI ui) {
         unsubscribeFromRealtimeUpdates();
         mongoSubscription = mongoChangeStreamService.subscribe(event -> {
-            if (!"__rss_batch__".equals(event.link())) {
+            if (!"__rss_batch__".equals(event.link()) && !"__language_change__".equals(event.link())) {
                 return;
             }
             if (refreshQueued.compareAndSet(false, true)) {
                 ui.access(() -> {
                     try {
                         if (ui.isAttached()) {
-                            ui.getPage().reload();
+                            refreshNewsItems();
                         }
                     } finally {
                         refreshQueued.set(false);

@@ -20,9 +20,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
-import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 @Route("")
@@ -54,7 +52,6 @@ public class LatestView extends VerticalLayout {
 
     private LinkedList<NewsEntry> sourceData;
     private VerticalLayout newsItemsContainer;
-    private Set<String> selectedLanguagesSnapshot;
     private AutoCloseable mongoSubscription;
     private final AtomicBoolean refreshQueued = new AtomicBoolean(false);
 
@@ -79,7 +76,6 @@ public class LatestView extends VerticalLayout {
         add(header);
 
         add(commonSessionComponents.createMenu());
-        selectedLanguagesSnapshot = new HashSet<>(commonSessionComponents.getSelectedLanguages());
 
         newsItemsContainer = new VerticalLayout();
         newsItemsContainer.setPadding(false);
@@ -101,7 +97,7 @@ public class LatestView extends VerticalLayout {
     }
 
     private void refreshNewsItems() {
-        sourceData = new LinkedList<>(mongo.findAllOrderedByDate(selectedLanguagesSnapshot));
+        sourceData = new LinkedList<>(mongo.findAllOrderedByDate(commonSessionComponents.getSelectedLanguages()));
         newsItemsContainer.removeAll();
         newsItemsContainer.add(newsItemComponent.createNewsItem(sourceData));
     }
@@ -109,14 +105,14 @@ public class LatestView extends VerticalLayout {
     private void subscribeForRealtimeUpdates(UI ui) {
         unsubscribeFromRealtimeUpdates();
         mongoSubscription = mongoChangeStreamService.subscribe(event -> {
-            if (!"__rss_batch__".equals(event.link())) {
+            if (!"__rss_batch__".equals(event.link()) && !"__language_change__".equals(event.link())) {
                 return;
             }
             if (refreshQueued.compareAndSet(false, true)) {
                 ui.access(() -> {
                     try {
                         if (ui.isAttached()) {
-                            ui.getPage().reload();
+                            refreshNewsItems();
                         }
                     } finally {
                         refreshQueued.set(false);

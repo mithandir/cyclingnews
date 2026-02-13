@@ -1,5 +1,7 @@
 package ch.climbd.newsfeed.views.components;
 
+import ch.climbd.newsfeed.controller.MongoChangeStreamService;
+import com.mongodb.client.model.changestream.OperationType;
 import com.vaadin.flow.component.*;
 import com.vaadin.flow.component.contextmenu.HasMenuItems;
 import com.vaadin.flow.component.contextmenu.MenuItem;
@@ -7,11 +9,13 @@ import com.vaadin.flow.component.contextmenu.SubMenu;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.menubar.MenuBar;
+import com.vaadin.flow.router.Location;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.annotation.SessionScope;
 import org.vaadin.addon.browserstorage.LocalStorage;
 
 import java.util.ArrayList;
@@ -20,7 +24,7 @@ import java.util.List;
 import java.util.Set;
 
 @Component
-@SessionScope
+@Scope(value = "vaadin-session", proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class CommonSessionComponents {
 
     @Value("${api-key}")
@@ -28,6 +32,9 @@ public class CommonSessionComponents {
 
     @Autowired
     private CommonComponents commonComponents;
+
+    @Autowired
+    private MongoChangeStreamService mongoChangeStreamService;
 
     private int focusKeyIndex = 0;
     private int focusCurrentIndex = 0;
@@ -89,9 +96,10 @@ public class CommonSessionComponents {
         localStorage.getItem("API-KEY").thenAccept(result -> {
             adminChecked = true;
             if (apiKey.equals(result)) {
+                boolean becameAdmin = !isAdmin;
                 isAdmin = true;
-                if (forceReload) {
-                    UI.getCurrent().getPage().reload();
+                if (forceReload && becameAdmin) {
+                    currentUI.access(() -> refreshCurrentView(currentUI));
                 }
             } else {
                 isAdmin = false;
@@ -116,7 +124,7 @@ public class CommonSessionComponents {
             selectedLanguages.remove("en");
         }
 
-        e.getSource().getUI().ifPresent(ui -> ui.getPage().reload());
+        mongoChangeStreamService.publishSyntheticChange(OperationType.UPDATE, "__language_change__");
     };
 
     private final ComponentEventListener<ClickEvent<MenuItem>> listenerLanguageDe = e -> {
@@ -126,8 +134,13 @@ public class CommonSessionComponents {
             selectedLanguages.remove("de");
         }
 
-        e.getSource().getUI().ifPresent(ui -> ui.getPage().reload());
+        mongoChangeStreamService.publishSyntheticChange(OperationType.UPDATE, "__language_change__");
     };
+
+    private void refreshCurrentView(UI ui) {
+        Location current = ui.getInternals().getActiveViewLocation();
+        ui.navigate(current.getPath(), current.getQueryParameters());
+    }
 
     private MenuItem createIconItem(HasMenuItems menu, VaadinIcon iconName, String label, String ariaLabel) {
         return createIconItem(menu, iconName, label, ariaLabel, false);
