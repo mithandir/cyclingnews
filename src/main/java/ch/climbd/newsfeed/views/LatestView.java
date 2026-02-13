@@ -7,7 +7,9 @@ import ch.climbd.newsfeed.views.components.CommonComponents;
 import ch.climbd.newsfeed.views.components.CommonSessionComponents;
 import ch.climbd.newsfeed.views.components.NewsItemComponent;
 import ch.climbd.newsfeed.views.components.SearchComponent;
+import com.vaadin.flow.component.ClientCallable;
 import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -20,12 +22,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 @Route("")
 @PageTitle("Climbd Cycling News - Latest News")
 public class LatestView extends VerticalLayout {
+    private static final int INITIAL_BATCH_SIZE = 20;
+    private static final int LOAD_MORE_BATCH_SIZE = 10;
 
     private static final Logger LOG = LoggerFactory.getLogger(LatestView.class);
 
@@ -51,7 +57,11 @@ public class LatestView extends VerticalLayout {
     private String baseUrl;
 
     private LinkedList<NewsEntry> sourceData;
+    private List<NewsEntry> allEntries = new ArrayList<>();
+    private int loadedItemCount = 0;
+    private VerticalLayout renderedNewsList;
     private VerticalLayout newsItemsContainer;
+    private Div bottomSentinel;
     private AutoCloseable mongoSubscription;
     private final AtomicBoolean refreshQueued = new AtomicBoolean(false);
 
@@ -81,7 +91,20 @@ public class LatestView extends VerticalLayout {
         newsItemsContainer.setPadding(false);
         newsItemsContainer.setSpacing(false);
         newsItemsContainer.setWidthFull();
+
+        renderedNewsList = new VerticalLayout();
+        renderedNewsList.setPadding(false);
+        renderedNewsList.setSpacing(false);
+        renderedNewsList.setWidthFull();
+
+        bottomSentinel = new Div();
+        bottomSentinel.setWidthFull();
+        bottomSentinel.getStyle().set("height", "1px");
+
+        newsItemsContainer.add(renderedNewsList, bottomSentinel);
+
         refreshNewsItems();
+        setupBottomObserver();
 
         var searchBar = searchComponent.createSearchBar(newsItemsContainer);
 
@@ -98,8 +121,61 @@ public class LatestView extends VerticalLayout {
 
     private void refreshNewsItems() {
         sourceData = new LinkedList<>(mongo.findAllOrderedByDate(commonSessionComponents.getSelectedLanguages()));
+        allEntries = new ArrayList<>(sourceData);
+        loadedItemCount = 0;
         newsItemsContainer.removeAll();
-        newsItemsContainer.add(newsItemComponent.createNewsItem(sourceData));
+        newsItemsContainer.add(renderedNewsList, bottomSentinel);
+        loadNextBatch(INITIAL_BATCH_SIZE);
+    }
+
+    @ClientCallable
+    public void loadMore() {
+        loadNextBatch(LOAD_MORE_BATCH_SIZE);
+    }
+
+    private void loadNextBatch(int batchSize) {
+        if (allEntries.isEmpty()) {
+            renderedNewsList.removeAll();
+            bottomSentinel.setVisible(false);
+            return;
+        }
+
+        int newLoadedCount = Math.min(loadedItemCount + batchSize, allEntries.size());
+        if (newLoadedCount == loadedItemCount) {
+            bottomSentinel.setVisible(false);
+            return;
+        }
+
+        int previousFocusIndex = commonSessionComponents.getFocusKeyIndex();
+        loadedItemCount = newLoadedCount;
+        renderedNewsList.removeAll();
+        renderedNewsList.add(newsItemComponent.createNewsItem(allEntries.subList(0, loadedItemCount)));
+        commonSessionComponents.setFocusKeyIndex(Math.min(previousFocusIndex, loadedItemCount - 1));
+        bottomSentinel.setVisible(loadedItemCount < allEntries.size());
+    }
+
+    private void setupBottomObserver() {
+        getElement().executeJs("""
+                const host = this;
+                const sentinel = $0;
+                if (host.__observer) {
+                    host.__observer.disconnect();
+                }
+                let pending = false;
+                host.__observer = new IntersectionObserver((entries) => {
+                    const entry = entries[0];
+                    if (!entry.isIntersecting || pending) {
+                        return;
+                    }
+                    pending = true;
+                    host.$server.loadMore()
+                        .catch(() => {})
+                        .finally(() => {
+                            pending = false;
+                        });
+                }, { root: null, threshold: 0.1 });
+                host.__observer.observe(sentinel);
+                """, bottomSentinel.getElement());
     }
 
     private void subscribeForRealtimeUpdates(UI ui) {
