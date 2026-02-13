@@ -338,10 +338,6 @@ public class NewsItemComponent {
 
         str = str.replaceAll("(?i)</?div[^>]*>", "").trim();
 
-        if (PARAGRAPH_LIKE_TAG_PATTERN.matcher(str).find()) {
-            return sanitizeHtml(str);
-        }
-
         return paragraphizeText(str);
     }
 
@@ -422,13 +418,6 @@ public class NewsItemComponent {
             return "";
         }
         return plainText.substring(0, Math.min(plainText.length(), commonComponents.isMobile() ? 25 : 100)) + "...";
-    }
-
-    private String sanitizeHtml(String str) {
-        if (str == null || str.isBlank()) {
-            return "";
-        }
-        return Jsoup.clean(str, Safelist.basic().addTags("br").addTags("p"));
     }
 
     private Html createHtmlElement(String str) {
