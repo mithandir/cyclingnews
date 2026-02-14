@@ -7,13 +7,14 @@ import com.vaadin.flow.component.page.Push;
 import com.vaadin.flow.component.page.TargetElement;
 import com.vaadin.flow.server.AppShellSettings;
 import com.vaadin.flow.server.PWA;
+import com.vaadin.flow.shared.ui.Transport;
 import com.vaadin.flow.theme.Theme;
 import com.vaadin.flow.theme.lumo.Lumo;
 
 @CssImport("./themes/climbd/styles.css")
 @Theme(themeClass = Lumo.class, variant = Lumo.LIGHT)
 @PWA(name = "Climbd Cycling News - Latest News", shortName = "Climbd News")
-@Push
+@Push(transport = Transport.WEBSOCKET)
 public class AppShell implements AppShellConfigurator {
 
     @Override
