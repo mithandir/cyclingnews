@@ -14,8 +14,10 @@ import org.springframework.stereotype.Service;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 
@@ -60,63 +62,48 @@ public class MongoController {
     }
 
     public List<NewsEntry> findAllOrderedByDate(Set<String> language) {
-        Query query = new Query();
-        query.addCriteria(Criteria.where("publishedAt").gte(ZonedDateTime.now().minusDays(2).toInstant()));
-        query.addCriteria(Criteria.where("language").in(language));
-        query.with(Sort.by(Sort.Direction.DESC, "publishedAt"));
-        query.limit(100);
+        return template.find(baseDateQuery(language), NewsEntry.class);
+    }
 
+    public List<NewsEntry> findOrderedByDatePage(Set<String> language, int offset, int limit) {
+        if (limit <= 0) {
+            return List.of();
+        }
+
+        Query query = baseDateQuery(language);
+        query.skip(Math.max(0, offset));
+        query.limit(limit);
         return template.find(query, NewsEntry.class);
     }
 
     public List<NewsEntry> findAllOrderedByVotes(Set<String> language) {
-        Comparator<NewsEntry> compareByVotePerDay = (NewsEntry o1, NewsEntry o2) -> {
-            // Cut down to just plain day without hours, minutes and seconds.
-            // Then add the amount of votes as seconds to have sorting inside a day.
-            var obj1 = o1.getPublishedDateTime()
-                    .truncatedTo(ChronoUnit.DAYS)
-                    .plusSeconds(o1.getVotes());
-            var obj2 = o2.getPublishedDateTime()
-                    .truncatedTo(ChronoUnit.DAYS)
-                    .plusSeconds(o2.getVotes());
+        return template.find(baseVotesQuery(language), NewsEntry.class);
+    }
 
-            return obj2.compareTo(obj1);
-        };
+    public List<NewsEntry> findOrderedByVotesPage(Set<String> language, int offset, int limit) {
+        if (limit <= 0) {
+            return List.of();
+        }
 
-        Query query = new Query();
-        query.addCriteria(Criteria.where("language").in(language));
-        query.addCriteria(Criteria.where("votes").gte(1));
-        query.with(Sort.by(Sort.Direction.DESC, "publishedAt"));
-        query.limit(100);
-
-        var result = template.find(query, NewsEntry.class);
-        result.sort(compareByVotePerDay);
-        return result;
+        Query query = baseVotesQuery(language);
+        query.skip(Math.max(0, offset));
+        query.limit(limit);
+        return template.find(query, NewsEntry.class);
     }
 
     public List<NewsEntry> findAllOrderedByViews(Set<String> language) {
-        Comparator<NewsEntry> compareByViewPerDay = (NewsEntry o1, NewsEntry o2) -> {
-            // Cut down to just plain day without hours, minutes and seconds.
-            // Then add the amount of votes as seconds to have sorting inside a day.
-            var obj1 = o1.getPublishedDateTime()
-                    .truncatedTo(ChronoUnit.DAYS)
-                    .plusSeconds(o1.getViews());
-            var obj2 = o2.getPublishedDateTime()
-                    .truncatedTo(ChronoUnit.DAYS)
-                    .plusSeconds(o2.getViews());
+        return template.find(baseViewsQuery(language), NewsEntry.class);
+    }
 
-            return obj2.compareTo(obj1);
-        };
+    public List<NewsEntry> findOrderedByViewsPage(Set<String> language, int offset, int limit) {
+        if (limit <= 0) {
+            return List.of();
+        }
 
-        Query query = new Query();
-        query.addCriteria(Criteria.where("language").in(language));
-        query.addCriteria(Criteria.where("views").gte(1));
-        query.with(Sort.by(Sort.Direction.DESC, "views"));
-        query.limit(100);
-
-        var result = template.find(query, NewsEntry.class);
-        result.sort(compareByViewPerDay);
-        return result;
+        Query query = baseViewsQuery(language);
+        query.skip(Math.max(0, offset));
+        query.limit(limit);
+        return template.find(query, NewsEntry.class);
     }
 
     public List<NewsEntry> findAllFilterdBySite(String host) {
@@ -200,8 +187,7 @@ public class MongoController {
         List<NewsEntry> newsEntries = new ArrayList<>();
 
         while (newsEntries.isEmpty()
-                || (newsEntries.size() == currentPage * 10
-                && newsEntries.size() <= 90)) {
+                || newsEntries.size() == currentPage * 10) {
 
             if (Duration.between(startTime, LocalDateTime.now()).toSeconds() > 1) {
                 break;
@@ -219,5 +205,35 @@ public class MongoController {
         }
 
         return newsEntries;
+    }
+
+    private Query baseDateQuery(Set<String> language) {
+        Query query = new Query();
+        query.addCriteria(Criteria.where("publishedAt").gte(ZonedDateTime.now().minusDays(2).toInstant()));
+        query.addCriteria(Criteria.where("language").in(language));
+        query.with(Sort.by(Sort.Direction.DESC, "publishedAt"));
+        return query;
+    }
+
+    private Query baseVotesQuery(Set<String> language) {
+        Query query = new Query();
+        query.addCriteria(Criteria.where("language").in(language));
+        query.addCriteria(Criteria.where("votes").gte(1));
+        query.with(Sort.by(
+                Sort.Order.desc("publishedAt"),
+                Sort.Order.desc("votes")
+        ));
+        return query;
+    }
+
+    private Query baseViewsQuery(Set<String> language) {
+        Query query = new Query();
+        query.addCriteria(Criteria.where("language").in(language));
+        query.addCriteria(Criteria.where("views").gte(1));
+        query.with(Sort.by(
+                Sort.Order.desc("publishedAt"),
+                Sort.Order.desc("views")
+        ));
+        return query;
     }
 }

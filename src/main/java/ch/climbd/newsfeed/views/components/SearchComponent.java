@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Objects;
 
 @Component
 public class SearchComponent {
@@ -61,34 +60,14 @@ public class SearchComponent {
         textField.setValue("");
         clearButton.setVisible(false);
 
-        var ui = newsItems.getUI().get();
-
-        ui.getPage().fetchCurrentURL(currentUrl -> {
-            String parsedPage = null;
-            try {
-                var path = currentUrl.getPath().split("/");
-                parsedPage = path[path.length - 1];
-            } catch (IndexOutOfBoundsException e) {
-                // CONTINUE
+        newsItems.getUI().ifPresent(ui -> ui.getPage().fetchCurrentURL(currentUrl -> {
+            String route = currentUrl.getPath() == null ? "" : currentUrl.getPath();
+            if (route.startsWith("/")) {
+                route = route.substring(1);
             }
-
-            final String page = Objects.requireNonNullElse(parsedPage, "latest");
-
-            ui.access(() -> {
-                newsItems.removeAll();
-                List<NewsEntry> newsEntries;
-
-                if ("views".equals(page)) {
-                    newsEntries = mongoController.findAllOrderedByViews(commonSessionComponents.getSelectedLanguages());
-                } else if ("liked".equals(page)) {
-                    newsEntries = mongoController.findAllOrderedByVotes(commonSessionComponents.getSelectedLanguages());
-                } else {
-                    newsEntries = mongoController.findAllOrderedByDate(commonSessionComponents.getSelectedLanguages());
-                }
-
-                newsItems.add(newsItemComponent.createNewsItem(newsEntries));
-            });
-        });
+            final String targetRoute = route;
+            ui.access(() -> ui.navigate(targetRoute));
+        }));
     }
 
     private void searchEventHandler(VerticalLayout newsItems, TextField textField, Button clearButton) {

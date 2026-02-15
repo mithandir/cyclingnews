@@ -30,6 +30,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class MostPopularView extends VerticalLayout {
     private static final int INITIAL_BATCH_SIZE = 20;
     private static final int LOAD_MORE_BATCH_SIZE = 10;
+    private static final String LOAD_MORE_ROOT_MARGIN = "0px 0px 600px 0px";
 
     private static final Logger LOG = LoggerFactory.getLogger(MostPopularView.class);
 
@@ -51,8 +52,9 @@ public class MostPopularView extends VerticalLayout {
     @Value("${baseurl}")
     private String baseUrl;
 
-    private List<NewsEntry> allEntries = new ArrayList<>();
-    private int loadedItemCount = 0;
+    private final List<NewsEntry> loadedEntries = new ArrayList<>();
+    private int nextOffset = 0;
+    private boolean hasMoreEntries = true;
     private VerticalLayout renderedNewsList;
     private VerticalLayout newsItemsContainer;
     private Div bottomSentinel;
@@ -108,8 +110,10 @@ public class MostPopularView extends VerticalLayout {
     }
 
     private void refreshNewsItems() {
-        allEntries = new ArrayList<>(mongo.findAllOrderedByViews(commonSessionComponents.getSelectedLanguages()));
-        loadedItemCount = 0;
+        loadedEntries.clear();
+        nextOffset = 0;
+        hasMoreEntries = true;
+        renderedNewsList.removeAll();
         newsItemsContainer.removeAll();
         newsItemsContainer.add(renderedNewsList, bottomSentinel);
         loadNextBatch(INITIAL_BATCH_SIZE);
@@ -121,24 +125,31 @@ public class MostPopularView extends VerticalLayout {
     }
 
     private void loadNextBatch(int batchSize) {
-        if (allEntries.isEmpty()) {
-            renderedNewsList.removeAll();
+        if (!hasMoreEntries || batchSize <= 0) {
             bottomSentinel.setVisible(false);
             return;
         }
 
-        int newLoadedCount = Math.min(loadedItemCount + batchSize, allEntries.size());
-        if (newLoadedCount == loadedItemCount) {
+        List<NewsEntry> nextBatch = mongo.findOrderedByViewsPage(
+                commonSessionComponents.getSelectedLanguages(),
+                nextOffset,
+                batchSize
+        );
+
+        if (nextBatch.isEmpty()) {
+            hasMoreEntries = false;
             bottomSentinel.setVisible(false);
             return;
         }
 
         int previousFocusIndex = commonSessionComponents.getFocusKeyIndex();
-        loadedItemCount = newLoadedCount;
+        loadedEntries.addAll(nextBatch);
+        nextOffset += nextBatch.size();
+        hasMoreEntries = nextBatch.size() == batchSize;
         renderedNewsList.removeAll();
-        renderedNewsList.add(newsItemComponent.createNewsItem(allEntries.subList(0, loadedItemCount)));
-        commonSessionComponents.setFocusKeyIndex(Math.min(previousFocusIndex, loadedItemCount - 1));
-        bottomSentinel.setVisible(loadedItemCount < allEntries.size());
+        renderedNewsList.add(newsItemComponent.createNewsItem(loadedEntries));
+        commonSessionComponents.setFocusKeyIndex(Math.min(previousFocusIndex, loadedEntries.size() - 1));
+        bottomSentinel.setVisible(hasMoreEntries);
     }
 
     private void setupBottomObserver() {
@@ -160,9 +171,9 @@ public class MostPopularView extends VerticalLayout {
                         .finally(() => {
                             pending = false;
                         });
-                }, { root: null, threshold: 0.1 });
+                }, { root: null, rootMargin: $1, threshold: 0 });
                 host.__observer.observe(sentinel);
-                """, bottomSentinel.getElement());
+                """, bottomSentinel.getElement(), LOAD_MORE_ROOT_MARGIN);
     }
 
     private void subscribeForRealtimeUpdates(UI ui) {
