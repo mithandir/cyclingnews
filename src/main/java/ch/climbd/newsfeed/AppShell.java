@@ -12,7 +12,7 @@ import com.vaadin.flow.theme.Theme;
 import com.vaadin.flow.theme.lumo.Lumo;
 
 @CssImport("./themes/climbd/styles.css")
-@Theme(themeClass = Lumo.class, variant = Lumo.LIGHT)
+@Theme(themeClass = Lumo.class)
 @PWA(name = "Climbd Cycling News - Latest News", shortName = "Climbd News")
 @Push(transport = Transport.WEBSOCKET)
 public class AppShell implements AppShellConfigurator {
