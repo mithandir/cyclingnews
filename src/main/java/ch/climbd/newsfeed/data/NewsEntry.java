@@ -1,7 +1,6 @@
 package ch.climbd.newsfeed.data;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
+import lombok.EqualsAndHashCode;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -11,18 +10,27 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 
 @Document
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class NewsEntry {
     @Id
+    @EqualsAndHashCode.Include
     private String link;
 
+    @EqualsAndHashCode.Include
     private String title;
     private String content = "";
     private String summary = "";
+
+    @EqualsAndHashCode.Include
     private LocalDateTime publishedAt;
     private Integer votes = 0;
 
     private Integer views = 0;
+
+    @EqualsAndHashCode.Include
     private String language = "undefined";
+
+    @EqualsAndHashCode.Include
     private boolean deleted = false;
 
     public NewsEntry() {
@@ -154,32 +162,5 @@ public class NewsEntry {
         return String.format(
                 "NewsEntry[link=%s, title='%s', votes='%s']",
                 link, title, votes);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-
-        if (o == null || getClass() != o.getClass()) return false;
-
-        NewsEntry newsEntry = (NewsEntry) o;
-
-        return new EqualsBuilder().append(deleted, newsEntry.deleted)
-                .append(link, newsEntry.link)
-                .append(title, newsEntry.title)
-                .append(publishedAt, newsEntry.publishedAt)
-                .append(language, newsEntry.language)
-                .isEquals();
-    }
-
-    @Override
-    public int hashCode() {
-        return new HashCodeBuilder(17, 37)
-                .append(link)
-                .append(title)
-                .append(publishedAt)
-                .append(language)
-                .append(deleted)
-                .toHashCode();
     }
 }

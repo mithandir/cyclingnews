@@ -24,7 +24,7 @@ public class MongoConfig {
     @Autowired
     private MongoClient mongoClient;
 
-    @Value("${spring.data.mongodb.database}")
+    @Value("${spring.mongodb.database}")
     String db;
 
     @Bean
