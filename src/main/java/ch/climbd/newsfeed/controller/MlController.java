@@ -73,7 +73,7 @@ public class MlController {
                             "* Craft a summary that is detailed, thorough, in-depth, and complex, while maintaining clarity and conciseness.\n" +
                             "* Rely strictly on the provided text, without including external information.\n" +
                             "* Format the summary in paragraph form for easy understanding.")
-                    .user("Summaries the following:\n" + news.getContent())
+                    .user(news.getContent())
                     .call()
                     .content();
 
@@ -108,11 +108,10 @@ public class MlController {
 //                }
 
                 var summary = chatClient.prompt()
-                        .system("As a professional summarizer, create a concise and comprehensive summary of the provided text, be it an article, post, conversation, or passage, while adhering to these guidelines:\n" +
-                                "* Craft a summary that is detailed, thorough, in-depth, and complex, while maintaining clarity and conciseness.\n" +
-                                "* Rely strictly on the provided text, without including external information.\n" +
-                                "* Format the summary in paragraph form for easy understanding.")
-                        .user("Summaries the following:\n" + content)
+                        .system("Summarize the given text. It should not be visible that you summarized the text" +
+                                " in the output. Only use information that were provided. Format the text in" +
+                                " paragraphs if neccessary.")
+                        .user(content)
                         .call()
                         .content();
 
